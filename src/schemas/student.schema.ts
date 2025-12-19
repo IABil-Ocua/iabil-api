@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const studentSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: z.uuid().optional(),
   code: z.string().min(1, "O código é obrigatório"),
   name: z.string().min(1, "O nome é obrigatório"),
   gender: z.string().min(1, "O género é obrigatório"),

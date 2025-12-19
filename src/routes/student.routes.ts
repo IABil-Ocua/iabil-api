@@ -20,7 +20,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Fetch all students",
         response: {
-          200:z
+          200: z
           .object({
             message:z.string(),
             students:z.array(
@@ -78,8 +78,8 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         response: {
           200: z
           .object({
-            message:z.string(),
-              student:z
+            message: z.string(),
+              student: z
                 .object({
                 id: z.string(),
                 name: z.string(),
@@ -87,7 +87,6 @@ export async function studentRoutes(app: FastifyTypedInstance) {
                 gender: z.string(),
                 email: z.string().optional(),
                 status: z.string(),
-                approvalStatus: z.string(),
                 qualification: z.string(),
                 specialty: z.string().optional().nullable(),
                 actualProvince: z.string().optional().nullable(),
@@ -97,6 +96,10 @@ export async function studentRoutes(app: FastifyTypedInstance) {
                 }),  
           })
           .describe("student fetched successfully"),
+
+          404: z
+          .object({ message: z.string() })
+          .describe("Student not found"),
 
           500: z
             .object({ message: z.string() })
@@ -146,14 +149,13 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Create student",
+        description: "Create new student",
         response: {
-          201: z
-          
+          201: z 
           .object({
             message: z.string(),
             student: z.object({
-              id: z.string(),
+              id: z.uuid(),
               code: z.string(),
               name: z.string(),
               qualification: z.string(),
@@ -164,6 +166,10 @@ export async function studentRoutes(app: FastifyTypedInstance) {
           400: z
             .object({ message: z.string() })
             .describe("Bad request"),
+
+          409: z
+           .object ({ message: z.string() })  
+           .describe ("Student code or email exists"),
 
           500: z
             .object({ message: z.string() })
