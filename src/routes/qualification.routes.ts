@@ -18,6 +18,22 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
         tags: ["Qualifications"],
         description: "Fetch all Qualifications",
         response: {
+          200: z
+            .object({
+              message: z.string(),
+              qualifications: z.array(z.object({
+                id: z.string().uuid(),
+                name: z.string(),
+                description: z.string().nullable(),
+                bannerUrl: z.string().nullable(),
+                workload: z.number(),
+                credits: z.number(),
+                knowledgeAreas: z.string().nullable(),
+                createdAt: z.date(),
+                updatedAt: z.date(),
+              }))
+            })
+            .describe("Qualifications fetched successfully"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -34,7 +50,26 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["Qualifications"],
         description: "Fetch Qualification by ID",
+        params: z.object({
+          id: z.string().uuid().describe("Qualification unique identifier"),
+        }),
         response: {
+          200: z
+            .object({
+              message: z.string(),
+              qualification: z.object({
+                id: z.string().uuid(),
+                name: z.string(),
+                description: z.string().nullable(),
+                bannerUrl: z.string().nullable(),
+                workload: z.number(),
+                credits: z.number(),
+                knowledgeAreas: z.string().nullable(),
+                createdAt: z.date(),
+                updatedAt: z.date(),
+              })
+            })
+            .describe("Qualification fetched successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -52,9 +87,26 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["Qualifications"],
-        description: "Create Qualification",
+        summary: "Create Qualification",
+        description: "Create a new qualification with details",
         body: qualificationSchema,
         response: {
+          201: z
+            .object({
+              message: z.string(),
+              qualification: z.object({
+                id: z.string().uuid(),
+                name: z.string(),
+                description: z.string().nullable(),
+                bannerUrl: z.string().nullable(),
+                workload: z.number(),
+                credits: z.number(),
+                knowledgeAreas: z.string().nullable(),
+                createdAt: z.date(),
+                updatedAt: z.date(),
+              })
+            })
+            .describe("Qualification created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           500: z
             .object({ message: z.string() })
@@ -71,9 +123,29 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["Qualifications"],
-        description: "Update Qualification",
+        summary: "Update Qualification",
+        description: "Update qualification by ID",
+        params: z.object({
+          id: z.string().uuid().describe("Qualification unique identifier"),
+        }),
         body: qualificationSchema.partial(),
         response: {
+          200: z
+            .object({
+              message: z.string(),
+              qualification: z.object({
+                id: z.string().uuid(),
+                name: z.string(),
+                description: z.string().nullable(),
+                bannerUrl: z.string().nullable(),
+                workload: z.number(),
+                credits: z.number(),
+                knowledgeAreas: z.string().nullable(),
+                createdAt: z.date(),
+                updatedAt: z.date(),
+              })
+            })
+            .describe("Qualification updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -91,8 +163,15 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["Qualifications"],
-        description: "Delete Qualification",
+        summary: "Delete Qualification",
+        description: "Delete qualification by ID",
+        params: z.object({
+          id: z.string().uuid().describe("Qualification unique identifier"),
+        }),
         response: {
+          200: z
+            .object({ message: z.string() })
+            .describe("Qualification deleted successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z

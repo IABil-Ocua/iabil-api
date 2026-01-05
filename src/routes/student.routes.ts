@@ -149,16 +149,25 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Create new student",
+        summary: "Create new student",
+        description: "Create new student and associated user account",
+        body: z.object({
+          name: z.string().min(1, "Name is required"),
+          qualification: z.string().min(1, "Qualification is required"),
+          completionYear3: z.string().optional(),
+          email: z.string().email("Valid email is required"),
+          phone1: z.string().optional(),
+          code: z.string().min(1, "Student code is required"),
+        }),
         response: {
           201: z 
           .object({
             message: z.string(),
-            student: z.object({
-              id: z.uuid(),
-              code: z.string(),
+            user: z.object({
+              id: z.string().uuid(),
+              email: z.string().email(),
               name: z.string(),
-              qualification: z.string(),
+              role: z.string(),
             })
           })
            .describe("Student created successfully"),
