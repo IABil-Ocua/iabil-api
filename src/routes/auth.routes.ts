@@ -9,7 +9,6 @@ export async function authRoutes(app: FastifyTypedInstance) {
     {
       schema: {
         tags: ["auth"],
-        summary: "User login",
         description: "Authenticate user and return JWT token",
         body: loginSchema,
         response: {

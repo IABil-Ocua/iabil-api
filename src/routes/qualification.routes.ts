@@ -9,7 +9,7 @@ import {
 import { FastifyTypedInstance } from "../types/zod";
 import { qualificationSchema } from "../schemas/qualification.schema";
 
-export async function QualificationRoutes(app: FastifyTypedInstance) {
+export async function qualificationRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
@@ -86,9 +86,8 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
     {
       //preHandler: app.authenticate,
       schema: {
-        tags: ["Qualifications"],
-        summary: "Create Qualification",
-        description: "Create a new qualification with details",
+        tags: ["qualifications"],
+        description: "Create qualification",
         body: qualificationSchema,
         response: {
           201: z
@@ -122,8 +121,7 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
     {
       //preHandler: app.authenticate,
       schema: {
-        tags: ["Qualifications"],
-        summary: "Update Qualification",
+        tags: ["qualifications"],
         description: "Update qualification by ID",
         params: z.object({
           id: z.string().uuid().describe("Qualification unique identifier"),
@@ -162,8 +160,7 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
     {
       //preHandler: app.authenticate,
       schema: {
-        tags: ["Qualifications"],
-        summary: "Delete Qualification",
+        tags: ["qualifications"],
         description: "Delete qualification by ID",
         params: z.object({
           id: z.string().uuid().describe("Qualification unique identifier"),

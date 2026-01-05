@@ -4,6 +4,7 @@ import {
   listUsersHandler,
   registerUserHandler,
 } from "../controllers/user.controller";
+import { registerUserBodySchema } from "../schemas/user.schema";
 import z from "zod";
 
 export async function userRoutes(app: FastifyTypedInstance) {
@@ -45,25 +46,8 @@ export async function userRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["users"],
-        summary: "Create new user",
         description: "Create a new user with automatic password generation and email confirmation",
-        body: z.object({
-          name: z.string().min(1, "Name is required."),
-          email: z.string().min(1, "Email is required.").email("Invalid email format."),
-          username: z.string().min(3, "The username is required"),
-          avatar: z.string().optional(),
-          cover: z.string().optional(),
-          birthDate: z.coerce.date(),
-          role: z
-            .enum(["SUPER_ADMIN", "ADMIN", "STUDENT", "GRADUETE"])
-            .refine(
-              (val) => ["SUPER_ADMIN", "ADMIN", "STUDENT", "GRADUETE"].includes(val),
-              {
-                message: "Role must be one of predefined values.",
-              }
-            ),
-          avatarUrl: z.string().url("Invalid URL format").optional(),
-        }),
+        body: registerUserBodySchema,
         response: {
           201: z
             .object({

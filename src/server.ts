@@ -12,7 +12,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyJwtPlugin from "./plugins/jwt";
 import { authRoutes } from "./routes/auth.routes";
 import { userRoutes } from "./routes/user.routes";
-import { QualificationRoutes } from "./routes/qualification.routes";
+import { qualificationRoutes } from "./routes/qualification.routes";
 import { studentRoutes } from "./routes/student.routes";
 import { eventRoutes } from "./routes/events.route";
 import { articleRoutes } from "./routes/articles.routes";
@@ -79,7 +79,7 @@ app.register(fastifySwaggerUi, {
 //ROTAS DOS ENDPOITS
 app.register(authRoutes, { prefix: "/auth" });
 app.register(userRoutes, { prefix: "/users" });
-app.register(QualificationRoutes, { prefix: "/qualifications" });
+app.register(qualificationRoutes, { prefix: "/qualifications" });
 app.register(studentRoutes, { prefix: "/students" });
 app.register(eventRoutes, { prefix: "/events" });
 app.register(articleRoutes, { prefix: "/articles" });

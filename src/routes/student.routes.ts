@@ -53,7 +53,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Export all students as Excel file",
+        description: "Export all students data as Excel file",
         response: {
           200: z
           .unknown()
@@ -74,7 +74,10 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Fetch student by ID",
+        description: "Fetch student information by ID",
+        params: z.object({
+          id: z.string().uuid().describe("Student unique identifier"),
+        }),
         response: {
           200: z
           .object({
@@ -93,9 +96,9 @@ export async function studentRoutes(app: FastifyTypedInstance) {
                 actualDistrict: z.string().optional().nullable(),
                 createdAt: z.coerce.date(),
                 updatedAt: z.coerce.date(),
-                }),  
+                }),
           })
-          .describe("student fetched successfully"),
+          .describe("Student fetched successfully"),
 
           404: z
           .object({ message: z.string() })
@@ -149,7 +152,6 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        summary: "Create new student",
         description: "Create new student and associated user account",
         body: z.object({
           name: z.string().min(1, "Name is required"),
@@ -195,12 +197,15 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Delete a student",
+        description: "Delete a student by ID",
+        params: z.object({
+          id: z.string().uuid().describe("Student unique identifier"),
+        }),
         response: {
           200: z
             .object({ message: z.string() })
             .describe("Student deleted successfully"),
-          404: z.object({ message: z.string() }).describe("students not found"),
+          404: z.object({ message: z.string() }).describe("Student not found"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -216,7 +221,10 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Update a student by ID",
+        description: "Update student information by ID",
+        params: z.object({
+          id: z.string().uuid().describe("Student unique identifier"),
+        }),
         body: studentSchema.partial(),
         response: {
           200:z
@@ -230,10 +238,10 @@ export async function studentRoutes(app: FastifyTypedInstance) {
               updatedAt: z.coerce.date(),
             })
           })
-           .describe("Student created successfully"),
+           .describe("Student updated successfully"),
 
           400: z.object({ message: z.string() }).describe("Bad request"),
-          404: z.object({ message: z.string() }).describe("students not found"),
+          404: z.object({ message: z.string() }).describe("Student not found"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
