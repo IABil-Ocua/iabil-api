@@ -12,7 +12,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Levels"],
         description: "Fetch all Levels",
@@ -29,7 +29,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
   app.get(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Levels"],
         description: "Fetch Qualification by ID",
@@ -48,7 +48,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
   app.post(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Levels"],
         description: "Create Qualification",
@@ -66,7 +66,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
   app.put(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Levels"],
         description: "Update Qualification",
@@ -85,7 +85,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
   app.delete(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Levels"],
         description: "Delete Qualification",

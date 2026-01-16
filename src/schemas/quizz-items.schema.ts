@@ -31,3 +31,8 @@ export const createQuizzItemSchema = z.object({
 });
 
 export const updateQuizzItemSchema = createQuizzItemSchema.partial();
+
+export const checkQuizzAnswerSchema = z.object({
+  quizzItemId: z.string().min(1, "Quizz item ID is required"),
+  studentAnswer: z.string().min(1, "Student answer is required"),
+});
