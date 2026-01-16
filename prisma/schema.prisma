@@ -158,6 +158,7 @@ model QualificationLevel {
   title       String
   description String  @db.Text
   noticeUrl   String? @map("notice_url") //url do edital
+  
 
   qualification   Qualification @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
   qualificationId String

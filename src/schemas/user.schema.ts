@@ -6,7 +6,7 @@ export const createUserSchema = z.object({
   username: z.string().min(3, "The username is required"),
   avatar: z.string().optional(),
   cover: z.string().optional(),
-  birthDate: z.coerce.date(),
+  birthDate: z.coerce.date().optional(),
   password: z.string().min(6, "Password must be at least 6 characters long."),
   avatarUrl: z.string().url("Invalid URL format").optional(),
   role: z
