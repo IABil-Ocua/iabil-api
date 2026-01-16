@@ -1,6 +1,29 @@
 import { z } from "zod";
+import { userSchema } from "./user.schema";
 
 export const eventTypeEnum = z.enum(["TRAINING", "SEMINAR", "CONFERENCE"]);
+
+export const eventSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().nullable(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().nullable(),
+  location: z.string().nullable(),
+  type: eventTypeEnum,
+  imageUrl: z.url().nullable(),
+  organizer: z.string().nullable(),
+  isPublished: z.boolean().nullable(),
+  createdById: z.string(),
+  creaedAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+
+export const eventWithRelationsSchema = z.lazy(() =>
+  eventSchema.extend({
+    createdBy: userSchema,
+  })
+);
 
 export const createEventSchema = z.object({
   title: z
@@ -13,11 +36,11 @@ export const createEventSchema = z.object({
     .optional()
     .nullable(),
   startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional().nullable(),
-  location: z.string().optional().nullable(),
+  endDate: z.coerce.date().optional(),
+  location: z.string().optional(),
   type: eventTypeEnum,
-  imageUrl: z.string().url("URL inválido").optional().nullable(),
-  organizer: z.string().optional().nullable(),
+  imageUrl: z.string().url("URL inválido").optional(),
+  organizer: z.string().optional(),
   isPublished: z.boolean().optional().default(false),
   createdById: z.string().min(1, "O ID do criador é obrigatório."),
 });

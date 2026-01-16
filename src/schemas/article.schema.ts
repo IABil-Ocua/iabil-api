@@ -1,19 +1,42 @@
 import { z } from "zod";
+import { userSchema } from "./user.schema";
 
 export const ArticleStatusEnum = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]);
+export const ArticleCategoryEnum = z.enum(["INNOVATION", "PUBLICATION"]);
+
+export const articleSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  slug: z.string(),
+  content: z.string(),
+  imageUrl: z.url().nullable(),
+  category: ArticleCategoryEnum,
+  tags: z.string().nullable(),
+  status: ArticleStatusEnum.default("DRAFT"),
+  isFeatured: z.boolean().default(false),
+  authorId: z.string(),
+  publishedAt: z.coerce.date().nullable(),
+  creaedAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+
+export const articleWithRelationsSchema = z.lazy(() =>
+  articleSchema.extend({
+    author: userSchema,
+  })
+);
 
 export const createArticleSchema = z.object({
   title: z.string().min(3, "O título deve ter pelo menos 3 caracteres."),
   slug: z.string().min(3, "Slug inválido."),
-  excerpt: z.string().optional(),
   content: z.string().min(10, "O conteúdo é obrigatório."),
-  imageUrl: z.string().url().optional(),
-  category: z.string().optional(),
+  imageUrl: z.url().optional(),
+  category: ArticleCategoryEnum,
   tags: z.string().optional(),
   status: ArticleStatusEnum.default("DRAFT"),
   isFeatured: z.boolean().default(false),
   authorId: z.string(),
-  publishedAt: z.string().datetime().optional(),
+  publishedAt: z.coerce.date().optional(),
 });
 
 export const updateArticleSchema = createArticleSchema.partial();

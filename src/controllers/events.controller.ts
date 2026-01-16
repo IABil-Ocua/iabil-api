@@ -37,12 +37,10 @@ export async function createEventHandler(
     });
     return reply
       .status(201)
-      .send({ message: "Evento criado com sucesso", event });
+      .send({ message: "Event created successfuly", event });
   } catch (error) {
-    console.error("Erro ao criar evento:", error);
-    return reply
-      .status(400)
-      .send({ error: "Ocorreu um erro interno no servidor" });
+    console.error("Error creating event:", error);
+    return reply.status(400).send({ message: "Internal server error", error });
   }
 }
 
@@ -59,8 +57,8 @@ export async function getEventsHandler(
 
     return reply.status(200).send({ message: "ok", events });
   } catch (error) {
-    console.error("Erro ao listar eventos:", error);
-    return reply.status(500).send({ error: "Falha ao obter eventos" });
+    console.error("Error fetching events:", error);
+    return reply.status(500).send({ message: "Internal server error", error });
   }
 }
 
@@ -76,13 +74,12 @@ export async function getEventByIdHandler(
       include: { createdBy: { select: { id: true, name: true, email: true } } },
     });
 
-    if (!event)
-      return reply.status(404).send({ message: "Evento não encontrado" });
+    if (!event) return reply.status(404).send({ message: "Event not found" });
 
     return reply.status(200).send({ message: "ok", event });
   } catch (error) {
-    console.error("Erro ao buscar evento:", error);
-    return reply.status(500).send({ error: "Falha ao buscar evento" });
+    console.error("Error fetching event:", error);
+    return reply.status(500).send({ message: "Internal server error", error });
   }
 }
 
@@ -110,8 +107,7 @@ export async function updateEventHandler(
 
     const existing = await prisma.event.findUnique({ where: { id } });
 
-    if (!existing)
-      return reply.status(404).send({ error: "Evento não encontrado" });
+    if (!existing) return reply.status(404).send({ error: "Event not found" });
 
     const event = await prisma.event.update({
       where: { id },
@@ -130,10 +126,10 @@ export async function updateEventHandler(
     });
     return reply
       .status(200)
-      .send({ message: "Evento atualizado com sucesso", event });
+      .send({ message: "Event updated successfully", event });
   } catch (error) {
-    console.error("Erro ao atualizar evento:", error);
-    return reply.status(400).send({ error: "Falha ao atualizar evento" });
+    console.error("Error updating event:", error);
+    return reply.status(400).send({ message: "Internal server error", error });
   }
 }
 

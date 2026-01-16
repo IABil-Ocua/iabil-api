@@ -19,7 +19,6 @@ export const createArticleHandler = async (
       status,
       title,
       category,
-      excerpt,
       imageUrl,
       publishedAt,
       tags,
@@ -34,7 +33,6 @@ export const createArticleHandler = async (
         status,
         title,
         category,
-        excerpt,
         imageUrl,
         publishedAt,
         tags,
@@ -128,13 +126,12 @@ export const updateArticleHandler = async (
       status,
       title,
       category,
-      excerpt,
       imageUrl,
       publishedAt,
       tags,
     } = request.body;
 
-    const updated = await prisma.article.update({
+    const updatedArticle = await prisma.article.update({
       where: { id },
       data: {
         authorId,
@@ -144,7 +141,7 @@ export const updateArticleHandler = async (
         status,
         title,
         category,
-        excerpt,
+
         imageUrl,
         publishedAt,
         tags,
@@ -153,10 +150,10 @@ export const updateArticleHandler = async (
 
     return reply
       .status(200)
-      .send({ message: "Artigo atualizado com sucesso.", updated });
+      .send({ message: "Article updated successfully.", updatedArticle });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao atualizar o artigo." });
+    return reply.status(500).send({ message: "Error updating article." });
   }
 };
 
@@ -168,9 +165,9 @@ export const deleteArticleHandler = async (
     const { id } = request.params;
     await prisma.article.delete({ where: { id } });
 
-    return reply.send({ message: "Artigo eliminado com sucesso." });
+    return reply.send({ message: "Article deleted successfully." });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao eliminar o artigo." });
+    return reply.status(500).send({ message: "Error deleting article." });
   }
 };

@@ -1,10 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
-import { scholarshipSchema } from "../schemas/shcolarship.schema";
+import {
+  createScholarshipSchema,
+  updateScholarshipSchema,
+} from "../schemas/shcolarship.schema";
 import { prisma } from "../lib/db";
 
 export async function createScholarshipHandler(
-  request: FastifyRequest<{ Body: z.infer<typeof scholarshipSchema> }>,
+  request: FastifyRequest<{ Body: z.infer<typeof createScholarshipSchema> }>,
   reply: FastifyReply
 ) {
   try {
@@ -84,7 +87,7 @@ export async function getScholarshipByIdHandler(
 export async function updateScholarshipHandler(
   request: FastifyRequest<{
     Params: { id: string };
-    Body: z.infer<typeof scholarshipSchema>;
+    Body: z.infer<typeof updateScholarshipSchema>;
   }>,
   reply: FastifyReply
 ) {

@@ -33,7 +33,7 @@ export async function createStudentHandler(
   reply: FastifyReply
 ) {
   try {
-    const { name, qualification, completionYear3, email, phone1, code } =
+    const { name, qualificationId, completionYear3, email, phone1, code } =
       request.body;
 
     const existingStudent = await prisma.student.findUnique({
@@ -42,11 +42,18 @@ export async function createStudentHandler(
       },
     });
 
+    const qualification = await prisma.qualification.findUnique({
+      where: {
+        id: qualificationId,
+      },
+    });
+
     if (!existingStudent) {
       await prisma.student.create({
         data: {
           name,
-          qualification,
+          qualificationId,
+          qualificationName: qualification ? qualification?.name : "",
           completionYear3,
           email,
           phone1,

@@ -1,13 +1,77 @@
 import { z } from "zod";
+import { userSchema } from "./user.schema";
+import { qualificationSchema } from "./qualification.schema";
 
 export const studentSchema = z.object({
-  id: z.string().uuid().optional(),
-  code: z.string().min(1, "O código é obrigatório"),
-  name: z.string().min(1, "O nome é obrigatório"),
-  gender: z.string().min(1, "O género é obrigatório"),
-  scholarship: z.string().min(1, "O campo bolsa é obrigatório"),
+  id: z.string().nullable(),
+  code: z.string(),
+  name: z.string(),
+  gender: z.string(),
+  scholarship: z.string(),
+  financier: z.string().nullable(),
+  qualificationName: z.string(),
+  qualificationId: z.string(),
+  specialty: z.string().nullable(),
+
+  birthProvince: z.string().nullable(),
+  birthDate: z.coerce.date().nullable(),
+  idNumber: z.coerce.string().nullable(),
+  email: z.string().nullable(),
+  phone1: z.coerce.string().nullable(),
+  phone2: z.coerce.string().nullable(),
+  fatherAffiliation: z.string().nullable(),
+  motherAffiliation: z.string().nullable(),
+  guardianName: z.string().nullable(),
+  guardianAddress: z.string().nullable(),
+  guardianPhone: z.coerce.string().nullable(),
+  status: z.string().nullable(),
+  actualProvince: z.string().nullable(),
+  actualDistrict: z.string().nullable(),
+  currentOccupation: z.string().nullable(),
+  companyName: z.string().nullable(),
+  companyPhone: z.coerce.string().nullable(),
+  position: z.string().nullable(),
+  startYear: z.coerce.string().nullable(),
+
+  // Formação 1
+  residencyRegime1: z.string().optional().nullable(),
+  year1: z.coerce.string().optional().nullable(),
+  level1: z.string().optional().nullable(),
+  completionYear1: z.coerce.string().optional().nullable(),
+  observation1: z.string().optional().nullable(),
+
+  // Formação 2
+  residencyRegime2: z.string().optional().nullable(),
+  year2: z.coerce.string().optional().nullable(),
+  level2: z.string().optional().nullable(),
+  completionYear2: z.coerce.string().optional().nullable(),
+  observation2: z.string().optional().nullable(),
+
+  // Formação 3
+  residencyRegime3: z.string().optional().nullable(),
+  year3: z.coerce.string().optional().nullable(),
+  level3: z.string().optional().nullable(),
+  completionYear3: z.coerce.string().optional().nullable(),
+  observation3: z.string().optional().nullable(),
+
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+});
+
+export const userWithRelationsSchema = z.lazy(() =>
+  userSchema.extend({
+    qualification: qualificationSchema,
+  })
+);
+
+export const createStudentSchema = z.object({
+  code: z.string().min(1, "Code is required"),
+  name: z.string().min(1, "Name is required"),
+  gender: z.string().min(1, "Gender is required"),
+  scholarship: z.string().min(1, "Scholarship is required"),
   financier: z.string().optional().nullable(),
-  qualification: z.string().min(1, "A qualificação é obrigatória"),
+  qualificationName: z.string(),
+  qualificationId: z.string().min(1, "QualificationID is required"),
   specialty: z.string().optional().nullable(),
 
   birthProvince: z.string().optional().nullable(),
@@ -50,17 +114,6 @@ export const studentSchema = z.object({
   level3: z.string().optional().nullable(),
   completionYear3: z.coerce.string().optional().nullable(),
   observation3: z.string().optional().nullable(),
-
-  createdAt: z.coerce.date().optional(),
-  updatedAt: z.coerce.date().optional(),
 });
 
-export const createStudentSchema = studentSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const updateStudentSchema = studentSchema.partial();
-
-export type StudentSchema = z.infer<typeof studentSchema>;
+export const updateStudentSchema = createStudentSchema.partial();

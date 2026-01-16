@@ -2,6 +2,7 @@ import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
 import {
   createChapterHandler,
+  deleteChapterHandler,
   fetchChapterHandler,
   fetchChaptersHandler,
 } from "../controllers/chapter.controller";
@@ -9,6 +10,7 @@ import {
   chapterSchema,
   chapterWithRelationsSchema,
   createChapterSchema,
+  updateChapterSchema,
 } from "../schemas/chapter.schema";
 
 export async function chapterRoutes(app: FastifyTypedInstance) {
@@ -83,5 +85,55 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
       },
     },
     createChapterHandler
+  );
+
+  app.put(
+    "/:id",
+    {
+      preHandler: app.authenticate,
+      schema: {
+        tags: ["chapters"],
+        description: "Create chapter",
+        body: updateChapterSchema,
+        response: {
+          201: z
+            .object({
+              message: z.string(),
+              chapter: chapterSchema,
+            })
+            .describe("Chapter created successfully"),
+          400: z.object({ message: z.string() }).describe("Bad request"),
+          404: z.object({ message: z.string() }).describe("Not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    createChapterHandler
+  );
+
+  app.delete(
+    "/:id",
+    {
+      preHandler: app.authenticate,
+      schema: {
+        tags: ["chapters"],
+        description: "Delete chapter",
+        response: {
+          200: z
+            .object({
+              message: z.string(),
+            })
+            .describe("Chapter deleted successfully"),
+          400: z.object({ message: z.string() }).describe("Bad request"),
+          404: z.object({ message: z.string() }).describe("Not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    deleteChapterHandler
   );
 }
