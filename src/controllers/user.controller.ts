@@ -17,7 +17,9 @@ export async function loginHandler(
   try {
     const { email, password } = request.body;
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+    });
 
     if (!user) {
       return reply.status(401).send({ message: "Invalid credentials" });
@@ -72,8 +74,7 @@ export async function registerUserHandler(
   reply: FastifyReply
 ) {
   try {
-    const { email, name, role, birthDate, username, avatar, cover } =
-      request.body;
+    const { email, name, role, birthDate, avatar, cover } = request.body;
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -85,7 +86,7 @@ export async function registerUserHandler(
         .send({ message: "Já existe um usuário cadastrado com o mesmo email" });
     }
 
-    const password = passwordGenerator({
+    const generatedPassword = passwordGenerator({
       passwordLength: 8,
       useLowerCase: true,
       useNumbers: true,
@@ -93,15 +94,15 @@ export async function registerUserHandler(
       useUpperCase: true,
     });
 
-    const hashedPassword = await hash("Iabil2025", 10);
+    const hashedPassword = await hash(generatedPassword, 10);
 
     const user = await prisma.user.create({
       data: {
-        email,
+        email: email.toLowerCase().trim(),
         name,
         password: hashedPassword,
         role: role,
-        username,
+        username: email.toLowerCase().trim(),
         avatar,
         birthDate,
         cover,
@@ -114,8 +115,8 @@ export async function registerUserHandler(
       subject: "Cofirmação de Registro na Plataforma | IABIl",
       react: UserRegistrationTemplate({
         name: name,
-        email: email,
-        password: password,
+        email: email.toLowerCase().trim(),
+        password: generatedPassword,
         platformName: "IABil",
         loginUrl: "https://iabil.co.mz/login",
         role: role,
@@ -129,9 +130,12 @@ export async function registerUserHandler(
         .send({ error: "Error sending confirmation email" });
     }
 
+    const { password, ...rest } = user;
+
     return reply.status(201).send({
-      message: "Usuário criado com sucesso",
-      user,
+      message: "User created successfully",
+      user: rest,
+      emailId: emailData.id,
     });
   } catch (error) {
     console.error("Error registering user:", error);

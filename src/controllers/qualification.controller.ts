@@ -1,7 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../lib/db";
 import z from "zod";
-import { qualificationSchema } from "../schemas/qualification.schema";
+import {
+  createQualificationSchema,
+  updateQualificationSchema,
+} from "../schemas/qualification.schema";
 
 export async function fetchQualificationsHandler(
   request: FastifyRequest,
@@ -57,7 +60,7 @@ export async function fetchQualificationHandler(
 }
 
 export async function createQualificationHandler(
-  request: FastifyRequest<{ Body: z.infer<typeof qualificationSchema> }>,
+  request: FastifyRequest<{ Body: z.infer<typeof createQualificationSchema> }>,
   reply: FastifyReply
 ) {
   try {
@@ -85,7 +88,7 @@ export async function createQualificationHandler(
 }
 
 export async function updateQualificationHandler(
-  request: FastifyRequest<{ Body: z.infer<typeof qualificationSchema> }>,
+  request: FastifyRequest<{ Body: z.infer<typeof updateQualificationSchema> }>,
   reply: FastifyReply
 ) {
   try {
@@ -134,7 +137,7 @@ export async function updateQualificationHandler(
 }
 
 export async function deleteQualificationHandler(
-  request: FastifyRequest<{ Body: z.infer<typeof qualificationSchema> }>,
+  request: FastifyRequest,
   reply: FastifyReply
 ) {
   try {
@@ -143,7 +146,7 @@ export async function deleteQualificationHandler(
     if (!id) {
       return reply
         .status(400)
-        .send({ message: "qualification ID not provided" });
+        .send({ message: "Qualification ID not provided" });
     }
 
     const existingqualification = await prisma.qualification.findUnique({
@@ -153,7 +156,7 @@ export async function deleteQualificationHandler(
     });
 
     if (!existingqualification) {
-      return reply.status(404).send({ message: "qualification not found" });
+      return reply.status(404).send({ message: "Qualification not found" });
     }
 
     await prisma.qualification.delete({
@@ -164,7 +167,7 @@ export async function deleteQualificationHandler(
 
     return reply
       .status(200)
-      .send({ message: "qualification deleted successfully" });
+      .send({ message: "Qualification deleted successfully" });
   } catch (error) {
     console.log("Error deleting qualification", error);
     return reply.status(500).send({ message: "Internal server error", error });

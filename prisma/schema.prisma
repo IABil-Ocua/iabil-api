@@ -27,8 +27,8 @@ model User {
   cover     String?
   birthDate DateTime? @map("birth_date")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   events   Event[]
   articles Article[]
@@ -37,10 +37,10 @@ model User {
 }
 
 enum UserRole {
-  SUPER_ADMIN
   ADMIN
   STUDENT
   GRADUETE
+  TEACHER
 }
 
 model Student {
@@ -50,8 +50,8 @@ model Student {
   gender            String?
   scholarship       String?
   financier         String?
-  qualification     String
-  approvalStatus    StudentApprovalStatus @default(NOT_APPROVED)
+  qualificationName String                @map("qualification_name")
+  approvalStatus    StudentApprovalStatus @default(NOT_APPROVED) @map("approval_status")
   specialty         String?
   birthProvince     String?               @map("birth_province")
   birthDate         DateTime?             @map("birth_date") @db.Date
@@ -91,6 +91,9 @@ model Student {
   completionYear3  String? @map("completion_year_3")
   observation3     String? @map("observation_3") @db.Text()
 
+  qualification   Qualification @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
+  qualificationId String        @default("") @map("qualification_id")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -116,8 +119,8 @@ model Certification {
   startDate    String @map("start_date")
   endDate      String @map("end_date")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("certifications")
 }
@@ -130,8 +133,8 @@ model Experience {
   startDate    String @map("start_date")
   endDate      String @map("end_date")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("experience")
 }
@@ -145,27 +148,80 @@ model Qualification {
   credits        Int
   knowledgeAreas String? @map("knowledge_areas")
 
-  levels QualificationLevel[]
+  levels   Level[]
+  students Student[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("qualifications")
 }
 
-model QualificationLevel {
+model Level {
   id          String  @id @default(uuid())
   title       String
   description String  @db.Text
   noticeUrl   String? @map("notice_url") //url do edital
 
   qualification   Qualification @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
-  qualificationId String
+  qualificationId String        @map("qualification_id")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  chapters Chapter[]
 
-  @@map("qualifications_levels")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("levels")
+}
+
+model Chapter {
+  id                        String  @id @default(uuid())
+  content                   String  @db.Text
+  supplementaryMaterialUrl1 String? @map("supplementary_material_url_1")
+  supplementaryMaterialUrl2 String? @map("supplementary_material_url_2")
+
+  level   Level  @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  levelId String @map("level_id")
+
+  quizzes Quizz[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("chapters")
+}
+
+model Quizz {
+  id   String @id @default(uuid()) //uuid() e cuid()
+  name String @unique
+
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String  @map("chapter_id")
+
+  quizzItems QuizzItem[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("quizzes")
+}
+
+model QuizzItem {
+  id       String  @id @default(uuid())
+  question String
+  option1  String
+  option2  String
+  option3  String?
+  option4  String?
+  answer   String
+
+  quizz   Quizz  @relation(fields: [quizzId], references: [id], onDelete: Cascade)
+  quizzId String @map("quizz_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("quizz_items")
 }
 
 model Professor {
@@ -178,19 +234,19 @@ model Event {
   id          String    @id @default(cuid())
   title       String
   description String?   @db.Text()
-  startDate   DateTime
-  endDate     DateTime?
+  startDate   DateTime  @map("start_date")
+  endDate     DateTime? @map("end_date")
   location    String?
   type        EventType
-  imageUrl    String?
+  imageUrl    String?   @map("image_url")
   organizer   String? // Nome da entidade ou departamento organizador
-  isPublished Boolean   @default(false)
+  isPublished Boolean   @default(false) @map("is_published")
 
-  createdById String
+  createdById String @map("created_by_id")
   createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("events")
 }
@@ -205,19 +261,19 @@ model Article {
   id         String        @id @default(cuid())
   title      String
   slug       String        @unique
-  content    String // corpo principal (Markdown ou HTML)
-  imageUrl   String? // imagem de capa
+  content    String
+  imageUrl   String?       @map("image_url")
   category   ArticleType
-  tags       String? // tags separados por vírgula
+  tags       String?
   status     ArticleStatus @default(DRAFT)
-  isFeatured Boolean       @default(false) // para destacar artigos na homepage
+  isFeatured Boolean       @default(false) @map("is_featured")
 
-  authorId String
+  authorId String @map("author_id")
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@map("articles")
 }
@@ -236,29 +292,29 @@ enum ArticleStatus {
 model JobVacancy {
   id          String @id @default(cuid())
   title       String
-  companyName String
+  companyName String @map("company_name")
   location    String
   url         String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("job-vacancies")
+  @@map("job_vacancies")
 }
 
 model Scholarship {
   id          String            @id @default(cuid())
   name        String
   description String?
-  sponsor     String? // Entidade financiadora
-  amount      Float? // Valor total da bolsa
-  type        String // Ex.: "Integral", "Parcial", "Mérito", "Carência"
-  startDate   DateTime? // Quando o apoio inicia
-  endDate     DateTime? // Quando termina
-  status      ScholarshipStatus @default(INACTIVE) // active | inactive | closed
+  sponsor     String?
+  amount      Float?
+  type        String
+  startDate   DateTime?         @map("start_date")
+  endDate     DateTime?         @map("end_date")
+  status      ScholarshipStatus @default(INACTIVE)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("scholarships")
 }

@@ -7,7 +7,11 @@ import {
   updateQualificationHandler,
 } from "../controllers/qualification.controller";
 import { FastifyTypedInstance } from "../types/zod";
-import { qualificationSchema } from "../schemas/qualification.schema";
+import {
+  createQualificationSchema,
+  qualificationSchema,
+  updateQualificationSchema,
+} from "../schemas/qualification.schema";
 
 export async function QualificationRoutes(app: FastifyTypedInstance) {
   app.get(
@@ -49,11 +53,11 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
   app.post(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Qualifications"],
         description: "Create Qualification",
-        body: qualificationSchema,
+        body: createQualificationSchema,
         response: {
           400: z.object({ message: z.string() }).describe("Bad request"),
           500: z
@@ -68,11 +72,11 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
   app.put(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Qualifications"],
         description: "Update Qualification",
-        body: qualificationSchema.partial(),
+        body: updateQualificationSchema,
         response: {
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
@@ -88,7 +92,7 @@ export async function QualificationRoutes(app: FastifyTypedInstance) {
   app.delete(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["Qualifications"],
         description: "Delete Qualification",

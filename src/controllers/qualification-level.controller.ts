@@ -1,15 +1,17 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../lib/db";
 import z from "zod";
-import { qualificationSchema } from "../schemas/qualification.schema";
-import { qualificationLevelSchema } from "../schemas/qualification-level.schema";
+import {
+  createLevelSchema,
+  updateLevelSchema,
+} from "../schemas/qualification-level.schema";
 
 export async function fetchLevelsHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
   try {
-    const levels = await prisma.qualificationLevel.findMany({
+    const levels = await prisma.level.findMany({
       relationLoadStrategy: "query",
       include: {
         qualification: true,
@@ -24,19 +26,17 @@ export async function fetchLevelsHandler(
 }
 
 export async function fetchLevelHandler(
-  request: FastifyRequest,
+  request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply
 ) {
   try {
-    const { id } = request.params as { id: string };
+    const { id } = request.params;
 
     if (!id) {
-      return reply
-        .status(400)
-        .send({ message: "Qualification level ID not provided" });
+      return reply.status(400).send({ message: "Level ID not provided" });
     }
 
-    const level = await prisma.qualificationLevel.findUnique({
+    const level = await prisma.level.findUnique({
       relationLoadStrategy: "query",
       include: {
         qualification: true,
@@ -58,13 +58,13 @@ export async function fetchLevelHandler(
 }
 
 export async function createLevelHandler(
-  request: FastifyRequest<{ Body: z.infer<typeof qualificationLevelSchema> }>,
+  request: FastifyRequest<{ Body: z.infer<typeof createLevelSchema> }>,
   reply: FastifyReply
 ) {
   try {
     const { noticeUrl, qualificationId, title, description } = request.body;
 
-    const level = await prisma.qualificationLevel.create({
+    const level = await prisma.level.create({
       data: {
         noticeUrl,
         qualificationId,
@@ -77,37 +77,38 @@ export async function createLevelHandler(
       .status(201)
       .send({ message: "Level created successfully", level });
   } catch (error) {
-    console.log("Error fetching qualification", error);
+    console.log("Error fetching level", error);
     return reply.status(500).send({ message: "Internal server error", error });
   }
 }
 
 export async function updateLevelHandler(
-  request: FastifyRequest<{ Body: z.infer<typeof qualificationLevelSchema> }>,
+  request: FastifyRequest<{
+    Params: { id: string };
+    Body: z.infer<typeof updateLevelSchema>;
+  }>,
   reply: FastifyReply
 ) {
   try {
-    const { id } = request.params as { id: string };
+    const { id } = request.params;
 
     if (!id) {
-      return reply
-        .status(400)
-        .send({ message: "Qualification ID not provided" });
+      return reply.status(400).send({ message: "Level ID not provided" });
     }
 
-    const existingQualification = await prisma.qualification.findUnique({
+    const existingQualification = await prisma.level.findUnique({
       where: {
         id: id,
       },
     });
 
     if (!existingQualification) {
-      return reply.status(404).send({ message: "Qualification not found" });
+      return reply.status(404).send({ message: "Level not found" });
     }
 
     const { noticeUrl, qualificationId, title, description } = request.body;
 
-    const level = await prisma.qualificationLevel.update({
+    const level = await prisma.level.update({
       data: {
         noticeUrl,
         qualificationId,
@@ -129,17 +130,17 @@ export async function updateLevelHandler(
 }
 
 export async function deleteLevelHandler(
-  request: FastifyRequest,
+  request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply
 ) {
   try {
-    const { id } = request.params as { id: string };
+    const { id } = request.params;
 
     if (!id) {
       return reply.status(400).send({ message: "Level ID not provided" });
     }
 
-    const existingLevel = await prisma.qualificationLevel.findUnique({
+    const existingLevel = await prisma.level.findUnique({
       where: {
         id: id,
       },
@@ -149,7 +150,7 @@ export async function deleteLevelHandler(
       return reply.status(404).send({ message: "Level not found" });
     }
 
-    await prisma.qualificationLevel.delete({
+    await prisma.level.delete({
       where: {
         id: id,
       },

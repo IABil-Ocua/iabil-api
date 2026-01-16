@@ -8,14 +8,14 @@ import {
   updateLevelHandler,
 } from "../controllers/qualification-level.controller";
 
-export async function qualificationLevelRoutes(app: FastifyTypedInstance) {
+export async function levelRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
       //preHandler: app.authenticate,
       schema: {
         tags: ["Levels"],
-        description: "Fetch all QLevels",
+        description: "Fetch all Levels",
         response: {
           500: z
             .object({ message: z.string() })
