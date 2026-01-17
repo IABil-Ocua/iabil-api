@@ -8,14 +8,14 @@ import {
   updateLevelHandler,
 } from "../controllers/qualification-level.controller";
 
-export async function qualificationLevelRoutes(app: FastifyTypedInstance) {
+export async function levelRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
-        tags: ["qualification-level"],
-        description: "Fetch all qualification levels",
+        tags: ["Levels"],
+        description: "Fetch all Levels",
         response: {
           200: z
             .object({
@@ -50,7 +50,7 @@ export async function qualificationLevelRoutes(app: FastifyTypedInstance) {
   app.get(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["levels"],
         description: "Fetch qualification level by ID",
@@ -91,7 +91,7 @@ export async function qualificationLevelRoutes(app: FastifyTypedInstance) {
   app.post(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["levels"],
         description: "Create qualification level",
@@ -129,7 +129,7 @@ export async function qualificationLevelRoutes(app: FastifyTypedInstance) {
   app.put(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["levels"],
         description: "Update qualification level by ID",
@@ -171,7 +171,7 @@ export async function qualificationLevelRoutes(app: FastifyTypedInstance) {
   app.delete(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["levels"],
         description: "Delete qualification level by ID",

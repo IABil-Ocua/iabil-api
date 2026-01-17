@@ -7,7 +7,11 @@ import {
   updateQualificationHandler,
 } from "../controllers/qualification.controller";
 import { FastifyTypedInstance } from "../types/zod";
-import { qualificationSchema } from "../schemas/qualification.schema";
+import {
+  createQualificationSchema,
+  qualificationSchema,
+  updateQualificationSchema,
+} from "../schemas/qualification.schema";
 
 export async function qualificationRoutes(app: FastifyTypedInstance) {
   app.get(
@@ -84,11 +88,11 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
   app.post(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Create qualification",
-        body: qualificationSchema,
+        tags: ["Qualifications"],
+        description: "Create Qualification",
+        body: createQualificationSchema,
         response: {
           201: z
             .object({
@@ -119,14 +123,11 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
   app.put(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Update qualification by ID",
-        params: z.object({
-          id: z.string().uuid().describe("Qualification unique identifier"),
-        }),
-        body: qualificationSchema.partial(),
+        tags: ["Qualifications"],
+        description: "Update Qualification",
+        body: updateQualificationSchema,
         response: {
           200: z
             .object({
@@ -158,7 +159,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
   app.delete(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["qualifications"],
         description: "Delete qualification by ID",
