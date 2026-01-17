@@ -20,6 +20,8 @@ import { jobVacanciesRoutes } from "./routes/job-vacancies.routes";
 import { scholarshipRoutes } from "./routes/scholarship.routes";
 import { levelRoutes } from "./routes/qualification-level.route";
 import { chapterRoutes } from "./routes/chapter.routes";
+import { quizzRoutes } from "./routes/quizz.routes";
+import { quizzItemRoutes } from "./routes/quizz-item.routes";
 
 const app =
   fastify(/**{
@@ -88,6 +90,8 @@ app.register(jobVacanciesRoutes, { prefix: "/job-vacancies" });
 app.register(scholarshipRoutes, { prefix: "/scholarships" });
 app.register(levelRoutes, { prefix: "/levels" });
 app.register(chapterRoutes, { prefix: "/chapters" });
+app.register(quizzRoutes, { prefix: "/quizzes" });
+app.register(quizzItemRoutes, { prefix: "/quizz-items" });
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
   console.log(`Server running at port ${3333}`);
