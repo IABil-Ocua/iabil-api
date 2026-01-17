@@ -1,3 +1,6 @@
+import z from "zod";
+import { FastifyTypedInstance } from "../types/zod";
+
 import {
   createEventHandler,
   getEventsHandler,
@@ -5,9 +8,12 @@ import {
   updateEventHandler,
   deleteEventHandler,
 } from "../controllers/events.controller";
-import { FastifyTypedInstance } from "../types/zod";
-import { createEventSchema, eventTypeEnum } from "../schemas/event.schema";
-import z from "zod";
+import {
+  eventSchema, 
+  eventWithRelationsSchema, 
+  createEventSchema,
+  updateEventSchema,
+} from "../schemas/event.schema"
 
 export async function eventRoutes(app: FastifyTypedInstance) {
   app.post(
@@ -16,42 +22,12 @@ export async function eventRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["events"],
         description: "Create a new event with details, dates, and metadata",
-        body: z.object({
-          title: z.string().min(3, "Title must be at least 3 characters"),
-          description: z.string().max(2000).optional(),
-          startDate: z.coerce.date(),
-          endDate: z.coerce.date().optional(),
-          location: z.string().optional(),
-          type: eventTypeEnum,
-          imageUrl: z.string().url().optional(),
-          organizer: z.string().optional(),
-          isPublished: z.boolean().default(false),
-          createdById: z.string().uuid(),
-        }),
+        body: createEventSchema,
         response: {
           201: z
             .object({
               message: z.string(),
-              event: z.object({
-                id: z.string().cuid(),
-                title: z.string(),
-                description: z.string().optional(),
-                startDate: z.date(),
-                endDate: z.date().optional(),
-                location: z.string().optional(),
-                type: eventTypeEnum,
-                imageUrl: z.string().url().optional(),
-                organizer: z.string().optional(),
-                isPublished: z.boolean(),
-                createdById: z.string().uuid(),
-                createdBy: z.object({
-                  id: z.string().uuid(),
-                  name: z.string(),
-                  email: z.string().email(),
-                }),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              event: createEventSchema,
             })
             .describe("Event created successfully"),
           400: z.object({ error: z.string() }).describe("Bad request"),
@@ -72,27 +48,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              events: z.array(
-                z.object({
-                  id: z.string().cuid(),
-                  title: z.string(),
-                  description: z.string().optional(),
-                  startDate: z.date(),
-                  endDate: z.date().optional(),
-                  location: z.string().optional(),
-                  type: eventTypeEnum,
-                  imageUrl: z.string().url().optional(),
-                  organizer: z.string().optional(),
-                  isPublished: z.boolean(),
-                  createdBy: z.object({
-                    id: z.string().uuid(),
-                    name: z.string(),
-                    email: z.string().email(),
-                  }),
-                  createdAt: z.date(),
-                  updatedAt: z.date(),
-                })
-              ),
+              events: z.array(eventSchema),
             })
             .describe("Events fetched successfully"),
           500: z.object({ error: z.string() }).describe("Internal server error"),
@@ -115,25 +71,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              event: z.object({
-                id: z.string().cuid(),
-                title: z.string(),
-                description: z.string().optional(),
-                startDate: z.date(),
-                endDate: z.date().optional(),
-                location: z.string().optional(),
-                type: eventTypeEnum,
-                imageUrl: z.string().url().optional(),
-                organizer: z.string().optional(),
-                isPublished: z.boolean(),
-                createdBy: z.object({
-                  id: z.string().uuid(),
-                  name: z.string(),
-                  email: z.string().email(),
-                }),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              event: eventWithRelationsSchema,
             })
             .describe("Event fetched successfully"),
           404: z.object({ message: z.string() }).describe("Event not found"),
@@ -153,26 +91,12 @@ export async function eventRoutes(app: FastifyTypedInstance) {
         params: z.object({
           id: z.string().cuid().describe("Event unique identifier"),
         }),
-        body: createEventSchema.partial(),
+        body: updateEventSchema,
         response: {
           200: z
             .object({
               message: z.string(),
-              event: z.object({
-                id: z.string().cuid(),
-                title: z.string(),
-                description: z.string().optional(),
-                startDate: z.date(),
-                endDate: z.date().optional(),
-                location: z.string().optional(),
-                type: eventTypeEnum,
-                imageUrl: z.string().url().optional(),
-                organizer: z.string().optional(),
-                isPublished: z.boolean(),
-                createdById: z.string().uuid(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              event: updateEventSchema,
             })
             .describe("Event updated successfully"),
           404: z.object({ error: z.string() }).describe("Event not found"),

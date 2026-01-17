@@ -1,17 +1,22 @@
+import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
+
 import {
   fetchAuthenticatedUserHandler,
   listUsersHandler,
   registerUserHandler,
 } from "../controllers/user.controller";
-import { registerUserBodySchema } from "../schemas/user.schema";
-import z from "zod";
+import { 
+  userSchema,
+  createUserSchema, 
+   } from './../schemas/user.schema';
+
 
 export async function userRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
         tags: ["users"],
         description: "Fetch all users",
@@ -19,16 +24,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              users: z.array(
-                z.object({
-                  id: z.string(),
-                  name: z.string(),
-                  role: z.string(),
-                  avatar: z.string().nullable(),
-                  createdAt: z.coerce.date(),
-                  updatedAt: z.coerce.date(),
-                })
-              ),
+              users: z.array(userSchema ),
             })
             .describe("Users fetched successfully"),
           500: z
@@ -38,40 +34,6 @@ export async function userRoutes(app: FastifyTypedInstance) {
       },
     },
     listUsersHandler
-  );
-
-  app.post(
-    "/",
-    {
-      //preHandler: app.authenticate,
-      schema: {
-        tags: ["users"],
-        description: "Create a new user with automatic password generation and email confirmation",
-        body: registerUserBodySchema,
-        response: {
-          201: z
-            .object({
-              message: z.string(),
-              user: z.object({
-                id: z.string().uuid(),
-                name: z.string(),
-                email: z.string().email(),
-                role: z.enum(["SUPER_ADMIN", "ADMIN", "STUDENT", "GRADUETE"]),
-                username: z.string(),
-                avatar: z.string().nullable(),
-                birthDate: z.date().nullable(),
-                createdAt: z.date(),
-              }),
-            })
-            .describe("User created successfully"),
-          400: z.object({ message: z.string() }).describe("User already exists"),
-          500: z
-            .object({ message: z.string() })
-            .describe("Internal server error"),
-        },
-      },
-    },
-    registerUserHandler
   );
 
   app.get(
@@ -85,15 +47,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              user: z.object({
-                id: z.string().uuid(),
-                name: z.string(),
-                email: z.string().email(),
-                role: z.enum(["SUPER_ADMIN", "ADMIN", "STUDENT", "GRADUETE"]),
-                avatar: z.string().nullable(),
-                createdAt: z.string(),
-                updatedAt: z.string(),
-              }),
+              user: userSchema
             })
             .describe("User fetched successfully"),
           404: z.object({ message: z.string() }).describe("User not found"),
@@ -104,5 +58,30 @@ export async function userRoutes(app: FastifyTypedInstance) {
       },
     },
     fetchAuthenticatedUserHandler
+  );
+
+  app.post(
+    "/",
+    {
+      preHandler: app.authenticate,
+      schema: {
+        tags: ["users"],
+        description: "Create a new user with automatic password generation and email confirmation",
+        body: createUserSchema,
+        response: {
+          201: z
+            .object({
+              message: z.string(),
+              user: createUserSchema
+            })
+            .describe("User created successfully"),
+          400: z.object({ message: z.string() }).describe("User already exists"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    registerUserHandler
   );
 }

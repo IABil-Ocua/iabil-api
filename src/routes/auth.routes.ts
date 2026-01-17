@@ -1,7 +1,9 @@
+import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
+
 import { loginHandler } from "../controllers/user.controller";
 import { loginSchema } from "../schemas/user.schema";
-import z from "zod";
+
 
 export async function authRoutes(app: FastifyTypedInstance) {
   app.post(

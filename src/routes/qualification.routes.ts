@@ -1,4 +1,6 @@
 import z from "zod";
+import { FastifyTypedInstance } from "../types/zod";
+
 import {
   createQualificationHandler,
   deleteQualificationHandler,
@@ -6,7 +8,7 @@ import {
   fetchQualificationsHandler,
   updateQualificationHandler,
 } from "../controllers/qualification.controller";
-import { FastifyTypedInstance } from "../types/zod";
+
 import {
   createQualificationSchema,
   qualificationSchema,
@@ -25,17 +27,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              qualifications: z.array(z.object({
-                id: z.string().uuid(),
-                name: z.string(),
-                description: z.string().nullable(),
-                bannerUrl: z.string().nullable(),
-                workload: z.number(),
-                credits: z.number(),
-                knowledgeAreas: z.string().nullable(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }))
+              qualifications: z.array(qualificationSchema),
             })
             .describe("Qualifications fetched successfully"),
           500: z
@@ -61,17 +53,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              qualification: z.object({
-                id: z.string().uuid(),
-                name: z.string(),
-                description: z.string().nullable(),
-                bannerUrl: z.string().nullable(),
-                workload: z.number(),
-                credits: z.number(),
-                knowledgeAreas: z.string().nullable(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              })
+              qualification: qualificationSchema,
             })
             .describe("Qualification fetched successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -97,17 +79,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
           201: z
             .object({
               message: z.string(),
-              qualification: z.object({
-                id: z.string().uuid(),
-                name: z.string(),
-                description: z.string().nullable(),
-                bannerUrl: z.string().nullable(),
-                workload: z.number(),
-                credits: z.number(),
-                knowledgeAreas: z.string().nullable(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              })
+              qualification: qualificationSchema,
             })
             .describe("Qualification created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -132,17 +104,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              qualification: z.object({
-                id: z.string().uuid(),
-                name: z.string(),
-                description: z.string().nullable(),
-                bannerUrl: z.string().nullable(),
-                workload: z.number(),
-                credits: z.number(),
-                knowledgeAreas: z.string().nullable(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              })
+              qualification: qualificationSchema,
             })
             .describe("Qualification updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),

@@ -1,5 +1,6 @@
 import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
+
 import {
   createChapterHandler,
   deleteChapterHandler,

@@ -1,5 +1,6 @@
 import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
+
 import {
   createLevelHandler,
   deleteLevelHandler,
@@ -7,6 +8,11 @@ import {
   fetchLevelsHandler,
   updateLevelHandler,
 } from "../controllers/qualification-level.controller";
+import {
+  levelSchema,
+  createLevelSchema,
+  updateLevelSchema,
+} from "../schemas/qualification-level.schema";
 
 export async function levelRoutes(app: FastifyTypedInstance) {
   app.get(
@@ -20,22 +26,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              levels: z.array(
-                z.object({
-                  id: z.string().uuid(),
-                  title: z.string(),
-                  description: z.string(),
-                  noticeUrl: z.string().nullable(),
-                  qualificationId: z.string(),
-                  qualification: z.object({
-                    id: z.string().uuid(),
-                    name: z.string(),
-                    description: z.string().nullable(),
-                  }),
-                  createdAt: z.date(),
-                  updatedAt: z.date(),
-                })
-              ),
+              levels: z.array(levelSchema),
             })
             .describe("Qualification levels fetched successfully"),
           500: z
@@ -61,20 +52,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              level: z.object({
-                id: z.string().uuid(),
-                title: z.string(),
-                description: z.string(),
-                noticeUrl: z.string().nullable(),
-                qualificationId: z.string(),
-                qualification: z.object({
-                  id: z.string().uuid(),
-                  name: z.string(),
-                  description: z.string().nullable(),
-                }),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              level: levelSchema,
             })
             .describe("Qualification level fetched successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -95,25 +73,12 @@ export async function levelRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["levels"],
         description: "Create qualification level",
-        body: z.object({
-          title: z.string().min(1, "Title is required"),
-          description: z.string().min(1, "Description is required"),
-          noticeUrl: z.string().url().optional(),
-          qualificationId: z.string().uuid(),
-        }),
+        body: createLevelSchema,
         response: {
           201: z
             .object({
               message: z.string(),
-              level: z.object({
-                id: z.string().uuid(),
-                title: z.string(),
-                description: z.string(),
-                noticeUrl: z.string().nullable(),
-                qualificationId: z.string(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              level: levelSchema,
             })
             .describe("Qualification level created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -136,25 +101,12 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         params: z.object({
           id: z.string().uuid().describe("Qualification level unique identifier"),
         }),
-        body: z.object({
-          title: z.string().min(1, "Title is required"),
-          description: z.string().min(1, "Description is required"),
-          noticeUrl: z.string().url().optional(),
-          qualificationId: z.string().uuid(),
-        }).partial(),
+        body: updateLevelSchema,
         response: {
           200: z
             .object({
               message: z.string(),
-              level: z.object({
-                id: z.string().uuid(),
-                title: z.string(),
-                description: z.string(),
-                noticeUrl: z.string().nullable(),
-                qualificationId: z.string(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              level: levelSchema,
             })
             .describe("Qualification level updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),

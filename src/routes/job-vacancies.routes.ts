@@ -1,3 +1,6 @@
+import z from "zod";
+import { FastifyTypedInstance } from "../types/zod";
+
 import {
   createJobVacancyHandler,
   deleteJobVacancyHandler,
@@ -5,47 +8,13 @@ import {
   getJobVacancyByIdHandler,
   updateJobVacancyHandler,
 } from "../controllers/job-vacancy.controller";
-import { FastifyTypedInstance } from "../types/zod";
-import { createJobVacancySchema } from "../schemas/job-vacancies.schema";
-import z from "zod";
+import {
+  jobVacancySchema, 
+  createJobVacancySchema,
+  updateJobVacancySchema,
+ } from "../schemas/job-vacancies.schema";
 
 export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
-  app.post(
-    "/",
-    {
-      schema: {
-        tags: ["job-vacancies"],
-        description: "Create job vacancy",
-        body: z.object({
-          title: z.string().min(3, "Title must be at least 3 characters"),
-          companyName: z.string().min(2, "Company name is required"),
-          url: z.string().url("Valid URL is required"),
-          location: z.string().min(5, "Location is required"),
-        }),
-        response: {
-          201: z
-            .object({
-              message: z.string(),
-              jobVacancy: z.object({
-                id: z.string().cuid(),
-                title: z.string(),
-                companyName: z.string(),
-                url: z.string().url(),
-                location: z.string(),
-                publishedAt: z.date(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
-            })
-            .describe("Job vacancy created successfully"),
-          400: z.object({ message: z.string() }).describe("Bad request"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
-        },
-      },
-    },
-    createJobVacancyHandler
-  );
-
   app.get(
     "/",
     {
@@ -56,18 +25,7 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              jobVacancies: z.array(
-                z.object({
-                  id: z.string().cuid(),
-                  title: z.string(),
-                  companyName: z.string(),
-                  url: z.string().url(),
-                  location: z.string(),
-                  publishedAt: z.date(),
-                  createdAt: z.date(),
-                  updatedAt: z.date(),
-                })
-              ),
+              jobVacancies: z.array(jobVacancySchema),
             })
             .describe("Job vacancies fetched successfully"),
           500: z.object({ message: z.string() }).describe("Internal server error"),
@@ -90,16 +48,7 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              jobVacancy: z.object({
-                id: z.string().cuid(),
-                title: z.string(),
-                companyName: z.string(),
-                url: z.string().url(),
-                location: z.string(),
-                publishedAt: z.date(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              jobVacancy: jobVacancySchema,
             })
             .describe("Job vacancy fetched successfully"),
           404: z.object({ message: z.string() }).describe("Job vacancy not found"),
@@ -108,6 +57,28 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
       },
     },
     getJobVacancyByIdHandler
+  );
+
+  app.post(
+    "/",
+    {
+      schema: {
+        tags: ["job-vacancies"],
+        description: "Create job vacancy",
+        body: createJobVacancySchema,
+        response: {
+          201: z
+            .object({
+              message: z.string(),
+              jobVacancy: jobVacancySchema,
+            })
+            .describe("Job vacancy created successfully"),
+          400: z.object({ message: z.string() }).describe("Bad request"),
+          500: z.object({ message: z.string() }).describe("Internal server error"),
+        },
+      },
+    },
+    createJobVacancyHandler
   );
 
   app.put(
@@ -119,21 +90,12 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
         params: z.object({
           id: z.string().cuid().describe("Job vacancy unique identifier"),
         }),
-        body: createJobVacancySchema.partial(),
+        body: updateJobVacancySchema,
         response: {
           200: z
             .object({
               message: z.string(),
-              jobVacancy: z.object({
-                id: z.string().cuid(),
-                title: z.string(),
-                companyName: z.string(),
-                url: z.string().url(),
-                location: z.string(),
-                publishedAt: z.date(),
-                createdAt: z.date(),
-                updatedAt: z.date(),
-              }),
+              jobVacancy: jobVacancySchema,
             })
             .describe("Job vacancy updated successfully"),
           404: z.object({ message: z.string() }).describe("Job vacancy not found"),
