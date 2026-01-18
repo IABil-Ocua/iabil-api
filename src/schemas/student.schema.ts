@@ -14,7 +14,7 @@ export const studentSchema = z.object({
   specialty: z.string().nullable(),
 
   birthProvince: z.string().nullable(),
-  birthDate: z.coerce.date().nullable(),
+  birthDate: z.coerce.date().nullable().optional(),
   idNumber: z.coerce.string().nullable(),
   email: z.string().nullable(),
   phone1: z.coerce.string().nullable(),
@@ -75,7 +75,7 @@ export const createStudentSchema = z.object({
   specialty: z.string().optional().nullable(),
 
   birthProvince: z.string().optional().nullable(),
-  birthDate: z.coerce.date().optional().nullable(),
+  birthDate: z.union([z.coerce.date(), z.date()]).optional().nullable(),
   idNumber: z.coerce.string().optional().nullable(),
   email: z.string().optional(),
   phone1: z.coerce.string().optional().nullable(),

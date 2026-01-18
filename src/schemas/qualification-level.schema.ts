@@ -5,11 +5,11 @@ import { chapterSchema } from "./chapter.schema";
 export const levelSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
-  noticeUrl: z.string(),
+  description: z.string().nullable(),
+  noticeUrl: z.string().nullable(),
   qualificationId: z.string(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  createdAt: z.coerce.date().nullable(),
+  updatedAt: z.coerce.date().nullable(),
 });
 
 export const levelWithRelationsSchema = z.lazy(() =>

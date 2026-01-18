@@ -9,7 +9,7 @@ import {
   updateQuizzItemHandler,
 } from "../controllers/quizz-item.controller";
 import {
-  quizzItemSchemaa,
+  quizzItemSchema,
   createQuizzItemSchema,
   updateQuizzItemSchema,
 } from "../schemas/quizz-items.schema";
@@ -26,7 +26,7 @@ export async function quizzItemRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              quizzItems: z.array(quizzItemSchemaa),
+              quizzItems: z.array(quizzItemSchema),
             })
             .describe("Quizz items fetched successfully"),
           500: z
@@ -52,7 +52,7 @@ export async function quizzItemRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              quizzItem: quizzItemSchemaa,
+              quizzItem: quizzItemSchema,
             })
             .describe("Quizz item fetched successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -78,7 +78,7 @@ export async function quizzItemRoutes(app: FastifyTypedInstance) {
           201: z
             .object({
               message: z.string(),
-              quizzItem: quizzItemSchemaa,
+              quizzItem: quizzItemSchema,
             })
             .describe("Quizz item created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -106,7 +106,7 @@ export async function quizzItemRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              quizzItem: quizzItemSchemaa,
+              quizzItem: quizzItemSchema,
             })
             .describe("Quizz item updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),

@@ -1,4 +1,3 @@
-import { url } from "node:inspector";
 import z from "zod";
 
 export const jobVacancySchema = z.object({
@@ -7,7 +6,7 @@ export const jobVacancySchema = z.object({
   companyName: z.string(),
   url: z.string(),
   location: z.string(),
-  creaedAt: z.coerce.date(),
+  createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
 

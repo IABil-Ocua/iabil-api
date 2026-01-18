@@ -21,7 +21,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       //preHandler: app.authenticate,
       schema: {
-        tags: ["Qualifications"],
+        tags: ["qualifications"],
         description: "Fetch all Qualifications",
         response: {
           200: z
@@ -44,7 +44,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       //preHandler: app.authenticate,
       schema: {
-        tags: ["Qualifications"],
+        tags: ["qualifications"],
         description: "Fetch Qualification by ID",
         params: z.object({
           id: z.string().uuid().describe("Qualification unique identifier"),
@@ -72,7 +72,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["Qualifications"],
+        tags: ["qualifications"],
         description: "Create Qualification",
         body: createQualificationSchema,
         response: {
@@ -97,7 +97,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["Qualifications"],
+        tags: ["qualifications"],
         description: "Update Qualification",
         body: updateQualificationSchema,
         response: {

@@ -20,7 +20,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["Levels"],
+        tags: ["levels"],
         description: "Fetch all Levels",
         response: {
           200: z

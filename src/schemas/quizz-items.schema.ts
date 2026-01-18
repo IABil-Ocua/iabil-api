@@ -1,7 +1,7 @@
 import z from "zod";
 import { quizzSchema } from "./quizz.schema";
 
-export const quizzItemSchemaa = z.object({
+export const quizzItemSchema = z.object({
   id: z.string(),
   question: z.string(),
   option1: z.string(),
@@ -10,12 +10,12 @@ export const quizzItemSchemaa = z.object({
   option4: z.string().nullable(),
   answer: z.string(),
   quizzId: z.string(),
-  creaedAt: z.coerce.date(),
+  createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
 
 export const quizzItemsWithRelationsSchema = z.lazy(() =>
-  quizzItemSchemaa.extend({
+  quizzItemSchema.extend({
     quizz: quizzSchema,
   })
 );

@@ -77,7 +77,7 @@ export async function getScholarshipByIdHandler(
       return reply.status(404).send({ message: "Bolsa não encontrada" });
     }
 
-    return reply.status(200).send({ message: "ok", scholarships });
+    return reply.status(200).send({ message: "ok", scholarship: scholarships });
   } catch (error) {
     console.error(error);
     return reply.code(500).send({ message: "Erro ao buscar bolsa" });

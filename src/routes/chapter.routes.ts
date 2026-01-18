@@ -30,7 +30,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
             })
             .describe("Chapters Fetched succesfully"),
           500: z
-            .object({ message: z.string })
+            .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
@@ -94,15 +94,15 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
       preHandler: app.authenticate,
       schema: {
         tags: ["chapters"],
-        description: "Create chapter",
+        description: "Update chapter",
         body: updateChapterSchema,
         response: {
-          201: z
+          200: z
             .object({
               message: z.string(),
               chapter: chapterSchema,
             })
-            .describe("Chapter created successfully"),
+            .describe("Chapter updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z

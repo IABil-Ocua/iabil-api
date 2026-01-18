@@ -72,7 +72,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
           201: z
             .object({
               message: z.string(),
-              user: createUserSchema
+              user: userSchema
             })
             .describe("User created successfully"),
           400: z.object({ message: z.string() }).describe("User already exists"),

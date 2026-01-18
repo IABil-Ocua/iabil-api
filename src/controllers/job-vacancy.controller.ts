@@ -13,7 +13,7 @@ export async function createJobVacancyHandler(
   try {
     const { companyName, location, title, url } = req.body;
 
-    const JobVacancy = await prisma.jobVacancy.create({
+    const jobVacancy = await prisma.jobVacancy.create({
       data: {
         url,
         companyName,
@@ -23,12 +23,12 @@ export async function createJobVacancyHandler(
     });
     return reply
       .status(201)
-      .send({ message: "Vaga de emprego criado com sucesso", JobVacancy });
+      .send({ message: "Vaga de emprego criado com sucesso", jobVacancy });
   } catch (error) {
     console.error("Erro ao criar vaga de emprego:", error);
     return reply
       .status(400)
-      .send({ error: "Ocorreu um erro interno no servidor" });
+      .send({ message: "Ocorreu um erro interno no servidor" });
   }
 }
 
@@ -42,7 +42,7 @@ export async function getJobVacanciesHandler(
     return reply.status(200).send({ message: "ok", jobVacancies });
   } catch (error) {
     console.error("Erro ao listar vagas de emprego:", error);
-    return reply.status(500).send({ error: "Falha ao obter vagas de emprego" });
+    return reply.status(500).send({ message: "Falha ao obter vagas de emprego" });
   }
 }
 
@@ -65,7 +65,7 @@ export async function getJobVacancyByIdHandler(
     return reply.status(200).send({ message: "ok", jobVacancy });
   } catch (error) {
     console.error("Erro ao buscar vaga de emprego:", error);
-    return reply.status(500).send({ error: "Falha ao buscar vaga de emprego" });
+    return reply.status(500).send({ message: "Falha ao buscar vaga de emprego" });
   }
 }
 
@@ -85,9 +85,9 @@ export async function updateJobVacancyHandler(
     if (!existing)
       return reply
         .status(404)
-        .send({ error: "Vaga de emprego não encontrado" });
+        .send({ message: "Vaga de emprego não encontrado" });
 
-    const JobVacancy = await prisma.jobVacancy.update({
+    const jobVacancy = await prisma.jobVacancy.update({
       where: { id },
       data: {
         url,
@@ -98,12 +98,12 @@ export async function updateJobVacancyHandler(
     });
     return reply
       .status(200)
-      .send({ message: "Vaga de emprego atualizado com sucesso", JobVacancy });
+      .send({ message: "Vaga de emprego atualizado com sucesso", jobVacancy });
   } catch (error) {
     console.error("Erro ao actualizar vaga de emprego:", error);
     return reply
       .status(400)
-      .send({ error: "Falha ao actualizar vaga de emprego" });
+      .send({ message: "Falha ao actualizar vaga de emprego" });
   }
 }
 
@@ -127,6 +127,6 @@ export async function deleteJobVacancyHandler(
     console.error("Erro ao eliminar vaga de emprego:", error);
     return reply
       .status(500)
-      .send({ error: "Falha ao eliminar vaga de emprego" });
+      .send({ message: "Falha ao eliminar vaga de emprego" });
   }
 }

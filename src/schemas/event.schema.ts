@@ -11,11 +11,11 @@ export const eventSchema = z.object({
   endDate: z.coerce.date().nullable(),
   location: z.string().nullable(),
   type: eventTypeEnum,
-  imageUrl: z.url().nullable(),
+  imageUrl: z.string().url().nullable(),
   organizer: z.string().nullable(),
   isPublished: z.boolean().nullable(),
   createdById: z.string(),
-  creaedAt: z.coerce.date(),
+  createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
 

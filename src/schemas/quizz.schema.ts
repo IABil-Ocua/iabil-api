@@ -1,19 +1,19 @@
 import z from "zod";
 import { chapterSchema } from "./chapter.schema";
-import { quizzItemSchemaa } from "./quizz-items.schema";
+import { quizzItemSchema } from "./quizz-items.schema";
 
 export const quizzSchema = z.object({
   id: z.string(),
   name: z.string(),
   chapterId: z.string(),
-  creaedAt: z.coerce.date(),
+  createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
 
 export const quizzWithRealatiosSchema = z.lazy(() =>
   quizzSchema.extend({
     chapter: chapterSchema,
-    quizzItems: z.array(quizzItemSchemaa),
+    quizzItems: z.array(quizzItemSchema),
   })
 );
 

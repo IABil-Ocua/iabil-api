@@ -9,14 +9,14 @@ export const articleSchema = z.object({
   title: z.string(),
   slug: z.string(),
   content: z.string(),
-  imageUrl: z.url().nullable(),
+  imageUrl: z.string().url().nullable(),
   category: ArticleCategoryEnum,
   tags: z.string().nullable(),
   status: ArticleStatusEnum.default("DRAFT"),
   isFeatured: z.boolean().default(false),
   authorId: z.string(),
   publishedAt: z.coerce.date().nullable(),
-  creaedAt: z.coerce.date(),
+  createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
 

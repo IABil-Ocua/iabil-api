@@ -42,7 +42,7 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
         tags: ["job-vacancies"],
         description: "Get job vacancy information by ID",
         params: z.object({
-          id: z.string().cuid().describe("Job vacancy unique identifier"),
+          id: z.string().describe("Job vacancy unique identifier"),
         }),
         response: {
           200: z
@@ -88,7 +88,7 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
         tags: ["job-vacancies"],
         description: "Update job vacancy by ID",
         params: z.object({
-          id: z.string().cuid().describe("Job vacancy unique identifier"),
+          id: z.string().describe("Job vacancy unique identifier"),
         }),
         body: updateJobVacancySchema,
         response: {
@@ -113,7 +113,7 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
         tags: ["job-vacancies"],
         description: "Delete job vacancy by ID",
         params: z.object({
-          id: z.string().cuid().describe("Job vacancy unique identifier"),
+          id: z.string().describe("Job vacancy unique identifier"),
         }),
         response: {
           200: z
