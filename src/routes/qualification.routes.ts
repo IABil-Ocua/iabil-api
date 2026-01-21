@@ -12,6 +12,7 @@ import {
 import {
   createQualificationSchema,
   qualificationSchema,
+  qualificationWithRelationsSchema,
   updateQualificationSchema,
 } from "../schemas/qualification.schema";
 
@@ -27,7 +28,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              qualifications: z.array(qualificationSchema),
+              qualifications: z.array(qualificationWithRelationsSchema),
             })
             .describe("Qualifications fetched successfully"),
           500: z
@@ -36,7 +37,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchQualificationsHandler
+    fetchQualificationsHandler,
   );
 
   app.get(
@@ -53,7 +54,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              qualification: qualificationSchema,
+              qualification: qualificationWithRelationsSchema,
             })
             .describe("Qualification fetched successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -64,7 +65,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchQualificationHandler
+    fetchQualificationHandler,
   );
 
   app.post(
@@ -89,7 +90,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createQualificationHandler
+    createQualificationHandler,
   );
 
   app.put(
@@ -115,7 +116,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    updateQualificationHandler
+    updateQualificationHandler,
   );
 
   app.delete(
@@ -140,6 +141,6 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    deleteQualificationHandler
+    deleteQualificationHandler,
   );
 }

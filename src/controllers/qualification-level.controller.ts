@@ -8,13 +8,14 @@ import {
 
 export async function fetchLevelsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const levels = await prisma.level.findMany({
       relationLoadStrategy: "query",
       include: {
         qualification: true,
+        chapters: true,
       },
     });
 
@@ -27,7 +28,7 @@ export async function fetchLevelsHandler(
 
 export async function fetchLevelHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -59,7 +60,7 @@ export async function fetchLevelHandler(
 
 export async function createLevelHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createLevelSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { noticeUrl, qualificationId, title, description } = request.body;
@@ -87,7 +88,7 @@ export async function updateLevelHandler(
     Params: { id: string };
     Body: z.infer<typeof updateLevelSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -131,7 +132,7 @@ export async function updateLevelHandler(
 
 export async function deleteLevelHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
