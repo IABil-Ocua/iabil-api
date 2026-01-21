@@ -12,6 +12,7 @@ import {
   quizzSchema,
   createQuizzSchema,
   updateQuizzSchema,
+  quizzWithRealatiosSchema,
 } from "../schemas/quizz.schema";
 
 export async function quizzRoutes(app: FastifyTypedInstance) {
@@ -26,7 +27,7 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              quizzes: z.array(quizzSchema),
+              quizzes: z.array(quizzWithRealatiosSchema),
             })
             .describe("Quizzes fetched successfully"),
           500: z
@@ -52,9 +53,9 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              quiz: quizzSchema,
+              quizz: quizzSchema,
             })
-            .describe("Quiz fetched successfully"),
+            .describe("Quizz fetched successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -78,9 +79,9 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
           201: z
             .object({
               message: z.string(),
-              quiz: quizzSchema,
+              quizz: quizzSchema,
             })
-            .describe("Quiz created successfully"),
+            .describe("Quizz created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           500: z
             .object({ message: z.string() })
@@ -106,9 +107,9 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              quiz: quizzSchema,
+              quizz: quizzSchema,
             })
-            .describe("Quiz updated successfully"),
+            .describe("Quizz updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z

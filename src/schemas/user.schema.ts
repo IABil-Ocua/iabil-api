@@ -8,7 +8,6 @@ export const userSchema = z.object({
   avatar: z.string().nullable().optional(),
   cover: z.string().nullable().optional(),
   birthDate: z.coerce.date().nullable().optional(),
-  avatarUrl: z.string().nullable().optional(),
   role: z
     .enum(["TEACHER", "ADMIN", "STUDENT", "GRADUETE"])
     .refine(
