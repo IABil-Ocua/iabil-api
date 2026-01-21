@@ -56,10 +56,18 @@ export const getArticlesHandler = async (
     const articles = await prisma.article.findMany({
       relationLoadStrategy: "query",
       orderBy: { createdAt: "desc" },
-      include: { author: { select: { id: true, name: true, email: true } } },
+      include: { author: true },
     });
 
-    return reply.status(200).send({ message: "ok", articles });
+    const safeArticles = articles.map((article) => {
+      const { password, ...userWithoutPassword } = article.author;
+      return {
+        ...article,
+        author: userWithoutPassword,
+      };
+    });
+
+    return reply.status(200).send({ message: "ok", articles: safeArticles });
   } catch (error) {
     console.error(error);
     return reply.status(500).send({ message: "Erro ao buscar artigos." });
@@ -101,7 +109,13 @@ export const getArticleByIdHandler = async (
     if (!article)
       return reply.status(404).send({ message: "Artigo não encontrado." });
 
-    return reply.status(200).send({ message: "ok", article });
+    const { password, ...userWithoutPassword } = article.author;
+    const safeArticle = {
+      ...article,
+      author: userWithoutPassword,
+    };
+
+    return reply.status(200).send({ message: "ok", article: safeArticle });
   } catch (error) {
     console.error(error);
     return reply.status(500).send({ message: "Erro ao buscar o artigo." });
@@ -150,7 +164,7 @@ export const updateArticleHandler = async (
 
     return reply
       .status(200)
-      .send({ message: "Article updated successfully.", updatedArticle });
+      .send({ message: "Article updated successfully.", article: updatedArticle });
   } catch (error) {
     console.error(error);
     return reply.status(500).send({ message: "Error updating article." });

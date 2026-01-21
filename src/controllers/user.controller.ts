@@ -52,19 +52,40 @@ export async function listUsersHandler(
   try {
     const users = await prisma.user.findMany();
 
-    const safeUsers = users.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }));
+    const safeUsers = users.map(({ password, ...rest }) => rest);
 
     return reply.status(200).send({ message: "ok", users: safeUsers });
   } catch (error) {
     console.error("Error fetching users:", error);
+    return reply.status(500).send({ message: "Internal Server Error", error });
+  }
+}
+
+export async function fetchUserHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+
+    if(!id){
+      return reply.status(400).send({ message: "User ID is required" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      return reply.status(404).send({ message: "User not found" });
+    }
+
+    const { password, ...rest } = user;
+
+    return reply.status(200).send({ message: "ok", user: rest });
+
+  } catch (error) {
+    console.error("Error fetching user  :", error);
     return reply.status(500).send({ message: "Internal Server Error", error });
   }
 }

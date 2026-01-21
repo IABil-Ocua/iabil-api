@@ -14,6 +14,7 @@ import {
   ArticleStatusEnum,
   articleSchema,
   updateArticleSchema,
+  articleWithRelationsSchema,
 } from "../schemas/article.schema";
 
 
@@ -28,7 +29,7 @@ export async function articleRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              articles: z.array(articleSchema),
+              articles: z.array(articleWithRelationsSchema),
             })
             .describe("Articles fetched successfully"),
           500: z
@@ -75,7 +76,7 @@ export async function articleRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              article: articleSchema,
+              article: articleWithRelationsSchema,
             })
             .describe("Article fetched successfully"),
           404: z.object({ message: z.string() }).describe("Article not found"),

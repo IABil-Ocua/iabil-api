@@ -14,7 +14,7 @@ export async function createManyStudentsHandler(
   try {
     const studentsData = request.body;
 
-    const createdStudents = await prisma.student.createMany({
+       const createdStudents = await prisma.student.createMany({
       data: studentsData,
     });
 
@@ -33,8 +33,7 @@ export async function createStudentHandler(
   reply: FastifyReply
 ) {
   try {
-    const { name, qualificationId, completionYear3, email, phone1, code } =
-      request.body;
+    const { qualificationId, email, name, code, ...rest } = request.body;
 
     const existingStudent = await prisma.student.findUnique({
       where: {
@@ -42,25 +41,26 @@ export async function createStudentHandler(
       },
     });
 
+    if (existingStudent) {
+      return reply.status(400).send({ message: "Código já cadastrado" });
+    }
+
     const qualification = await prisma.qualification.findUnique({
       where: {
         id: qualificationId,
       },
     });
 
-    if (!existingStudent) {
-      await prisma.student.create({
-        data: {
-          name,
-          qualificationId,
-          qualificationName: qualification ? qualification?.name : "",
-          completionYear3,
-          email,
-          phone1,
-          code,
-        },
-      });
-    }
+    const student = await prisma.student.create({
+      data: {
+        ...rest,
+        name,
+        code,
+        email,
+        qualificationId,
+        qualificationName: qualification ? qualification.name : "",
+      },
+    });
 
     const password = passwordGenerator({
       passwordLength: 8,
@@ -82,7 +82,7 @@ export async function createStudentHandler(
       },
     });
 
-    return reply.status(201).send({ message: "ok", user });
+    return reply.status(201).send({ message: "Estudante e Usuário criados", student });
   } catch (error) {
     console.error("Error creating student:", error);
     return reply.status(500).send({ message: "Internal server error", error });

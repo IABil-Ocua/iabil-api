@@ -44,24 +44,6 @@ export async function createEventHandler(
   }
 }
 
-export async function getEventsHandler(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-  try {
-    const events = await prisma.event.findMany({
-      relationLoadStrategy: "query",
-      orderBy: { startDate: "desc" },
-      include: { createdBy: true },
-    });
-
-    return reply.status(200).send({ message: "ok", events });
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return reply.status(500).send({ message: "Internal server error", error });
-  }
-}
-
 export async function getEventByIdHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply
@@ -76,10 +58,44 @@ export async function getEventByIdHandler(
 
     if (!event) return reply.status(404).send({ message: "Event not found" });
 
-    return reply.status(200).send({ message: "ok", event });
+   
+    const { password, ...userWithoutPassword } = event.createdBy;
+    
+    const safeEvent = { 
+      ...event, 
+      createdBy: userWithoutPassword 
+    };
+
+    return reply.status(200).send({ message: "ok", event: safeEvent });
   } catch (error) {
     console.error("Error fetching event:", error);
-    return reply.status(500).send({ message: "Internal server error", error });
+    return reply.status(500).send({ message: "Internal server error" });
+  }
+}
+
+export async function getEventsHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const events = await prisma.event.findMany({
+      relationLoadStrategy: "query",
+      orderBy: { startDate: "desc" },
+      include: { createdBy: true },
+    });
+
+    const safeEvents = events.map((event) => {
+      const { password, ...userWithoutPassword } = event.createdBy;
+      return { 
+        ...event, 
+        createdBy: userWithoutPassword 
+      };
+    });
+
+    return reply.status(200).send({ message: "ok", events: safeEvents });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return reply.status(500).send({ message: "Internal server error" });
   }
 }
 
@@ -123,10 +139,18 @@ export async function updateEventHandler(
         location,
         organizer,
       },
+      include: { createdBy: true },
     });
+
+    const { password, ...userWithoutPassword } = event.createdBy;
+    const safeEvent = {
+      ...event,
+      createdBy: userWithoutPassword,
+    };
+
     return reply
       .status(200)
-      .send({ message: "Event updated successfully", event });
+      .send({ message: "Event updated successfully", event: safeEvent });
   } catch (error) {
     console.error("Error updating event:", error);
     return reply.status(400).send({ message: "Internal server error", error });
