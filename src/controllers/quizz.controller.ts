@@ -14,9 +14,37 @@ export async function fetchQuizzesHandler(
   try {
     const quizzes = await prisma.quizz.findMany({
       relationLoadStrategy: "query",
-      include: {
-        chapter: true,
-        quizzItems: true,
+      select: {
+        id: true,
+        name: true,
+        chapterId: true,
+        createdAt: true,
+        updatedAt: true,
+        chapter: {
+          select: {
+            id: true,
+            content: true,
+            supplementaryMaterialUrl1: true,
+            supplementaryMaterialUrl2: true,
+            levelId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        quizzItems: {
+          select: {
+            id: true,
+            question: true,
+            option1: true,
+            option2: true,
+            option3: true,
+            option4: true,
+            answer: true,
+            quizzId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
 
@@ -40,9 +68,37 @@ export async function fetchQuizzHandler(
 
     const quizz = await prisma.quizz.findUnique({
       relationLoadStrategy: "query",
-      include: {
-        chapter: true,
-        quizzItems: true,
+      select: {
+        id: true,
+        name: true,
+        chapterId: true,
+        createdAt: true,
+        updatedAt: true,
+        chapter: {
+          select: {
+            id: true,
+            content: true,
+            supplementaryMaterialUrl1: true,
+            supplementaryMaterialUrl2: true,
+            levelId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        quizzItems: {
+          select: {
+            id: true,
+            question: true,
+            option1: true,
+            option2: true,
+            option3: true,
+            option4: true,
+            answer: true,
+            quizzId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
       where: {
         id: id,
@@ -73,9 +129,37 @@ export async function fetchQuizzByChapterHandler(
 
     const quizz = await prisma.quizz.findFirst({
       relationLoadStrategy: "query",
-      include: {
-        chapter: true,
-        quizzItems: true,
+      select: {
+        id: true,
+        name: true,
+        chapterId: true,
+        createdAt: true,
+        updatedAt: true,
+        chapter: {
+          select: {
+            id: true,
+            content: true,
+            supplementaryMaterialUrl1: true,
+            supplementaryMaterialUrl2: true,
+            levelId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        quizzItems: {
+          select: {
+            id: true,
+            question: true,
+            option1: true,
+            option2: true,
+            option3: true,
+            option4: true,
+            answer: true,
+            quizzId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
       where: {
         chapterId,
@@ -105,6 +189,13 @@ export async function createQuizzHandler(
         name,
         chapterId,
       },
+      select: {
+        id: true,
+        name: true,
+        chapterId: true,
+        createdAt: true,
+        updatedAt: true,
+      }
     });
 
     return reply
@@ -150,6 +241,13 @@ export async function updateQuizzHandler(
         name,
         chapterId,
       },
+      select: {
+        id: true,
+        name: true,
+        chapterId: true,
+        createdAt: true,
+        updatedAt: true,
+      }
     });
 
     return reply

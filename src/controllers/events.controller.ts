@@ -52,7 +52,7 @@ export async function getEventsHandler(
     const events = await prisma.event.findMany({
       relationLoadStrategy: "query",
       orderBy: { startDate: "desc" },
-      include: { createdBy: { select: { id: true, name: true, email: true } } },
+      include: { createdBy: true },
     });
 
     return reply.status(200).send({ message: "ok", events });
@@ -71,7 +71,7 @@ export async function getEventByIdHandler(
 
     const event = await prisma.event.findUnique({
       where: { id },
-      include: { createdBy: { select: { id: true, name: true, email: true } } },
+      include: { createdBy: true },
     });
 
     if (!event) return reply.status(404).send({ message: "Event not found" });

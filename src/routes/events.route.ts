@@ -27,7 +27,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           201: z
             .object({
               message: z.string(),
-              event: createEventSchema,
+              event: eventWithRelationsSchema,
             })
             .describe("Event created successfully"),
           400: z.object({ error: z.string() }).describe("Bad request"),
@@ -48,7 +48,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              events: z.array(eventSchema),
+              events: z.array(eventWithRelationsSchema),
             })
             .describe("Events fetched successfully"),
           500: z.object({ error: z.string() }).describe("Internal server error"),
