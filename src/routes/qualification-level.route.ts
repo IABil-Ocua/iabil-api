@@ -12,6 +12,7 @@ import {
   levelSchema,
   createLevelSchema,
   updateLevelSchema,
+  levelWithRelationsSchema,
 } from "../schemas/qualification-level.schema";
 
 export async function levelRoutes(app: FastifyTypedInstance) {
@@ -26,7 +27,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              levels: z.array(levelSchema),
+              levels: z.array(levelWithRelationsSchema),
             })
             .describe("Qualification levels fetched successfully"),
           500: z
@@ -35,7 +36,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchLevelsHandler
+    fetchLevelsHandler,
   );
 
   app.get(
@@ -46,13 +47,13 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         tags: ["levels"],
         description: "Fetch qualification level by ID",
         params: z.object({
-          id: z.string().uuid().describe("Qualification level unique identifier"),
+          id: z.uuid().describe("Qualification level unique identifier"),
         }),
         response: {
           200: z
             .object({
               message: z.string(),
-              level: levelSchema,
+              level: levelWithRelationsSchema,
             })
             .describe("Qualification level fetched successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
@@ -63,7 +64,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchLevelHandler
+    fetchLevelHandler,
   );
 
   app.post(
@@ -88,7 +89,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createLevelHandler
+    createLevelHandler,
   );
 
   app.put(
@@ -99,7 +100,10 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         tags: ["levels"],
         description: "Update qualification level by ID",
         params: z.object({
-          id: z.string().uuid().describe("Qualification level unique identifier"),
+          id: z
+            .string()
+            .uuid()
+            .describe("Qualification level unique identifier"),
         }),
         body: updateLevelSchema,
         response: {
@@ -117,7 +121,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    updateLevelHandler
+    updateLevelHandler,
   );
 
   app.delete(
@@ -128,7 +132,10 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         tags: ["levels"],
         description: "Delete qualification level by ID",
         params: z.object({
-          id: z.string().uuid().describe("Qualification level unique identifier"),
+          id: z
+            .string()
+            .uuid()
+            .describe("Qualification level unique identifier"),
         }),
         response: {
           200: z
@@ -142,6 +149,6 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    deleteLevelHandler
+    deleteLevelHandler,
   );
 }

@@ -6,11 +6,7 @@ import {
   listUsersHandler,
   registerUserHandler,
 } from "../controllers/user.controller";
-import { 
-  userSchema,
-  createUserSchema, 
-   } from './../schemas/user.schema';
-
+import { userSchema, createUserSchema } from "./../schemas/user.schema";
 
 export async function userRoutes(app: FastifyTypedInstance) {
   app.get(
@@ -24,7 +20,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              users: z.array(userSchema ),
+              users: z.array(userSchema),
             })
             .describe("Users fetched successfully"),
           500: z
@@ -33,7 +29,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    listUsersHandler
+    listUsersHandler,
   );
 
   app.get(
@@ -44,12 +40,6 @@ export async function userRoutes(app: FastifyTypedInstance) {
         tags: ["users"],
         description: "Fetch authenticated user",
         response: {
-          200: z
-            .object({
-              message: z.string(),
-              user: userSchema
-            })
-            .describe("User fetched successfully"),
           404: z.object({ message: z.string() }).describe("User not found"),
           500: z
             .object({ message: z.string() })
@@ -57,7 +47,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchAuthenticatedUserHandler
+    fetchAuthenticatedUserHandler,
   );
 
   app.post(
@@ -66,22 +56,25 @@ export async function userRoutes(app: FastifyTypedInstance) {
       preHandler: app.authenticate,
       schema: {
         tags: ["users"],
-        description: "Create a new user with automatic password generation and email confirmation",
+        description:
+          "Create a new user with automatic password generation and email confirmation",
         body: createUserSchema,
         response: {
           201: z
             .object({
               message: z.string(),
-              user: userSchema
+              user: userSchema,
             })
             .describe("User created successfully"),
-          400: z.object({ message: z.string() }).describe("User already exists"),
+          400: z
+            .object({ message: z.string() })
+            .describe("User already exists"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    registerUserHandler
+    registerUserHandler,
   );
 }
