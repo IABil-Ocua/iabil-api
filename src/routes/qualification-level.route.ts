@@ -5,6 +5,7 @@ import {
   createLevelHandler,
   deleteLevelHandler,
   fetchLevelHandler,
+  fetchLevelsByQualificationsHandler,
   fetchLevelsHandler,
   updateLevelHandler,
 } from "../controllers/qualification-level.controller";
@@ -37,6 +38,29 @@ export async function levelRoutes(app: FastifyTypedInstance) {
       },
     },
     fetchLevelsHandler,
+  );
+
+  app.get(
+    "/qualifications/:qualificationId",
+    {
+      preHandler: app.authenticate,
+      schema: {
+        tags: ["levels"],
+        description: "Fetch levels by qualification",
+        response: {
+          200: z
+            .object({
+              message: z.string(),
+              levels: z.array(levelWithRelationsSchema),
+            })
+            .describe("Qualification levels fetched successfully"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    fetchLevelsByQualificationsHandler,
   );
 
   app.get(

@@ -15,11 +15,38 @@ export async function fetchLevelsHandler(
       relationLoadStrategy: "query",
       include: {
         qualification: true,
-        chapters: {
-          include: {
-            quizzes: true,
-          },
-        },
+        chapters: true,
+      },
+    });
+
+    return reply.status(200).send({ message: "ok", levels });
+  } catch (error) {
+    console.log("Error fetching levels", error);
+    return reply.status(500).send({ message: "Internal server error", error });
+  }
+}
+
+export async function fetchLevelsByQualificationsHandler(
+  request: FastifyRequest<{ Params: { qualificationId: string } }>,
+  reply: FastifyReply,
+) {
+  try {
+    const { qualificationId } = request.params;
+
+    if (!qualificationId) {
+      return reply
+        .status(400)
+        .send({ message: "Qualification ID not provided" });
+    }
+
+    const levels = await prisma.level.findMany({
+      relationLoadStrategy: "query",
+      include: {
+        qualification: true,
+        chapters: true,
+      },
+      where: {
+        qualificationId,
       },
     });
 
@@ -45,11 +72,7 @@ export async function fetchLevelHandler(
       relationLoadStrategy: "query",
       include: {
         qualification: true,
-        chapters: {
-          include: {
-            quizzes: true,
-          },
-        },
+        chapters: true,
       },
       where: {
         id: id,

@@ -1,9 +1,11 @@
 import z from "zod";
 import { quizzSchema } from "./quizz.schema";
 import { levelSchema } from "./qualification-level.schema";
+import { qualificationSchema } from "./qualification.schema";
 
 export const chapterSchema = z.object({
   id: z.string(),
+  title: z.string(),
   content: z.string(),
   supplementaryMaterialUrl1: z.string().nullable(),
   supplementaryMaterialUrl2: z.string().nullable(),
@@ -14,12 +16,13 @@ export const chapterSchema = z.object({
 
 export const chapterWithRelationsSchema = z.lazy(() =>
   chapterSchema.extend({
-    level: levelSchema,
+    level: levelSchema.extend({ qualification: qualificationSchema }),
     quizzes: z.array(quizzSchema),
-  })
+  }),
 );
 
 export const createChapterSchema = z.object({
+  title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
   supplementaryMaterialUrl1: z.string().optional(),
   supplementaryMaterialUrl2: z.string().optional(),

@@ -5,6 +5,7 @@ import {
   createChapterHandler,
   deleteChapterHandler,
   fetchChapterHandler,
+  fetchChaptersByLevelHandler,
   fetchChaptersHandler,
 } from "../controllers/chapter.controller";
 import {
@@ -35,7 +36,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchChaptersHandler
+    fetchChaptersHandler,
   );
 
   app.get(
@@ -59,7 +60,31 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchChapterHandler
+    fetchChapterHandler,
+  );
+
+  app.get(
+    "/levels/:levelId",
+    {
+      preHandler: app.authenticate,
+      schema: {
+        tags: ["chapters"],
+        description: "Fetch chapters by level",
+        response: {
+          200: z
+            .object({
+              message: z.string(),
+              chapters: z.array(chapterWithRelationsSchema),
+            })
+            .describe("Chapter fetched successfully"),
+          404: z.object({ message: z.string() }).describe("Not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    fetchChaptersByLevelHandler,
   );
 
   app.post(
@@ -85,7 +110,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createChapterHandler
+    createChapterHandler,
   );
 
   app.put(
@@ -111,7 +136,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createChapterHandler
+    createChapterHandler,
   );
 
   app.delete(
@@ -135,6 +160,6 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    deleteChapterHandler
+    deleteChapterHandler,
   );
 }

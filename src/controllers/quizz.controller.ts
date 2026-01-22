@@ -1,53 +1,28 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../lib/db";
 import z from "zod";
-import {
-  createQuizzSchema,
-  quizzSchema,
-  updateQuizzSchema,
-} from "../schemas/quizz.schema";
+import { createQuizzSchema, updateQuizzSchema } from "../schemas/quizz.schema";
 
 export async function fetchQuizzesHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const quizzes = await prisma.quizz.findMany({
       relationLoadStrategy: "query",
-      select: {
-        id: true,
-        name: true,
-        chapterId: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
         chapter: {
-          select: {
-            id: true,
-            content: true,
-            supplementaryMaterialUrl1: true,
-            supplementaryMaterialUrl2: true,
-            levelId: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        quizzItems: {
-          select: {
-            id: true,
-            question: true,
-            option1: true,
-            option2: true,
-            option3: true,
-            option4: true,
-            answer: true,
-            quizzId: true,
-            createdAt: true,
-            updatedAt: true,
+          include: {
+            level: {
+              include: {
+                qualification: true,
+              },
+            },
           },
         },
       },
     });
-
+    console.log(quizzes);
     return reply.status(200).send({ message: "ok", quizzes });
   } catch (error) {
     console.log("Error fetching quizzes", error);
@@ -57,7 +32,7 @@ export async function fetchQuizzesHandler(
 
 export async function fetchQuizzHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -68,35 +43,14 @@ export async function fetchQuizzHandler(
 
     const quizz = await prisma.quizz.findUnique({
       relationLoadStrategy: "query",
-      select: {
-        id: true,
-        name: true,
-        chapterId: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
         chapter: {
-          select: {
-            id: true,
-            content: true,
-            supplementaryMaterialUrl1: true,
-            supplementaryMaterialUrl2: true,
-            levelId: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        quizzItems: {
-          select: {
-            id: true,
-            question: true,
-            option1: true,
-            option2: true,
-            option3: true,
-            option4: true,
-            answer: true,
-            quizzId: true,
-            createdAt: true,
-            updatedAt: true,
+          include: {
+            level: {
+              include: {
+                qualification: true,
+              },
+            },
           },
         },
       },
@@ -118,7 +72,7 @@ export async function fetchQuizzHandler(
 
 export async function fetchQuizzByChapterHandler(
   request: FastifyRequest<{ Params: { chapterId: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { chapterId } = request.params;
@@ -129,35 +83,14 @@ export async function fetchQuizzByChapterHandler(
 
     const quizz = await prisma.quizz.findFirst({
       relationLoadStrategy: "query",
-      select: {
-        id: true,
-        name: true,
-        chapterId: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
         chapter: {
-          select: {
-            id: true,
-            content: true,
-            supplementaryMaterialUrl1: true,
-            supplementaryMaterialUrl2: true,
-            levelId: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        quizzItems: {
-          select: {
-            id: true,
-            question: true,
-            option1: true,
-            option2: true,
-            option3: true,
-            option4: true,
-            answer: true,
-            quizzId: true,
-            createdAt: true,
-            updatedAt: true,
+          include: {
+            level: {
+              include: {
+                qualification: true,
+              },
+            },
           },
         },
       },
@@ -179,7 +112,7 @@ export async function fetchQuizzByChapterHandler(
 
 export async function createQuizzHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createQuizzSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { name, chapterId } = request.body;
@@ -189,13 +122,6 @@ export async function createQuizzHandler(
         name,
         chapterId,
       },
-      select: {
-        id: true,
-        name: true,
-        chapterId: true,
-        createdAt: true,
-        updatedAt: true,
-      }
     });
 
     return reply
@@ -212,7 +138,7 @@ export async function updateQuizzHandler(
     Params: { id: string };
     Body: z.infer<typeof updateQuizzSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -241,13 +167,6 @@ export async function updateQuizzHandler(
         name,
         chapterId,
       },
-      select: {
-        id: true,
-        name: true,
-        chapterId: true,
-        createdAt: true,
-        updatedAt: true,
-      }
     });
 
     return reply
@@ -261,7 +180,7 @@ export async function updateQuizzHandler(
 
 export async function deleteQuizzHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params as { id: string };

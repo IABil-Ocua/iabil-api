@@ -53,7 +53,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchUserHandler
+    fetchUserHandler,
   );
 
   app.get(
@@ -80,8 +80,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
       preHandler: app.authenticate,
       schema: {
         tags: ["users"],
-        description:
-          "Create a new user with automatic password generation and email confirmation",
+        description: "Create a new user",
         body: createUserSchema,
         response: {
           201: z

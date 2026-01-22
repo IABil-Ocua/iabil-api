@@ -138,6 +138,7 @@ model Level {
 
 model Chapter {
   id                        String   @id @default(uuid())
+  title                     String
   content                   String
   supplementaryMaterialUrl1 String?  @map("supplementary_material_url_1")
   supplementaryMaterialUrl2 String?  @map("supplementary_material_url_2")

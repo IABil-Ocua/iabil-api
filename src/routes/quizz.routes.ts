@@ -24,19 +24,19 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
         tags: ["quizzes"],
         description: "Fetch all quizzes",
         response: {
-          200: z
+          /**   200: z
             .object({
               message: z.string(),
               quizzes: z.array(quizzWithRealatiosSchema),
             })
-            .describe("Quizzes fetched successfully"),
+            .describe("Quizzes fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    fetchQuizzesHandler
+    fetchQuizzesHandler,
   );
 
   app.get(
@@ -64,7 +64,7 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchQuizzHandler
+    fetchQuizzHandler,
   );
 
   app.post(
@@ -89,7 +89,7 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createQuizzHandler
+    createQuizzHandler,
   );
 
   app.put(
@@ -118,7 +118,7 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    updateQuizzHandler
+    updateQuizzHandler,
   );
 
   app.delete(
@@ -143,6 +143,6 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    deleteQuizzHandler
+    deleteQuizzHandler,
   );
 }
