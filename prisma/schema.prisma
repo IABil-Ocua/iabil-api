@@ -107,7 +107,7 @@ model Experience {
 }
 
 model Qualification {
-  id             String    @id @default(uuid())
+  id             String    @id @default(uuid()) //change to cuid
   name           String
   description    String?
   bannerUrl      String?   @map("banner_url")

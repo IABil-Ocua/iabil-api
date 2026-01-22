@@ -9,7 +9,7 @@ export const articleSchema = z.object({
   title: z.string(),
   slug: z.string(),
   content: z.string(),
-  imageUrl: z.string().url().nullable(),
+  imageUrl: z.string().nullable(),
   category: ArticleCategoryEnum,
   tags: z.string().nullable(),
   status: ArticleStatusEnum.default("DRAFT"),
@@ -30,13 +30,13 @@ export const createArticleSchema = z.object({
   title: z.string().min(3, "O título deve ter pelo menos 3 caracteres."),
   slug: z.string().min(3, "Slug inválido."),
   content: z.string().min(10, "O conteúdo é obrigatório."),
-  imageUrl: z.url().optional(),
+  imageUrl: z.string().url().optional().nullable(),
   category: ArticleCategoryEnum,
-  tags: z.string().optional(),
+  tags: z.string().optional().nullable(),
   status: ArticleStatusEnum.default("DRAFT"),
   isFeatured: z.boolean().default(false),
   authorId: z.string(),
-  publishedAt: z.coerce.date().optional(),
+  publishedAt: z.coerce.date().optional().nullable(),
 });
 
 export const updateArticleSchema = createArticleSchema.partial();

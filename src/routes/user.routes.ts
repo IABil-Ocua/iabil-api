@@ -3,6 +3,7 @@ import { FastifyTypedInstance } from "../types/zod";
 
 import {
   fetchAuthenticatedUserHandler,
+  fetchUserHandler,
   listUsersHandler,
   registerUserHandler,
 } from "../controllers/user.controller";
@@ -12,7 +13,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
-      preHandler: app.authenticate,
+      //preHandler: app.authenticate,
       schema: {
         tags: ["users"],
         description: "Fetch all users",
@@ -30,6 +31,29 @@ export async function userRoutes(app: FastifyTypedInstance) {
       },
     },
     listUsersHandler,
+  );
+
+  app.get(
+    "/:id",
+    {
+      //preHandler: app.authenticate,
+      schema: {
+        tags: ["users"],
+        description: "Fetch user by ID",
+        response: {
+          200: z
+            .object({
+              message: z.string(),
+              user: userSchema,
+            })
+            .describe("User fetched successfully"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    fetchUserHandler
   );
 
   app.get(

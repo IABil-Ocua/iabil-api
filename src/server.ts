@@ -61,11 +61,11 @@ app.register(fastifySwagger, {
         },
       },
     },
-    security: [
+    /**security: [
       {
         bearerAuth: [],
       },
-    ],
+    ], */
   },
   transform: jsonSchemaTransform,
 });
