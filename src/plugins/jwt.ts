@@ -20,7 +20,7 @@ export default fp(async (fastify) => {
     secret: process.env.JWT_SECRET || "super-secret",
   });
 
-  // Decorador de autenticação com Authorization: Bearer
+  // Authentication decorator with Authorization: Bearer
   fastify.decorate(
     "authenticate",
     async function (request: FastifyRequest, reply: FastifyReply) {
@@ -33,7 +33,7 @@ export default fp(async (fastify) => {
   );
 });
 
-// Extensões de tipos do Fastify
+// Fastify type extensions
 declare module "fastify" {
   interface FastifyInstance {
     authenticate: any;

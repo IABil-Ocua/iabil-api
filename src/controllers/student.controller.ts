@@ -19,7 +19,7 @@ export async function createManyStudentsHandler(
     });
 
     return reply.status(201).send({
-      message: "Estudantes cadastrados com sucesso!",
+      message: "Students registered successfully!",
       students: createdStudents,
     });
   } catch (error) {
@@ -42,7 +42,7 @@ export async function createStudentHandler(
     });
 
     if (existingStudent) {
-      return reply.status(400).send({ message: "Código já cadastrado" });
+      return reply.status(400).send({ message: "Code already registered" });
     }
 
     const qualification = await prisma.qualification.findUnique({
@@ -82,7 +82,7 @@ export async function createStudentHandler(
       },
     });
 
-    return reply.status(201).send({ message: "Estudante e Usuário criados", student });
+    return reply.status(201).send({ message: "Student and User created", student });
   } catch (error) {
     console.error("Error creating student:", error);
     return reply.status(500).send({ message: "Internal server error", error });
@@ -146,20 +146,20 @@ export async function exportExcelHandler(
   try {
     const students = await prisma.student.findMany();
 
-    //Criar um workbook e uma sheet
+    //Create a workbook and a sheet
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Estudantes");
+    const worksheet = workbook.addWorksheet("Students");
 
-    //Cabeçalhos das colunas
+    //Column headers
     worksheet.columns = [
       { header: "ID", key: "id", width: 35 },
-      { header: "Nome", key: "name", width: 25 },
-      { header: "Código", key: "code", width: 15 },
-      { header: "Gênero", key: "gender", width: 10 },
+      { header: "Name", key: "name", width: 25 },
+      { header: "Code", key: "code", width: 15 },
+      { header: "Gender", key: "gender", width: 10 },
       { header: "Email", key: "email", width: 25 },
     ];
 
-    //Adicionar as linhas
+    //Add the rows
     students.forEach((student) => worksheet.addRow(student));
 
     // Preparar resposta
@@ -177,7 +177,7 @@ export async function exportExcelHandler(
     console.log(error);
     return reply
       .status(500)
-      .send({ message: "Ocorreu um erro interno no servidor", error });
+      .send({ message: "An internal server error occurred", error });
   }
 }
 

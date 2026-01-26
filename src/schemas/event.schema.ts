@@ -28,21 +28,21 @@ export const eventWithRelationsSchema = z.lazy(() =>
 export const createEventSchema = z.object({
   title: z
     .string()
-    .min(3, "O título deve ter pelo menos 3 caracteres.")
-    .max(255, "O título é demasiado longo."),
+    .min(3, "Title must be at least 3 characters.")
+    .max(255, "Title is too long."),
   description: z
     .string()
-    .max(2000, "A descrição é demasiado longa.")
+    .max(2000, "Description is too long.")
     .optional()
     .nullable(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().optional(),
   location: z.string().optional(),
   type: eventTypeEnum,
-  imageUrl: z.string().url("URL inválido").optional(),
+  imageUrl: z.string().url("Invalid URL").optional(),
   organizer: z.string().optional(),
   isPublished: z.boolean().optional().default(false),
-  createdById: z.string().min(1, "O ID do criador é obrigatório."),
+  createdById: z.string().min(1, "Creator ID is required."),
 });
 
 export const updateEventSchema = createEventSchema.partial();

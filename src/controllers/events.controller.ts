@@ -165,12 +165,12 @@ export async function deleteEventHandler(
     const { id } = req.params;
     const existing = await prisma.event.findUnique({ where: { id } });
     if (!existing)
-      return reply.status(404).send({ error: "Evento não encontrado" });
+      return reply.status(404).send({ error: "Event not found" });
 
     await prisma.event.delete({ where: { id } });
-    return reply.send({ message: "Evento eliminado com sucesso" });
+    return reply.send({ message: "Event deleted successfully" });
   } catch (error) {
-    console.error("Erro ao eliminar evento:", error);
-    return reply.status(500).send({ error: "Falha ao eliminar evento" });
+    console.error("Error deleting event:", error);
+    return reply.status(500).send({ error: "Failed to delete event" });
   }
 }

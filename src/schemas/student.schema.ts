@@ -33,21 +33,21 @@ export const studentSchema = z.object({
   position: z.string().nullable(),
   startYear: z.coerce.string().nullable(),
 
-  // Formação 1
+  // Formation 1
   residencyRegime1: z.string().optional().nullable(),
   year1: z.coerce.string().optional().nullable(),
   level1: z.string().optional().nullable(),
   completionYear1: z.coerce.string().optional().nullable(),
   observation1: z.string().optional().nullable(),
 
-  // Formação 2
+  // Formation 2
   residencyRegime2: z.string().optional().nullable(),
   year2: z.coerce.string().optional().nullable(),
   level2: z.string().optional().nullable(),
   completionYear2: z.coerce.string().optional().nullable(),
   observation2: z.string().optional().nullable(),
 
-  // Formação 3
+  // Formation 3
   residencyRegime3: z.string().optional().nullable(),
   year3: z.coerce.string().optional().nullable(),
   level3: z.string().optional().nullable(),
@@ -94,21 +94,21 @@ export const createStudentSchema = z.object({
   position: z.string().optional().nullable(),
   startYear: z.coerce.string().optional().nullable(),
 
-  // Formação 1
+  // Formation 1
   residencyRegime1: z.string().optional().nullable(),
   year1: z.coerce.string().optional().nullable(),
   level1: z.string().optional().nullable(),
   completionYear1: z.coerce.string().optional().nullable(),
   observation1: z.string().optional().nullable(),
 
-  // Formação 2
+  // Formation 2
   residencyRegime2: z.string().optional().nullable(),
   year2: z.coerce.string().optional().nullable(),
   level2: z.string().optional().nullable(),
   completionYear2: z.coerce.string().optional().nullable(),
   observation2: z.string().optional().nullable(),
 
-  // Formação 3
+  // Formation 3
   residencyRegime3: z.string().optional().nullable(),
   year3: z.coerce.string().optional().nullable(),
   level3: z.string().optional().nullable(),

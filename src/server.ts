@@ -42,8 +42,8 @@ app.register(cors, {
 
 app.register(fastifyJwtPlugin);
 
-app.setValidatorCompiler(validatorCompiler); // Diz ao fastify que será usado zod para fazer as validações de entrada
-app.setSerializerCompiler(serializerCompiler); //Diz ao fastify que será usado o zod para fazer a serialização dos dados de saida
+app.setValidatorCompiler(validatorCompiler); // Tells Fastify that Zod will be used for input validations
+app.setSerializerCompiler(serializerCompiler); // Tells Fastify that Zod will be used for output data serialization
 
 app.register(fastifySwagger, {
   openapi: {
@@ -70,7 +70,7 @@ app.register(fastifySwagger, {
   transform: jsonSchemaTransform,
 });
 
-//Configuração do Swagger UI
+// Swagger UI configuration
 app.register(fastifySwaggerUi, {
   routePrefix: "/docs",
   uiConfig: {

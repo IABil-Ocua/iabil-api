@@ -11,10 +11,10 @@ export const jobVacancySchema = z.object({
 });
 
 export const createJobVacancySchema = z.object({
-  title: z.string().min(3, "O título é obrigatório"),
-  companyName: z.string().min(2, "O nome da empresa é obrigatória"),
+  title: z.string().min(3, "Title is required"),
+  companyName: z.string().min(2, "Company name is required"),
   url: z.string(),
-  location: z.string().min(5, "O local é obrigatório"),
+  location: z.string().min(5, "Location is required"),
 });
 
 export const updateJobVacancySchema = createJobVacancySchema.partial();

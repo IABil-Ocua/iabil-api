@@ -41,10 +41,10 @@ export const createArticleHandler = async (
 
     return reply
       .status(201)
-      .send({ message: "Artigo criado com sucesso.", article });
+      .send({ message: "Article created successfully.", article });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao criar o artigo." });
+    return reply.status(500).send({ message: "Error creating the article." });
   }
 };
 
@@ -70,7 +70,7 @@ export const getArticlesHandler = async (
     return reply.status(200).send({ message: "ok", articles: safeArticles });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao buscar artigos." });
+    return reply.status(500).send({ message: "Error fetching articles." });
   }
 };
 
@@ -89,7 +89,7 @@ export const getRecentArticlesHandler = async (
     console.error(error);
     return reply
       .status(500)
-      .send({ message: "Erro ao buscar artigos recentes." });
+      .send({ message: "Error fetching recent articles." });
   }
 };
 
@@ -107,7 +107,7 @@ export const getArticleByIdHandler = async (
     });
 
     if (!article)
-      return reply.status(404).send({ message: "Artigo não encontrado." });
+      return reply.status(404).send({ message: "Article not found." });
 
     const { password, ...userWithoutPassword } = article.author;
     const safeArticle = {
@@ -118,7 +118,7 @@ export const getArticleByIdHandler = async (
     return reply.status(200).send({ message: "ok", article: safeArticle });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao buscar o artigo." });
+    return reply.status(500).send({ message: "Error fetching the article." });
   }
 };
 

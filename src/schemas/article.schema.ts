@@ -27,9 +27,9 @@ export const articleWithRelationsSchema = z.lazy(() =>
 );
 
 export const createArticleSchema = z.object({
-  title: z.string().min(3, "O título deve ter pelo menos 3 caracteres."),
-  slug: z.string().min(3, "Slug inválido."),
-  content: z.string().min(10, "O conteúdo é obrigatório."),
+  title: z.string().min(3, "Title must be at least 3 characters."),
+  slug: z.string().min(3, "Invalid slug."),
+  content: z.string().min(10, "Content is required."),
   imageUrl: z.string().url().optional().nullable(),
   category: ArticleCategoryEnum,
   tags: z.string().optional().nullable(),

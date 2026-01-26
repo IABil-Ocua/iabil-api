@@ -104,7 +104,7 @@ export async function registerUserHandler(
     if (existingUser) {
       return reply
         .status(400)
-        .send({ message: "Já existe um usuário cadastrado com o mesmo email" });
+        .send({ message: "A user with the same email is already registered" });
     }
 
     const generatedPassword = passwordGenerator({
@@ -133,7 +133,7 @@ export async function registerUserHandler(
     const { data: emailData, error } = await resend.emails.send({
       from: "IAbil <plataforna@iabil.co.mz>",
       to: [email],
-      subject: "Cofirmação de Registro na Plataforma | IABIl",
+      subject: "Registration Confirmation on the IABIl Platform",
       react: UserRegistrationTemplate({
         name: name,
         email: email.toLowerCase().trim(),
