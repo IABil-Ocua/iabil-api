@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const scholarshipSchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   name: z.string(),
   description: z.string().nullable(),
   sponsor: z.string().nullable(),

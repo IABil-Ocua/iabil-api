@@ -46,7 +46,7 @@ export async function quizzItemRoutes(app: FastifyTypedInstance) {
         tags: ["quizz-items"],
         description: "Fetch quizz item by ID",
         params: z.object({
-          id: z.string().uuid().describe("Quizz item unique identifier"),
+          id: z.cuid().describe("Quizz item unique identifier"),
         }),
         response: {
           200: z
@@ -99,7 +99,7 @@ export async function quizzItemRoutes(app: FastifyTypedInstance) {
         tags: ["quizz-items"],
         description: "Update quizz item by ID",
         params: z.object({
-          id: z.string().uuid().describe("Quizz item unique identifier"),
+          id: z.cuid().describe("Quizz item unique identifier"),
         }),
         body: updateQuizzItemSchema,
         response: {
@@ -128,7 +128,7 @@ export async function quizzItemRoutes(app: FastifyTypedInstance) {
         tags: ["quizz-items"],
         description: "Delete quizz item by ID",
         params: z.object({
-          id: z.string().uuid().describe("Quizz item unique identifier"),
+          id: z.cuid().describe("Quizz item unique identifier"),
         }),
         response: {
           200: z

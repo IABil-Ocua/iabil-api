@@ -48,7 +48,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         tags: ["qualifications"],
         description: "Fetch Qualification by ID",
         params: z.object({
-          id: z.string().uuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Qualification unique identifier"),
         }),
         response: {
           200: z
@@ -127,7 +127,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         tags: ["qualifications"],
         description: "Delete qualification by ID",
         params: z.object({
-          id: z.string().uuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Qualification unique identifier"),
         }),
         response: {
           200: z

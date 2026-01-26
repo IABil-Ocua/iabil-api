@@ -70,7 +70,7 @@ export async function articleRoutes(app: FastifyTypedInstance) {
         tags: ["articles"],
         description: "Get article information by ID",
         params: z.object({
-          id: z.string().cuid().describe("Article unique identifier"),
+          id: z.cuid().describe("Article unique identifier"),
         }),
         response: {
           200: z
@@ -116,7 +116,7 @@ export async function articleRoutes(app: FastifyTypedInstance) {
         tags: ["articles"],
         description: "Update article by ID",
         params: z.object({
-          id: z.string().cuid().describe("Article unique identifier"),
+          id: z.cuid().describe("Article unique identifier"),
         }),
         body: updateArticleSchema,
         response: {
@@ -141,7 +141,7 @@ export async function articleRoutes(app: FastifyTypedInstance) {
         tags: ["articles"],
         description: "Delete article by ID",
         params: z.object({
-          id: z.string().cuid().describe("Article unique identifier"),
+          id: z.cuid().describe("Article unique identifier"),
         }),
         response: {
           200: z

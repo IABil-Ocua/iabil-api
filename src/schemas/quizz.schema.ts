@@ -3,7 +3,7 @@ import { chapterSchema } from "./chapter.schema";
 import { quizzItemSchema } from "./quizz-items.schema";
 
 export const quizzSchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   name: z.string(),
   chapterId: z.string(),
   createdAt: z.coerce.date(),

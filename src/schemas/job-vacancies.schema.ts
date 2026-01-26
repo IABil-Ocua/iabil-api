@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const jobVacancySchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   title: z.string(),
   companyName: z.string(),
   url: z.string(),

@@ -46,7 +46,7 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
         tags: ["scholarships"],
         description: "Get scholarship information by ID",
         params: z.object({
-          id: z.string().cuid().describe("Scholarship unique identifier"),
+          id: z.cuid().describe("Scholarship unique identifier"),
         }),
         response: {
           200: z
@@ -91,7 +91,7 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
         tags: ["scholarships"],
         description: "Update scholarship by ID",
         params: z.object({
-          id: z.string().cuid().describe("Scholarship unique identifier"),
+          id: z.cuid().describe("Scholarship unique identifier"),
         }),
         body: updateScholarshipSchema,
         response: {
@@ -116,7 +116,7 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
         tags: ["scholarships"],
         description: "Delete a scholarship by ID",
         params: z.object({
-          id: z.string().cuid().describe("Scholarship unique identifier"),
+          id: z.cuid().describe("Scholarship unique identifier"),
         }),
         response: {
           200: z

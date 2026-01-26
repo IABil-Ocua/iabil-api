@@ -2,7 +2,7 @@ import { z } from "zod";
 import { levelSchema } from "./qualification-level.schema";
 
 export const qualificationSchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   name: z.string(),
   description: z.string().nullable(),
   bannerUrl: z.string().nullable(),

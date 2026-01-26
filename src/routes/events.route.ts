@@ -65,7 +65,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
         tags: ["events"],
         description: "Get detailed event information by ID with creator data",
         params: z.object({
-          id: z.string().cuid().describe("Event unique identifier"),
+          id: z.cuid().describe("Event unique identifier"),
         }),
         response: {
           200: z
@@ -89,7 +89,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
         tags: ["events"],
         description: "Update an existing event by ID",
         params: z.object({
-          id: z.string().cuid().describe("Event unique identifier"),
+          id: z.cuid().describe("Event unique identifier"),
         }),
         body: updateEventSchema,
         response: {
@@ -115,7 +115,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
         tags: ["events"],
         description: "Delete an event by ID",
         params: z.object({
-          id: z.string().cuid().describe("Event unique identifier"),
+          id: z.cuid().describe("Event unique identifier"),
         }),
         response: {
           200: z

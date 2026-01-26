@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String    @id @default(cuid())
   name      String
   username  String    @unique
   email     String    @unique
@@ -29,7 +29,7 @@ model User {
 }
 
 model Student {
-  id                String                @id @default(uuid())
+  id                String                @id @default(cuid())
   code              String                @unique
   name              String
   gender            String?
@@ -81,7 +81,7 @@ model Student {
 }
 
 model Certification {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   name         String
   instituition String
   description  String
@@ -94,7 +94,7 @@ model Certification {
 }
 
 model Experience {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   name         String
   description  String
   instituition String
@@ -107,7 +107,7 @@ model Experience {
 }
 
 model Qualification {
-  id             String    @id @default(uuid()) //change to cuid
+  id             String    @id @default(cuid())
   name           String
   description    String?
   bannerUrl      String?   @map("banner_url")
@@ -123,7 +123,7 @@ model Qualification {
 }
 
 model Level {
-  id              String        @id @default(uuid())
+  id              String        @id @default(cuid())
   title           String
   description     String
   noticeUrl       String?       @map("notice_url")
@@ -137,7 +137,7 @@ model Level {
 }
 
 model Chapter {
-  id                        String   @id @default(uuid())
+  id                        String   @id @default(cuid())
   title                     String
   content                   String
   supplementaryMaterialUrl1 String?  @map("supplementary_material_url_1")
@@ -152,7 +152,7 @@ model Chapter {
 }
 
 model Quizz {
-  id         String      @id @default(uuid())
+  id         String      @id @default(cuid())
   name       String      @unique
   chapterId  String      @map("chapter_id")
   createdAt  DateTime    @default(now()) @map("created_at")
@@ -164,7 +164,7 @@ model Quizz {
 }
 
 model QuizzItem {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   question  String
   option1   String
   option2   String
@@ -180,7 +180,7 @@ model QuizzItem {
 }
 
 model Professor {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   @@map("professors")
 }

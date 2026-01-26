@@ -3,7 +3,7 @@ import { userSchema } from "./user.schema";
 import { qualificationSchema } from "./qualification.schema";
 
 export const studentSchema = z.object({
-  id: z.string().nullable(),
+  id: z.cuid().nullable(),
   code: z.string(),
   name: z.string(),
   gender: z.string().nullable(),

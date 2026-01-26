@@ -71,7 +71,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Fetch student information by ID",
         params: z.object({
-          id: z.string().uuid().describe("Student unique identifier"),
+          id: z.cuid().describe("Student unique identifier"),
         }),
         response: {
           200: z
@@ -130,16 +130,16 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         body: createStudentSchema,
         response: {
           201: z
-          .object({
-            message: z.string(),
-            user: z.object({
-              id: z.string().uuid(),
-              email: z.string().email(),
-              name: z.string(),
-              role: z.string(),
+            .object({
+              message: z.string(),
+              user: z.object({
+                id: z.cuid(),
+                email: z.string().email(),
+                name: z.string(),
+                role: z.string(),
+              })
             })
-          })
-           .describe("Student created successfully"),
+            .describe("Student created successfully"),
 
           400: z
             .object({ message: z.string() })
@@ -166,7 +166,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Update student information by ID",
         params: z.object({
-          id: z.string().uuid().describe("Student unique identifier"),
+          id: z.cuid().describe("Student unique identifier"),
         }),
         body: updateStudentSchema,
         response: {
@@ -196,7 +196,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Delete a student by ID",
         params: z.object({
-          id: z.string().uuid().describe("Student unique identifier"),
+          id: z.cuid().describe("Student unique identifier"),
         }),
         response: {
           200: z

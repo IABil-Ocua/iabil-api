@@ -2,7 +2,7 @@ import z from "zod";
 import { quizzSchema } from "./quizz.schema";
 
 export const quizzItemSchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   question: z.string(),
   option1: z.string(),
   option2: z.string(),
