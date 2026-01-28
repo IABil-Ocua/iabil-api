@@ -5,7 +5,7 @@ export const ArticleStatusEnum = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]);
 export const ArticleCategoryEnum = z.enum(["INNOVATION", "PUBLICATION"]);
 
 export const articleSchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   title: z.string(),
   slug: z.string(),
   content: z.string(),

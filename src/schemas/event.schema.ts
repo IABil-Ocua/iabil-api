@@ -4,7 +4,7 @@ import { userSchema } from "./user.schema";
 export const eventTypeEnum = z.enum(["TRAINING", "SEMINAR", "CONFERENCE"]);
 
 export const eventSchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   title: z.string(),
   description: z.string().nullable(),
   startDate: z.coerce.date(),

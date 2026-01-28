@@ -4,7 +4,7 @@ import { levelSchema } from "./qualification-level.schema";
 import { qualificationSchema } from "./qualification.schema";
 
 export const chapterSchema = z.object({
-  id: z.string(),
+  id: z.cuid(),
   title: z.string(),
   content: z.string(),
   supplementaryMaterialUrl1: z.string().nullable(),
