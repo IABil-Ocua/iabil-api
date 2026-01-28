@@ -1,6 +1,5 @@
-// plugins/jwt.ts
 import fp from "fastify-plugin";
-import jwt, { FastifyJWT } from "@fastify/jwt";
+import jwt from "@fastify/jwt";
 import { FastifyReply, FastifyRequest } from "fastify";
 import "@fastify/jwt";
 
@@ -29,7 +28,7 @@ export default fp(async (fastify) => {
       } catch (err) {
         reply.code(401).send({ message: "Unauthorized" });
       }
-    }
+    },
   );
 });
 

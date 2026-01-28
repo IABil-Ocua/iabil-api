@@ -71,7 +71,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         tags: ["levels"],
         description: "Fetch qualification level by ID",
         params: z.object({
-          id: z.uuid().describe("Qualification level unique identifier"),
+          id: z.cuid().describe("Qualification level unique identifier"),
         }),
         response: {
           200: z
@@ -126,7 +126,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         params: z.object({
           id: z
             .string()
-            .uuid()
+            .cuid()
             .describe("Qualification level unique identifier"),
         }),
         body: updateLevelSchema,
@@ -158,7 +158,7 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         params: z.object({
           id: z
             .string()
-            .uuid()
+            .cuid()
             .describe("Qualification level unique identifier"),
         }),
         response: {

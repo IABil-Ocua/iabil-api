@@ -16,7 +16,6 @@ import {
   createStudentHandler,
 } from "../controllers/student.controller";
 
-
 export async function studentRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
@@ -27,11 +26,11 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         description: "Fetch all students",
         response: {
           200: z
-          .object({
-            message:z.string(),
-            students:z.array(studentSchema),
-          })
-          .describe("students fetched successfully"),
+            .object({
+              message: z.string(),
+              students: z.array(studentSchema),
+            })
+            .describe("students fetched successfully"),
 
           500: z
             .object({ message: z.string() })
@@ -39,7 +38,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchStudentsHandler
+    fetchStudentsHandler,
   );
 
   app.get(
@@ -50,9 +49,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Export all students data as Excel file",
         response: {
-          200: z
-          .unknown()
-          .describe(" Excel file exported successfully"),
+          200: z.unknown().describe(" Excel file exported successfully"),
 
           500: z
             .object({ message: z.string() })
@@ -60,7 +57,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    exportExcelHandler
+    exportExcelHandler,
   );
 
   app.get(
@@ -71,19 +68,17 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Fetch student information by ID",
         params: z.object({
-          id: z.string().uuid().describe("Student unique identifier"),
+          id: z.cuid().describe("Student unique identifier"),
         }),
         response: {
           200: z
-          .object({
-            message: z.string(),
+            .object({
+              message: z.string(),
               student: studentSchema,
-          })
-          .describe("Student fetched successfully"),
+            })
+            .describe("Student fetched successfully"),
 
-          404: z
-          .object({ message: z.string() })
-          .describe("Student not found"),
+          404: z.object({ message: z.string() }).describe("Student not found"),
 
           500: z
             .object({ message: z.string() })
@@ -91,7 +86,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchStudentByIdHandler
+    fetchStudentByIdHandler,
   );
 
   app.post(
@@ -106,7 +101,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
           201: z
             .object({
               message: z.string(),
-              students:z.array(studentSchema),
+              students: z.array(studentSchema),
             })
             .describe("students created successfully"),
 
@@ -117,7 +112,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createManyStudentsHandler
+    createManyStudentsHandler,
   );
 
   app.post(
@@ -130,24 +125,22 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         body: createStudentSchema,
         response: {
           201: z
-          .object({
-            message: z.string(),
-            user: z.object({
-              id: z.string().uuid(),
-              email: z.string().email(),
-              name: z.string(),
-              role: z.string(),
+            .object({
+              message: z.string(),
+              user: z.object({
+                id: z.cuid(),
+                email: z.string().email(),
+                name: z.string(),
+                role: z.string(),
+              }),
             })
-          })
-           .describe("Student created successfully"),
+            .describe("Student created successfully"),
 
-          400: z
-            .object({ message: z.string() })
-            .describe("Bad request"),
+          400: z.object({ message: z.string() }).describe("Bad request"),
 
           409: z
-           .object ({ message: z.string() })
-           .describe ("Student code or email exists"),
+            .object({ message: z.string() })
+            .describe("Student code or email exists"),
 
           500: z
             .object({ message: z.string() })
@@ -155,7 +148,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createStudentHandler
+    createStudentHandler,
   );
 
   app.put(
@@ -166,16 +159,16 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Update student information by ID",
         params: z.object({
-          id: z.string().uuid().describe("Student unique identifier"),
+          id: z.cuid().describe("Student unique identifier"),
         }),
         body: updateStudentSchema,
         response: {
-          200:z
-          .object({
-            message:z.string(),
-            student: studentSchema,
-          })
-           .describe("Student updated successfully"),
+          200: z
+            .object({
+              message: z.string(),
+              student: studentSchema,
+            })
+            .describe("Student updated successfully"),
 
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Student not found"),
@@ -185,7 +178,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    updateStudentHandler
+    updateStudentHandler,
   );
 
   app.delete(
@@ -196,7 +189,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Delete a student by ID",
         params: z.object({
-          id: z.string().uuid().describe("Student unique identifier"),
+          id: z.cuid().describe("Student unique identifier"),
         }),
         response: {
           200: z
@@ -209,6 +202,6 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    deleteStudentHandler
+    deleteStudentHandler,
   );
 }
