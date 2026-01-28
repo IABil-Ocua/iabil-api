@@ -15,7 +15,7 @@ export async function fetchLevelsHandler(
       relationLoadStrategy: "query",
       include: {
         qualification: true,
-        chapters: true,
+        modules: true,
       },
     });
 
@@ -43,7 +43,7 @@ export async function fetchLevelsByQualificationsHandler(
       relationLoadStrategy: "query",
       include: {
         qualification: true,
-        chapters: true,
+        modules: true,
       },
       where: {
         qualificationId,
@@ -72,7 +72,7 @@ export async function fetchLevelHandler(
       relationLoadStrategy: "query",
       include: {
         qualification: true,
-        chapters: true,
+        modules: true,
       },
       where: {
         id: id,

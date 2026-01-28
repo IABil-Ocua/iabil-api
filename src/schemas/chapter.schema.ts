@@ -1,7 +1,6 @@
 import z from "zod";
 import { quizzSchema } from "./quizz.schema";
-import { levelSchema } from "./qualification-level.schema";
-import { qualificationSchema } from "./qualification.schema";
+import { moduleSchema } from "./module.schema";
 
 export const chapterSchema = z.object({
   id: z.cuid(),
@@ -9,14 +8,14 @@ export const chapterSchema = z.object({
   content: z.string(),
   supplementaryMaterialUrl1: z.string().nullable(),
   supplementaryMaterialUrl2: z.string().nullable(),
-  levelId: z.string(),
+  moduleId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
 
 export const chapterWithRelationsSchema = z.lazy(() =>
   chapterSchema.extend({
-    level: levelSchema.extend({ qualification: qualificationSchema }),
+    module: moduleSchema,
     quizzes: z.array(quizzSchema),
   }),
 );
@@ -26,7 +25,7 @@ export const createChapterSchema = z.object({
   content: z.string().min(1, "Content is required"),
   supplementaryMaterialUrl1: z.string().optional(),
   supplementaryMaterialUrl2: z.string().optional(),
-  levelId: z.string().min(1, "Lavel ID is required"),
+  moduleId: z.string().min(1, "Module ID is required"),
 });
 
 export const updateChapterSchema = createChapterSchema.partial();

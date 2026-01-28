@@ -1,6 +1,6 @@
 import z from "zod";
 import { qualificationSchema } from "./qualification.schema";
-import { chapterSchema } from "./chapter.schema";
+import { moduleSchema } from "./module.schema";
 
 export const levelSchema = z.object({
   id: z.cuid(),
@@ -15,8 +15,8 @@ export const levelSchema = z.object({
 export const levelWithRelationsSchema = z.lazy(() =>
   levelSchema.extend({
     qualification: qualificationSchema,
-    chapters: z.array(chapterSchema),
-  })
+    modules: z.array(moduleSchema),
+  }),
 );
 
 export const createLevelSchema = z.object({

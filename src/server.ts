@@ -22,6 +22,7 @@ import { levelRoutes } from "./routes/qualification-level.route";
 import { chapterRoutes } from "./routes/chapter.routes";
 import { quizzRoutes } from "./routes/quizz.routes";
 import { quizzItemRoutes } from "./routes/quizz-item.routes";
+import { moduleRoutes } from "./routes/module.routes";
 
 const app =
   fastify(/**{
@@ -92,6 +93,7 @@ app.register(levelRoutes, { prefix: "/levels" });
 app.register(chapterRoutes, { prefix: "/chapters" });
 app.register(quizzRoutes, { prefix: "/quizzes" });
 app.register(quizzItemRoutes, { prefix: "/quizz-items" });
+app.register(moduleRoutes, { prefix: "/modules" });
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
   console.log(`Server running at port ${3333}`);

@@ -5,8 +5,9 @@ import {
   createChapterHandler,
   deleteChapterHandler,
   fetchChapterHandler,
-  fetchChaptersByLevelHandler,
+  fetchChaptersByModuleHandler,
   fetchChaptersHandler,
+  updateChapterHandler,
 } from "../controllers/chapter.controller";
 import {
   chapterSchema,
@@ -64,7 +65,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
   );
 
   app.get(
-    "/levels/:levelId",
+    "/modules/:moduleId",
     {
       preHandler: app.authenticate,
       schema: {
@@ -84,7 +85,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchChaptersByLevelHandler,
+    fetchChaptersByModuleHandler,
   );
 
   app.post(
@@ -136,7 +137,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createChapterHandler,
+    updateChapterHandler,
   );
 
   app.delete(

@@ -132,25 +132,38 @@ model Level {
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   qualification   Qualification @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
+  modules         Module[]
 
   @@map("levels")
 }
 
 model Module {
-  id String @id @default(cuid())
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  workload    Int
+  level       Level     @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  levelId     String
+  chapters    Chapter[]
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  @@map("chapters")
+  @@map("modules")
 }
 
 model Chapter {
-  id                        String   @id @default(cuid())
+  id                        String  @id @default(cuid())
   title                     String
   content                   String
-  supplementaryMaterialUrl1 String?  @map("supplementary_material_url_1")
-  supplementaryMaterialUrl2 String?  @map("supplementary_material_url_2")
-  createdAt                 DateTime @default(now()) @map("created_at")
-  updatedAt                 DateTime @updatedAt @map("updated_at")
-  quizzes                   Quizz[]
+  supplementaryMaterialUrl1 String? @map("supplementary_material_url_1")
+  supplementaryMaterialUrl2 String? @map("supplementary_material_url_2")
+
+  module   Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId String
+  quizzes  Quizz[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("chapters")
 }

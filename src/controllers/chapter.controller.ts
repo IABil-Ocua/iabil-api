@@ -14,11 +14,7 @@ export async function fetchChaptersHandler(
     const chapters = await prisma.chapter.findMany({
       relationLoadStrategy: "query",
       include: {
-        level: {
-          include: {
-            qualification: true,
-          },
-        },
+        module: true,
         quizzes: true,
       },
     });
@@ -44,11 +40,7 @@ export async function fetchChapterHandler(
     const chapter = await prisma.chapter.findUnique({
       relationLoadStrategy: "query",
       include: {
-        level: {
-          include: {
-            qualification: true,
-          },
-        },
+        module: true,
         quizzes: true,
       },
       where: {
@@ -67,29 +59,25 @@ export async function fetchChapterHandler(
   }
 }
 
-export async function fetchChaptersByLevelHandler(
-  request: FastifyRequest<{ Params: { levelId: string } }>,
+export async function fetchChaptersByModuleHandler(
+  request: FastifyRequest<{ Params: { moduleId: string } }>,
   reply: FastifyReply,
 ) {
   try {
-    const { levelId } = request.params;
+    const { moduleId } = request.params;
 
-    if (!levelId) {
+    if (!moduleId) {
       return reply.status(400).send({ message: "Level ID not provided" });
     }
 
     const chapters = await prisma.chapter.findMany({
       relationLoadStrategy: "query",
       include: {
-        level: {
-          include: {
-            qualification: true,
-          },
-        },
+        module: true,
         quizzes: true,
       },
       where: {
-        levelId,
+        moduleId,
       },
     });
     console.log(chapters);
@@ -110,7 +98,7 @@ export async function createChapterHandler(
     const {
       title,
       content,
-      levelId,
+      moduleId,
       supplementaryMaterialUrl1,
       supplementaryMaterialUrl2,
     } = request.body;
@@ -119,7 +107,7 @@ export async function createChapterHandler(
       data: {
         title,
         content,
-        levelId,
+        moduleId,
         supplementaryMaterialUrl1,
         supplementaryMaterialUrl2,
       },
@@ -134,7 +122,7 @@ export async function createChapterHandler(
   }
 }
 
-export async function updateChaperHandler(
+export async function updateChapterHandler(
   request: FastifyRequest<{
     Params: { id: string };
     Body: z.infer<typeof updateChapterSchema>;
@@ -145,7 +133,7 @@ export async function updateChaperHandler(
     const { id } = request.params;
     const {
       content,
-      levelId,
+      moduleId,
       supplementaryMaterialUrl1,
       supplementaryMaterialUrl2,
     } = request.body;
@@ -167,7 +155,7 @@ export async function updateChaperHandler(
     const updatedChapter = await prisma.chapter.update({
       data: {
         content,
-        levelId,
+        moduleId,
         supplementaryMaterialUrl1,
         supplementaryMaterialUrl2,
       },
