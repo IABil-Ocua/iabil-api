@@ -130,10 +130,15 @@ model Level {
   qualificationId String        @map("qualification_id")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
-  chapters        Chapter[]
   qualification   Qualification @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
 
   @@map("levels")
+}
+
+model Module {
+  id String @id @default(cuid())
+
+  @@map("chapters")
 }
 
 model Chapter {
@@ -142,10 +147,8 @@ model Chapter {
   content                   String
   supplementaryMaterialUrl1 String?  @map("supplementary_material_url_1")
   supplementaryMaterialUrl2 String?  @map("supplementary_material_url_2")
-  levelId                   String   @map("level_id")
   createdAt                 DateTime @default(now()) @map("created_at")
   updatedAt                 DateTime @updatedAt @map("updated_at")
-  level                     Level    @relation(fields: [levelId], references: [id], onDelete: Cascade)
   quizzes                   Quizz[]
 
   @@map("chapters")
