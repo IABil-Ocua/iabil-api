@@ -61,7 +61,7 @@ export const studentSchema = z.object({
 export const userWithRelationsSchema = z.lazy(() =>
   userSchema.extend({
     qualification: qualificationSchema,
-  })
+  }),
 );
 
 export const createStudentSchema = z.object({

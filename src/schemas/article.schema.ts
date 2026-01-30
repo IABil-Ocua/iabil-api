@@ -23,7 +23,7 @@ export const articleSchema = z.object({
 export const articleWithRelationsSchema = z.lazy(() =>
   articleSchema.extend({
     author: userSchema,
-  })
+  }),
 );
 
 export const createArticleSchema = z.object({

@@ -12,7 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function loginHandler(
   request: FastifyRequest<{ Body: z.infer<typeof loginSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { email, password } = request.body;
@@ -35,7 +35,7 @@ export async function loginHandler(
 
     const token = await reply.jwtSign(
       { id: user.id, email: user.email, role: user.role },
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     return reply.status(200).send({ message: "ok", token, user });
@@ -47,7 +47,7 @@ export async function loginHandler(
 
 export async function listUsersHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const users = await prisma.user.findMany();
@@ -63,12 +63,12 @@ export async function listUsersHandler(
 
 export async function fetchUserHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
 
-    if(!id){
+    if (!id) {
       return reply.status(400).send({ message: "User ID is required" });
     }
 
@@ -83,7 +83,6 @@ export async function fetchUserHandler(
     const { password, ...rest } = user;
 
     return reply.status(200).send({ message: "ok", user: rest });
-
   } catch (error) {
     console.error("Error fetching user  :", error);
     return reply.status(500).send({ message: "Internal Server Error", error });
@@ -92,7 +91,7 @@ export async function fetchUserHandler(
 
 export async function registerUserHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createUserSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { email, name, role, birthDate, avatar, cover } = request.body;
@@ -166,7 +165,7 @@ export async function registerUserHandler(
 
 export async function fetchAuthenticatedUserHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const userId = request.user.id;

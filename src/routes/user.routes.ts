@@ -40,6 +40,9 @@ export async function userRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["users"],
         description: "Fetch user by ID",
+        params: z.object({
+          id: z.cuid().describe("User unique identifier"),
+        }),
         response: {
           200: z
             .object({
@@ -47,6 +50,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
               user: userSchema,
             })
             .describe("User fetched successfully"),
+          404: z.object({ message: z.string() }).describe("User not found"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -64,6 +68,12 @@ export async function userRoutes(app: FastifyTypedInstance) {
         tags: ["users"],
         description: "Fetch authenticated user",
         response: {
+          200: z
+            .object({
+              message: z.string(),
+              user: userSchema,
+            })
+            .describe("User fetched successfully"),
           404: z.object({ message: z.string() }).describe("User not found"),
           500: z
             .object({ message: z.string() })

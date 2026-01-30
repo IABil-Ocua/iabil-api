@@ -8,7 +8,7 @@ import z from "zod";
 
 export async function createJobVacancyHandler(
   req: FastifyRequest<{ Body: z.infer<typeof createJobVacancySchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { companyName, location, title, url } = req.body;
@@ -34,7 +34,7 @@ export async function createJobVacancyHandler(
 
 export async function getJobVacanciesHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const jobVacancies = await prisma.jobVacancy.findMany();
@@ -42,13 +42,15 @@ export async function getJobVacanciesHandler(
     return reply.status(200).send({ message: "ok", jobVacancies });
   } catch (error) {
     console.error("Error listing job vacancies:", error);
-    return reply.status(500).send({ message: "Failed to retrieve job vacancies" });
+    return reply
+      .status(500)
+      .send({ message: "Failed to retrieve job vacancies" });
   }
 }
 
 export async function getJobVacancyByIdHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
@@ -58,9 +60,7 @@ export async function getJobVacancyByIdHandler(
     });
 
     if (!jobVacancy)
-      return reply
-        .status(404)
-        .send({ message: "Job vacancy not found" });
+      return reply.status(404).send({ message: "Job vacancy not found" });
 
     return reply.status(200).send({ message: "ok", jobVacancy });
   } catch (error) {
@@ -74,7 +74,7 @@ export async function updateJobVacancyHandler(
     Params: { id: string };
     Body: z.infer<typeof updateJobVacancySchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
@@ -83,9 +83,7 @@ export async function updateJobVacancyHandler(
     const existing = await prisma.jobVacancy.findUnique({ where: { id } });
 
     if (!existing)
-      return reply
-        .status(404)
-        .send({ message: "Job vacancy not found" });
+      return reply.status(404).send({ message: "Job vacancy not found" });
 
     const jobVacancy = await prisma.jobVacancy.update({
       where: { id },
@@ -109,16 +107,14 @@ export async function updateJobVacancyHandler(
 
 export async function deleteJobVacancyHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
     const existing = await prisma.jobVacancy.findUnique({ where: { id } });
 
     if (!existing)
-      return reply
-        .status(404)
-        .send({ error: "Job vacancy not found" });
+      return reply.status(404).send({ error: "Job vacancy not found" });
 
     await prisma.jobVacancy.delete({ where: { id } });
 

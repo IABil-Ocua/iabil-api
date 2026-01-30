@@ -100,6 +100,9 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["qualifications"],
         description: "Update Qualification",
+        params: z.object({
+          id: z.cuid().describe("Qualification unique identifier"),
+        }),
         body: updateQualificationSchema,
         response: {
           200: z

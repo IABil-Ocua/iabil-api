@@ -5,7 +5,7 @@ import z from "zod";
 
 export async function createEventHandler(
   req: FastifyRequest<{ Body: z.infer<typeof createEventSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const {
@@ -46,7 +46,7 @@ export async function createEventHandler(
 
 export async function getEventByIdHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
@@ -58,12 +58,11 @@ export async function getEventByIdHandler(
 
     if (!event) return reply.status(404).send({ message: "Event not found" });
 
-   
     const { password, ...userWithoutPassword } = event.createdBy;
-    
-    const safeEvent = { 
-      ...event, 
-      createdBy: userWithoutPassword 
+
+    const safeEvent = {
+      ...event,
+      createdBy: userWithoutPassword,
     };
 
     return reply.status(200).send({ message: "ok", event: safeEvent });
@@ -75,7 +74,7 @@ export async function getEventByIdHandler(
 
 export async function getEventsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const events = await prisma.event.findMany({
@@ -86,9 +85,9 @@ export async function getEventsHandler(
 
     const safeEvents = events.map((event) => {
       const { password, ...userWithoutPassword } = event.createdBy;
-      return { 
-        ...event, 
-        createdBy: userWithoutPassword 
+      return {
+        ...event,
+        createdBy: userWithoutPassword,
       };
     });
 
@@ -104,7 +103,7 @@ export async function updateEventHandler(
     Params: { id: string };
     Body: z.infer<typeof updateEventSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
@@ -159,13 +158,12 @@ export async function updateEventHandler(
 
 export async function deleteEventHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
     const existing = await prisma.event.findUnique({ where: { id } });
-    if (!existing)
-      return reply.status(404).send({ error: "Event not found" });
+    if (!existing) return reply.status(404).send({ error: "Event not found" });
 
     await prisma.event.delete({ where: { id } });
     return reply.send({ message: "Event deleted successfully" });

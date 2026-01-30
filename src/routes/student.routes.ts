@@ -49,7 +49,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Export all students data as Excel file",
         response: {
-          200: z.unknown().describe(" Excel file exported successfully"),
+          200: z.unknown().describe("Excel file exported successfully"),
 
           500: z
             .object({ message: z.string() })
@@ -132,11 +132,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
                 email: z.string().email(),
                 name: z.string(),
                 role: z.string(),
-<<<<<<< HEAD
               }),
-=======
-              })
->>>>>>> 2b6b37ee598673b27149b8704772f98a5a967cb2
             })
             .describe("Student created successfully"),
 

@@ -17,7 +17,7 @@ export const quizzItemSchema = z.object({
 export const quizzItemsWithRelationsSchema = z.lazy(() =>
   quizzItemSchema.extend({
     quizz: quizzSchema,
-  })
+  }),
 );
 
 export const createQuizzItemSchema = z.object({
