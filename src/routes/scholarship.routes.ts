@@ -13,8 +13,7 @@ import {
   scholarshipSchema,
   createScholarshipSchema,
   updateScholarshipSchema,
-} from "../schemas/shcolarship.schema";
-
+} from "../schemas/scholarship.schema";
 
 const scholarshipStatusEnum = z.enum(["ACTIVE", "INACTIVE", "CLOSED"]);
 
@@ -32,11 +31,13 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
               scholarships: z.array(scholarshipSchema),
             })
             .describe("Scholarships fetched successfully"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    getScholarshipsHandler
+    getScholarshipsHandler,
   );
 
   app.get(
@@ -55,12 +56,16 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
               scholarship: scholarshipSchema,
             })
             .describe("Scholarship fetched successfully"),
-          404: z.object({ message: z.string() }).describe("Scholarship not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          404: z
+            .object({ message: z.string() })
+            .describe("Scholarship not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    getScholarshipByIdHandler
+    getScholarshipByIdHandler,
   );
 
   app.post(
@@ -77,11 +82,14 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
               scholarship: scholarshipSchema,
             })
             .describe("Scholarship created successfully"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          400: z.object({ message: z.string() }).describe("Bad request"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    createScholarshipHandler
+    createScholarshipHandler,
   );
 
   app.put(
@@ -101,12 +109,16 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
               scholarship: scholarshipSchema,
             })
             .describe("Scholarship updated successfully"),
-          404: z.object({ message: z.string() }).describe("Scholarship not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          404: z
+            .object({ message: z.string() })
+            .describe("Scholarship not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    updateScholarshipHandler
+    updateScholarshipHandler,
   );
 
   app.delete(
@@ -122,11 +134,15 @@ export async function scholarshipRoutes(app: FastifyTypedInstance) {
           200: z
             .object({ message: z.string() })
             .describe("Scholarship deleted successfully"),
-          404: z.object({ message: z.string() }).describe("Scholarship not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          404: z
+            .object({ message: z.string() })
+            .describe("Scholarship not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    deleteScholarshipHandler
+    deleteScholarshipHandler,
   );
 }

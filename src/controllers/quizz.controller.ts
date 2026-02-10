@@ -13,9 +13,13 @@ export async function fetchQuizzesHandler(
       include: {
         chapter: {
           include: {
-            level: {
+            module: {
               include: {
-                qualification: true,
+                level: {
+                  include: {
+                    qualification: true,
+                  },
+                },
               },
             },
           },
@@ -46,9 +50,13 @@ export async function fetchQuizzHandler(
       include: {
         chapter: {
           include: {
-            level: {
+            module: {
               include: {
-                qualification: true,
+                level: {
+                  include: {
+                    qualification: true,
+                  },
+                },
               },
             },
           },
@@ -86,9 +94,13 @@ export async function fetchQuizzByChapterHandler(
       include: {
         chapter: {
           include: {
-            level: {
+            module: {
               include: {
-                qualification: true,
+                level: {
+                  include: {
+                    qualification: true,
+                  },
+                },
               },
             },
           },

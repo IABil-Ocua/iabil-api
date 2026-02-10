@@ -17,7 +17,6 @@ import {
   articleWithRelationsSchema,
 } from "../schemas/article.schema";
 
-
 export async function articleRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
@@ -38,7 +37,7 @@ export async function articleRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    getArticlesHandler
+    getArticlesHandler,
   );
 
   app.get(
@@ -60,7 +59,7 @@ export async function articleRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    getRecentArticlesHandler
+    getRecentArticlesHandler,
   );
 
   app.get(
@@ -80,11 +79,13 @@ export async function articleRoutes(app: FastifyTypedInstance) {
             })
             .describe("Article fetched successfully"),
           404: z.object({ message: z.string() }).describe("Article not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    getArticleByIdHandler
+    getArticleByIdHandler,
   );
 
   app.post(
@@ -102,11 +103,13 @@ export async function articleRoutes(app: FastifyTypedInstance) {
             })
             .describe("Article created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    createArticleHandler
+    createArticleHandler,
   );
 
   app.put(
@@ -127,11 +130,13 @@ export async function articleRoutes(app: FastifyTypedInstance) {
             })
             .describe("Article updated successfully"),
           404: z.object({ message: z.string() }).describe("Article not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    updateArticleHandler
+    updateArticleHandler,
   );
 
   app.delete(
@@ -148,10 +153,12 @@ export async function articleRoutes(app: FastifyTypedInstance) {
             .object({ message: z.string() })
             .describe("Article deleted successfully"),
           404: z.object({ message: z.string() }).describe("Article not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    deleteArticleHandler
+    deleteArticleHandler,
   );
 }

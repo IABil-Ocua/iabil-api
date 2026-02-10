@@ -9,7 +9,7 @@ import {
 
 export async function fetchQuizzItemHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params as { id: string };
@@ -47,7 +47,7 @@ export async function fetchQuizzItemHandler(
 
 export async function fetchQuizzItemsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { quizzId } = request.params as { quizzId: string };
@@ -85,7 +85,7 @@ export async function fetchQuizzItemsHandler(
 
 export async function createQuizzItemHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createQuizzItemSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { answer, option1, option2, question, quizzId, option3, option4 } =
@@ -117,7 +117,7 @@ export async function updateQuizzItemHandler(
     Params: { id: string };
     Body: z.infer<typeof updateQuizzItemSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -165,7 +165,7 @@ export async function updateQuizzItemHandler(
 
 export async function deleteQuizzItemHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params as { id: string };
@@ -201,7 +201,7 @@ export async function deleteQuizzItemHandler(
 
 export async function checkQuizzItemAnswer(
   request: FastifyRequest<{ Body: z.infer<typeof checkQuizzAnswerSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { quizzItemId, studentAnswer } = request.body;

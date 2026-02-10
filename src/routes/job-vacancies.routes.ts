@@ -9,10 +9,10 @@ import {
   updateJobVacancyHandler,
 } from "../controllers/job-vacancy.controller";
 import {
-  jobVacancySchema, 
+  jobVacancySchema,
   createJobVacancySchema,
   updateJobVacancySchema,
- } from "../schemas/job-vacancies.schema";
+} from "../schemas/job-vacancies.schema";
 
 export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
   app.get(
@@ -28,11 +28,13 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
               jobVacancies: z.array(jobVacancySchema),
             })
             .describe("Job vacancies fetched successfully"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    getJobVacanciesHandler
+    getJobVacanciesHandler,
   );
 
   app.get(
@@ -42,7 +44,7 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
         tags: ["job-vacancies"],
         description: "Get job vacancy information by ID",
         params: z.object({
-          id: z.string().describe("Job vacancy unique identifier"),
+          id: z.cuid().describe("Job vacancy unique identifier"),
         }),
         response: {
           200: z
@@ -51,12 +53,16 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
               jobVacancy: jobVacancySchema,
             })
             .describe("Job vacancy fetched successfully"),
-          404: z.object({ message: z.string() }).describe("Job vacancy not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          404: z
+            .object({ message: z.string() })
+            .describe("Job vacancy not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    getJobVacancyByIdHandler
+    getJobVacancyByIdHandler,
   );
 
   app.post(
@@ -74,11 +80,13 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
             })
             .describe("Job vacancy created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    createJobVacancyHandler
+    createJobVacancyHandler,
   );
 
   app.put(
@@ -88,7 +96,7 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
         tags: ["job-vacancies"],
         description: "Update job vacancy by ID",
         params: z.object({
-          id: z.string().describe("Job vacancy unique identifier"),
+          id: z.cuid().describe("Job vacancy unique identifier"),
         }),
         body: updateJobVacancySchema,
         response: {
@@ -98,12 +106,16 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
               jobVacancy: jobVacancySchema,
             })
             .describe("Job vacancy updated successfully"),
-          404: z.object({ message: z.string() }).describe("Job vacancy not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          404: z
+            .object({ message: z.string() })
+            .describe("Job vacancy not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    updateJobVacancyHandler
+    updateJobVacancyHandler,
   );
 
   app.delete(
@@ -113,17 +125,21 @@ export async function jobVacanciesRoutes(app: FastifyTypedInstance) {
         tags: ["job-vacancies"],
         description: "Delete job vacancy by ID",
         params: z.object({
-          id: z.string().describe("Job vacancy unique identifier"),
+          id: z.cuid().describe("Job vacancy unique identifier"),
         }),
         response: {
           200: z
             .object({ message: z.string() })
             .describe("Job vacancy deleted successfully"),
-          404: z.object({ message: z.string() }).describe("Job vacancy not found"),
-          500: z.object({ message: z.string() }).describe("Internal server error"),
+          404: z
+            .object({ message: z.string() })
+            .describe("Job vacancy not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    deleteJobVacancyHandler
+    deleteJobVacancyHandler,
   );
 }

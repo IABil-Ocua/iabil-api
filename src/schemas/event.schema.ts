@@ -22,7 +22,7 @@ export const eventSchema = z.object({
 export const eventWithRelationsSchema = z.lazy(() =>
   eventSchema.extend({
     createdBy: userSchema,
-  })
+  }),
 );
 
 export const createEventSchema = z.object({

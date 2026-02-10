@@ -13,6 +13,12 @@ export async function authRoutes(app: FastifyTypedInstance) {
         description: "Authenticate user and return JWT token",
         body: loginSchema,
         response: {
+          200: z
+            .object({
+              message: z.string(),
+              token: z.string(),
+            })
+            .describe("Login successful"),
           401: z
             .object({ message: z.string() })
             .describe("Invalid credentials"),

@@ -9,12 +9,12 @@ import { passwordGenerator } from "../lib/password-generator";
 
 export async function createManyStudentsHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createStudentSchema>[] }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const studentsData = request.body;
 
-       const createdStudents = await prisma.student.createMany({
+    const createdStudents = await prisma.student.createMany({
       data: studentsData,
     });
 
@@ -30,7 +30,7 @@ export async function createManyStudentsHandler(
 
 export async function createStudentHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createStudentSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { qualificationId, email, name, code, ...rest } = request.body;
@@ -82,7 +82,9 @@ export async function createStudentHandler(
       },
     });
 
-    return reply.status(201).send({ message: "Student and User created", student });
+    return reply
+      .status(201)
+      .send({ message: "Student and User created", student });
   } catch (error) {
     console.error("Error creating student:", error);
     return reply.status(500).send({ message: "Internal server error", error });
@@ -91,7 +93,7 @@ export async function createStudentHandler(
 
 export async function fetchStudentsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const students = await prisma.student.findMany({
@@ -112,7 +114,7 @@ export async function fetchStudentByIdHandler(
   request: FastifyRequest<{
     Params: { id: string };
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -141,7 +143,7 @@ export async function fetchStudentByIdHandler(
 
 export async function exportExcelHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const students = await prisma.student.findMany();
@@ -168,7 +170,7 @@ export async function exportExcelHandler(
     reply
       .header(
         "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       )
       .header("Content-Disposition", "attachment; filename=students.xlsx")
       .status(200)
@@ -186,7 +188,7 @@ export async function updateStudentHandler(
     Body: z.infer<typeof studentSchema>;
     Params: { id: string };
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -223,7 +225,7 @@ export async function updateStudentHandler(
 
         return student;
       },
-      { timeout: 20000 }
+      { timeout: 20000 },
     );
 
     return reply
@@ -239,7 +241,7 @@ export async function deleteStudentHandler(
   request: FastifyRequest<{
     Params: { id: string };
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -266,7 +268,7 @@ export async function deleteStudentHandler(
           },
         });
       },
-      { timeout: 20000 }
+      { timeout: 20000 },
     );
 
     return reply.status(200).send({ message: "Student deleted successfully" });

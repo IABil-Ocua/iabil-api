@@ -47,6 +47,9 @@ export async function levelRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["levels"],
         description: "Fetch levels by qualification",
+        params: z.object({
+          qualificationId: z.cuid().describe("Qualification unique identifier"),
+        }),
         response: {
           200: z
             .object({

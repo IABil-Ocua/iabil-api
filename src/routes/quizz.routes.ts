@@ -12,7 +12,7 @@ import {
   quizzSchema,
   createQuizzSchema,
   updateQuizzSchema,
-  quizzWithRealatiosSchema,
+  quizzWithRelationsSchema,
 } from "../schemas/quizz.schema";
 
 export async function quizzRoutes(app: FastifyTypedInstance) {
@@ -24,12 +24,12 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
         tags: ["quizzes"],
         description: "Fetch all quizzes",
         response: {
-          /**   200: z
+          200: z
             .object({
               message: z.string(),
-              quizzes: z.array(quizzWithRealatiosSchema),
+              quizzes: z.array(quizzWithRelationsSchema),
             })
-            .describe("Quizzes fetched successfully"), */
+            .describe("Quizzes fetched successfully"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),

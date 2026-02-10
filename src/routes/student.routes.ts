@@ -49,7 +49,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Export all students data as Excel file",
         response: {
-          200: z.unknown().describe(" Excel file exported successfully"),
+          200: z.unknown().describe("Excel file exported successfully"),
 
           500: z
             .object({ message: z.string() })

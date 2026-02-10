@@ -3,12 +3,12 @@ import z from "zod";
 import {
   createScholarshipSchema,
   updateScholarshipSchema,
-} from "../schemas/shcolarship.schema";
+} from "../schemas/scholarship.schema";
 import { prisma } from "../lib/db";
 
 export async function createScholarshipHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createScholarshipSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const {
@@ -47,7 +47,7 @@ export async function createScholarshipHandler(
 
 export async function getScholarshipsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const scholarships = await prisma.scholarship.findMany({
@@ -65,7 +65,7 @@ export async function getScholarshipsHandler(
 
 export async function getScholarshipByIdHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const { id } = request.params;
   try {
@@ -89,7 +89,7 @@ export async function updateScholarshipHandler(
     Params: { id: string };
     Body: z.infer<typeof updateScholarshipSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const { id } = request.params;
   const {
@@ -139,7 +139,7 @@ export async function updateScholarshipHandler(
 
 export async function deleteScholarshipHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -158,7 +158,9 @@ export async function deleteScholarshipHandler(
       },
     });
 
-    return reply.status(200).send({ message: "Scholarship deleted successfully" });
+    return reply
+      .status(200)
+      .send({ message: "Scholarship deleted successfully" });
   } catch (error) {
     return reply.code(500).send({ message: "Error deleting scholarship" });
   }

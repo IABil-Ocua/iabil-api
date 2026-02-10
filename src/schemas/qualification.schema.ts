@@ -16,7 +16,7 @@ export const qualificationSchema = z.object({
 export const qualificationWithRelationsSchema = z.lazy(() =>
   qualificationSchema.extend({
     levels: z.array(levelSchema).nullable(),
-  })
+  }),
 );
 
 export const createQualificationSchema = z.object({

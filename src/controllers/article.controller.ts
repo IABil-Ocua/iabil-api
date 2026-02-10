@@ -8,7 +8,7 @@ import z from "zod";
 
 export const createArticleHandler = async (
   request: FastifyRequest<{ Body: z.infer<typeof createArticleSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const {
@@ -50,7 +50,7 @@ export const createArticleHandler = async (
 
 export const getArticlesHandler = async (
   rquest: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const articles = await prisma.article.findMany({
@@ -76,7 +76,7 @@ export const getArticlesHandler = async (
 
 export const getRecentArticlesHandler = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const articles = await prisma.article.findMany({
@@ -95,7 +95,7 @@ export const getRecentArticlesHandler = async (
 
 export const getArticleByIdHandler = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const { id } = request.params;
@@ -128,7 +128,7 @@ export const updateArticleHandler = async (
     Params: { id: string };
     Body: z.infer<typeof updateArticleSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const { id } = request.params;
@@ -162,9 +162,10 @@ export const updateArticleHandler = async (
       },
     });
 
-    return reply
-      .status(200)
-      .send({ message: "Article updated successfully.", article: updatedArticle });
+    return reply.status(200).send({
+      message: "Article updated successfully.",
+      article: updatedArticle,
+    });
   } catch (error) {
     console.error(error);
     return reply.status(500).send({ message: "Error updating article." });
@@ -173,7 +174,7 @@ export const updateArticleHandler = async (
 
 export const deleteArticleHandler = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const { id } = request.params;

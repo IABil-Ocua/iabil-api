@@ -9,11 +9,11 @@ import {
   deleteEventHandler,
 } from "../controllers/events.controller";
 import {
-  eventSchema, 
-  eventWithRelationsSchema, 
+  eventSchema,
+  eventWithRelationsSchema,
   createEventSchema,
   updateEventSchema,
-} from "../schemas/event.schema"
+} from "../schemas/event.schema";
 
 export async function eventRoutes(app: FastifyTypedInstance) {
   app.post(
@@ -30,12 +30,14 @@ export async function eventRoutes(app: FastifyTypedInstance) {
               event: eventWithRelationsSchema,
             })
             .describe("Event created successfully"),
-          400: z.object({ error: z.string() }).describe("Bad request"),
-          500: z.object({ error: z.string() }).describe("Internal server error"),
+          400: z.object({ message: z.string() }).describe("Bad request"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    createEventHandler
+    createEventHandler,
   );
 
   app.get(
@@ -51,11 +53,13 @@ export async function eventRoutes(app: FastifyTypedInstance) {
               events: z.array(eventWithRelationsSchema),
             })
             .describe("Events fetched successfully"),
-          500: z.object({ error: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    getEventsHandler
+    getEventsHandler,
   );
 
   app.get(
@@ -75,11 +79,13 @@ export async function eventRoutes(app: FastifyTypedInstance) {
             })
             .describe("Event fetched successfully"),
           404: z.object({ message: z.string() }).describe("Event not found"),
-          500: z.object({ error: z.string() }).describe("Internal server error"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    getEventByIdHandler
+    getEventByIdHandler,
   );
 
   app.put(
@@ -96,16 +102,18 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           200: z
             .object({
               message: z.string(),
-              event: updateEventSchema,
+              event: eventSchema,
             })
             .describe("Event updated successfully"),
-          404: z.object({ error: z.string() }).describe("Event not found"),
-          400: z.object({ error: z.string() }).describe("Bad request"),
-          500: z.object({ error: z.string() }).describe("Internal server error"),
+          404: z.object({ message: z.string() }).describe("Event not found"),
+          400: z.object({ message: z.string() }).describe("Bad request"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    updateEventHandler
+    updateEventHandler,
   );
 
   app.delete(
@@ -121,11 +129,13 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           200: z
             .object({ message: z.string() })
             .describe("Event deleted successfully"),
-          404: z.object({ error: z.string() }).describe("Event not found"),
-          500: z.object({ error: z.string() }).describe("Internal server error"),
+          404: z.object({ message: z.string() }).describe("Event not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
         },
       },
     },
-    deleteEventHandler
+    deleteEventHandler,
   );
 }

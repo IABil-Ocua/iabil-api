@@ -30,7 +30,7 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
               message: z.string(),
               chapters: z.array(chapterWithRelationsSchema),
             })
-            .describe("Chapters Fetched succesfully"),
+            .describe("Chapters fetched successfully"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -70,14 +70,17 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
       preHandler: app.authenticate,
       schema: {
         tags: ["chapters"],
-        description: "Fetch chapters by level",
+        description: "Fetch chapters by module",
+        params: z.object({
+          moduleId: z.cuid().describe("Module unique identifier"),
+        }),
         response: {
           200: z
             .object({
               message: z.string(),
               chapters: z.array(chapterWithRelationsSchema),
             })
-            .describe("Chapter fetched successfully"),
+            .describe("Chapters fetched successfully"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
             .object({ message: z.string() })
@@ -121,6 +124,9 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["chapters"],
         description: "Update chapter",
+        params: z.object({
+          id: z.cuid().describe("Chapter unique identifier"),
+        }),
         body: updateChapterSchema,
         response: {
           200: z
@@ -147,6 +153,9 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ["chapters"],
         description: "Delete chapter",
+        params: z.object({
+          id: z.cuid().describe("Chapter unique identifier"),
+        }),
         response: {
           200: z
             .object({

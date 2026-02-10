@@ -10,11 +10,11 @@ export const quizzSchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
-export const quizzWithRealatiosSchema = z.lazy(() =>
+export const quizzWithRelationsSchema = z.lazy(() =>
   quizzSchema.extend({
     chapter: chapterSchema,
     quizzItems: z.array(quizzItemSchema),
-  })
+  }),
 );
 
 export const createQuizzSchema = z.object({
