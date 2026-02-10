@@ -132,11 +132,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
                 email: z.string().email(),
                 name: z.string(),
                 role: z.string(),
-<<<<<<< HEAD
               }),
-=======
-              })
->>>>>>> 2b6b37ee598673b27149b8704772f98a5a967cb2
             })
             .describe("Student created successfully"),
 

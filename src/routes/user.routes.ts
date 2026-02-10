@@ -77,7 +77,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
   app.post(
     "/",
     {
-      preHandler: app.authenticate,
+      //preHandler: app.authenticate,
       schema: {
         tags: ["users"],
         description: "Create a new user",
