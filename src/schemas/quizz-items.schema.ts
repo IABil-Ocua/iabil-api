@@ -24,8 +24,8 @@ export const createQuizzItemSchema = z.object({
   question: z.string().min(1, "Question is required"),
   option1: z.string().min(1, "Option 1 is required"),
   option2: z.string().min(1, "Option 1 is required"),
-  option3: z.string().nullable(),
-  option4: z.string().nullable(),
+  option3: z.string().optional(),
+  option4: z.string().optional(),
   answer: z.string().min(1, "Answer is required"),
   quizzId: z.string().min(1, "Quizz ID 1 is required"),
 });

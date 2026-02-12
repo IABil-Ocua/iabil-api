@@ -11,22 +11,11 @@ export async function fetchQuizzesHandler(
     const quizzes = await prisma.quizz.findMany({
       relationLoadStrategy: "query",
       include: {
-        chapter: {
-          include: {
-            module: {
-              include: {
-                level: {
-                  include: {
-                    qualification: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        chapter: true,
+        quizzItems: true,
       },
     });
-    console.log(quizzes);
+
     return reply.status(200).send({ message: "ok", quizzes });
   } catch (error) {
     console.log("Error fetching quizzes", error);
@@ -48,19 +37,8 @@ export async function fetchQuizzHandler(
     const quizz = await prisma.quizz.findUnique({
       relationLoadStrategy: "query",
       include: {
-        chapter: {
-          include: {
-            module: {
-              include: {
-                level: {
-                  include: {
-                    qualification: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        chapter: true,
+        quizzItems: true,
       },
       where: {
         id: id,
@@ -92,19 +70,8 @@ export async function fetchQuizzByChapterHandler(
     const quizz = await prisma.quizz.findFirst({
       relationLoadStrategy: "query",
       include: {
-        chapter: {
-          include: {
-            module: {
-              include: {
-                level: {
-                  include: {
-                    qualification: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        chapter: true,
+        quizzItems: true,
       },
       where: {
         chapterId,

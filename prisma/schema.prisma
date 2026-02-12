@@ -76,6 +76,8 @@ model Student {
   qualificationId   String                @default("") @map("qualification_id")
   qualificationName String                @map("qualification_name")
   qualification     Qualification         @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
+  chapterProgresses ChapterProgress[]
+  moduleProgresses  ModuleProgress[]
 
   @@map("students")
 }
@@ -138,15 +140,16 @@ model Level {
 }
 
 model Module {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  workload    Int
-  level       Level     @relation(fields: [levelId], references: [id], onDelete: Cascade)
-  levelId     String
-  chapters    Chapter[]
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id               String           @id @default(cuid())
+  title            String
+  description      String?
+  workload         Int
+  level            Level            @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  levelId          String
+  chapters         Chapter[]
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  moduleProgresses ModuleProgress[]
 
   @@map("modules")
 }
@@ -162,8 +165,9 @@ model Chapter {
   moduleId String
   quizzes  Quizz[]
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  chapterProgresses ChapterProgress[]
 
   @@map("chapters")
 }
@@ -194,6 +198,36 @@ model QuizzItem {
   quizz     Quizz    @relation(fields: [quizzId], references: [id], onDelete: Cascade)
 
   @@map("quizz_items")
+}
+
+model ChapterProgress {
+  id        String  @id @default(cuid())
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String  @map("student_id")
+
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String  @map("chapter_id")
+
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+
+  @@unique([studentId, chapterId])
+  @@map("chapter_progress")
+}
+
+model ModuleProgress {
+  id        String  @id @default(cuid())
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String  @map("student_id")
+
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId String @map("module_id")
+
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+
+  @@unique([studentId, moduleId])
+  @@map("module_progress")
 }
 
 model Professor {

@@ -68,12 +68,12 @@ export async function userRoutes(app: FastifyTypedInstance) {
         tags: ["users"],
         description: "Fetch authenticated user",
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               user: userSchema,
             })
-            .describe("User fetched successfully"),
+            .describe("User fetched successfully"), */
           404: z.object({ message: z.string() }).describe("User not found"),
           500: z
             .object({ message: z.string() })

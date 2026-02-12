@@ -15,7 +15,12 @@ export async function fetchChaptersHandler(
       relationLoadStrategy: "query",
       include: {
         module: true,
-        quizzes: true,
+        quizzes: {
+          include: {
+            chapter: true,
+            quizzItems: true,
+          },
+        },
       },
     });
 
@@ -41,7 +46,12 @@ export async function fetchChapterHandler(
       relationLoadStrategy: "query",
       include: {
         module: true,
-        quizzes: true,
+        quizzes: {
+          include: {
+            chapter: true,
+            quizzItems: true,
+          },
+        },
       },
       where: {
         id,
@@ -51,7 +61,7 @@ export async function fetchChapterHandler(
     if (!chapter) {
       return reply.status(404).send({ message: "Chapter not found" });
     }
-    console.log(chapter);
+
     return reply.status(200).send({ message: "ok", chapter });
   } catch (error) {
     console.log("Error fetching chapter", error);
@@ -74,7 +84,12 @@ export async function fetchChaptersByModuleHandler(
       relationLoadStrategy: "query",
       include: {
         module: true,
-        quizzes: true,
+        quizzes: {
+          include: {
+            chapter: true,
+            quizzItems: true,
+          },
+        },
       },
       where: {
         moduleId,

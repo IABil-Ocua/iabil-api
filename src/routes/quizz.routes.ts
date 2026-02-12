@@ -24,12 +24,12 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
         tags: ["quizzes"],
         description: "Fetch all quizzes",
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
               quizzes: z.array(quizzWithRelationsSchema),
             })
-            .describe("Quizzes fetched successfully"),
+            .describe("Quizzes fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -50,12 +50,12 @@ export async function quizzRoutes(app: FastifyTypedInstance) {
           id: z.cuid().describe("Quiz unique identifier"),
         }),
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
               quizz: quizzSchema,
             })
-            .describe("Quizz fetched successfully"),
+            .describe("Quizz fetched successfully"), */
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z

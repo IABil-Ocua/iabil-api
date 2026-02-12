@@ -23,12 +23,12 @@ export async function moduleRoutes(app: FastifyTypedInstance) {
         tags: ["modules"],
         description: "Fetch all modules",
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               modules: z.array(moduleWithRelationsSchema),
             })
-            .describe("Modules fetched successfully"),
+            .describe("Modules fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -49,12 +49,12 @@ export async function moduleRoutes(app: FastifyTypedInstance) {
           id: z.cuid().describe("Module unique identifier"),
         }),
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
               module: moduleWithRelationsSchema,
             })
-            .describe("Module fetched successfully"),
+            .describe("Module fetched successfully"), */
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
             .object({ message: z.string() })

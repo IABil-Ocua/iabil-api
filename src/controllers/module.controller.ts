@@ -14,7 +14,7 @@ export async function fetchModulesHandler(
     const modules = await prisma.module.findMany({
       relationLoadStrategy: "query",
       include: {
-        chapters: true,
+        chapters: { include: { module: true } },
         level: true,
       },
     });
@@ -40,7 +40,7 @@ export async function fetchModuleHandler(
     const module = await prisma.module.findUnique({
       relationLoadStrategy: "query",
       include: {
-        chapters: true,
+        chapters: { include: { module: true } },
         level: true,
       },
       where: {

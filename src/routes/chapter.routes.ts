@@ -25,12 +25,12 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         tags: ["chapters"],
         description: "Fetch all chapters",
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               chapters: z.array(chapterWithRelationsSchema),
             })
-            .describe("Chapters fetched successfully"),
+            .describe("Chapters fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -48,12 +48,12 @@ export async function chapterRoutes(app: FastifyTypedInstance) {
         tags: ["chapters"],
         description: "Fetch chapter by ID",
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
               chapter: chapterWithRelationsSchema,
             })
-            .describe("Chapter fetched successfully"),
+            .describe("Chapter fetched successfully"), */
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
             .object({ message: z.string() })
