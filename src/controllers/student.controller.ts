@@ -1,18 +1,23 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import z from "zod";
+import * as z from "zod";
 import ExcelJS from "exceljs";
 
 import { prisma } from "../lib/db";
-import { createStudentSchema, studentSchema } from "../schemas/student.schema";
+import {
+  createStudentSchema,
+  updateStudentSchema,
+} from "../schemas/student.schema";
 import { hash } from "bcrypt";
-import { passwordGenerator } from "../lib/password-generator";
+//import { passwordGenerator } from "../lib/password-generator";
 
-export async function createManyStudentsHandler(
+/**export async function createManyStudentsHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createStudentSchema>[] }>,
   reply: FastifyReply,
 ) {
   try {
     const studentsData = request.body;
+
+
 
     const createdStudents = await prisma.student.createMany({
       data: studentsData,
@@ -26,7 +31,7 @@ export async function createManyStudentsHandler(
     console.error("Error creating students:", error);
     return reply.status(500).send({ message: "Internal server error", error });
   }
-}
+} */
 
 export async function createStudentHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createStudentSchema> }>,
@@ -35,59 +40,76 @@ export async function createStudentHandler(
   try {
     const { qualificationId, email, name, code, ...rest } = request.body;
 
-    const existingStudent = await prisma.student.findUnique({
+    const existingStudent = await prisma.student.findFirst({
       where: {
-        code,
+        OR: [{ code }, { email }],
       },
     });
 
     if (existingStudent) {
-      return reply.status(400).send({ message: "Code already registered" });
+      return reply
+        .status(400)
+        .send({ message: "Student code already registered" });
     }
 
-    const qualification = await prisma.qualification.findUnique({
-      where: {
-        id: qualificationId,
-      },
+    if (!email) {
+      return reply
+        .status(400)
+        .send({ message: "Email is required to create login user" });
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
     });
 
-    const student = await prisma.student.create({
-      data: {
-        ...rest,
-        name,
-        code,
-        email,
-        qualificationId,
-        qualificationName: qualification ? qualification.name : "",
-      },
-    });
+    if (existingUser) {
+      return reply
+        .status(400)
+        .send({ message: "Email already registered as user" });
+    }
 
-    const password = passwordGenerator({
+    /**const password = passwordGenerator({
       passwordLength: 8,
       useLowerCase: true,
       useNumbers: true,
       useSymbols: false,
       useUpperCase: true,
+    }); */
+
+    const hashedPassword = await hash("IABIL2025", 10);
+
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: email.toLowerCase().trim(),
+          name,
+          password: hashedPassword,
+          username: email.toLowerCase().trim(),
+          role: "STUDENT",
+        },
+      });
+
+      const student = await tx.student.create({
+        data: {
+          ...rest,
+          name,
+          code,
+          email: email.toLowerCase().trim(),
+          qualificationId,
+          userId: user.id,
+        },
+      });
+
+      return { user, student };
     });
 
-    const hashedPassword = await hash(password, 10);
-
-    const user = await prisma.user.create({
-      data: {
-        email: email!,
-        name,
-        password: hashedPassword,
-        username: email!,
-        role: "STUDENT",
-      },
+    return reply.status(201).send({
+      message: "Student and User created",
+      student: result.student,
     });
-
-    return reply
-      .status(201)
-      .send({ message: "Student and User created", student });
   } catch (error) {
     console.error("Error creating student:", error);
-    return reply.status(500).send({ message: "Internal server error", error });
+    return reply.status(500).send({ message: "Internal server error" });
   }
 }
 
@@ -185,7 +207,7 @@ export async function exportExcelHandler(
 
 export async function updateStudentHandler(
   request: FastifyRequest<{
-    Body: z.infer<typeof studentSchema>;
+    Body: z.infer<typeof updateStudentSchema>;
     Params: { id: string };
   }>,
   reply: FastifyReply,

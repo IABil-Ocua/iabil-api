@@ -10,7 +10,7 @@ import {
   deleteStudentHandler,
   fetchStudentsHandler,
   fetchStudentByIdHandler,
-  createManyStudentsHandler,
+  //createManyStudentsHandler,
   updateStudentHandler,
   exportExcelHandler,
   createStudentHandler,
@@ -25,12 +25,12 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Fetch all students",
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
               students: z.array(studentSchema),
             })
-            .describe("students fetched successfully"),
+            .describe("students fetched successfully"), */
 
           500: z
             .object({ message: z.string() })
@@ -89,7 +89,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
     fetchStudentByIdHandler,
   );
 
-  app.post(
+  /**app.post(
     "/create-many",
     {
       //preHandler: app.authenticate,
@@ -113,7 +113,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       },
     },
     createManyStudentsHandler,
-  );
+  ); */
 
   app.post(
     "/",
@@ -124,7 +124,7 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         description: "Create new student and associated user account",
         body: createStudentSchema,
         response: {
-          201: z
+          /**201: z
             .object({
               message: z.string(),
               user: z.object({
@@ -134,10 +134,8 @@ export async function studentRoutes(app: FastifyTypedInstance) {
                 role: z.string(),
               }),
             })
-            .describe("Student created successfully"),
-
+            .describe("Student created successfully"), */
           400: z.object({ message: z.string() }).describe("Bad request"),
-
           409: z
             .object({ message: z.string() })
             .describe("Student code or email exists"),

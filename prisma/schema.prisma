@@ -22,8 +22,11 @@ model User {
   birthDate DateTime? @map("birth_date")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
-  articles  Article[]
-  events    Event[]
+
+  student  Student?
+  teacher  Teacher?
+  articles Article[]
+  events   Event[]
 
   @@map("users")
 }
@@ -39,7 +42,7 @@ model Student {
   birthProvince     String?               @map("birth_province")
   birthDate         DateTime?             @map("birth_date") @db.Date
   idNumber          String?               @map("id_number")
-  email             String?
+  email             String                @unique
   phone1            String?               @map("phone_1")
   phone2            String?               @map("phone_2")
   fatherAffiliation String?               @map("father_affiliation")
@@ -73,13 +76,34 @@ model Student {
   createdAt         DateTime              @default(now()) @map("created_at")
   updatedAt         DateTime              @updatedAt @map("updated_at")
   approvalStatus    StudentApprovalStatus @default(NOT_APPROVED) @map("approval_status")
-  qualificationId   String                @default("") @map("qualification_id")
-  qualificationName String                @map("qualification_name")
+  qualificationId   String                @map("qualification_id")
   qualification     Qualification         @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
+
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   chapterProgresses ChapterProgress[]
   moduleProgresses  ModuleProgress[]
 
   @@map("students")
+}
+
+model Teacher {
+  id            String  @id @default(cuid())
+  name          String
+  email         String  @unique
+  phoneNumber   String? @map("phone_number")
+  academicTitle String? @map("academic_title")
+  specialty     String?
+  department    String?
+
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("teachers")
 }
 
 model Certification {
@@ -109,7 +133,7 @@ model Experience {
 }
 
 model Qualification {
-  id String @id @default(cuid()) //change to cuid
+  id String @id @default(cuid())
 
   name           String
   description    String?
@@ -228,12 +252,6 @@ model ModuleProgress {
 
   @@unique([studentId, moduleId])
   @@map("module_progress")
-}
-
-model Professor {
-  id String @id @default(cuid())
-
-  @@map("professors")
 }
 
 model Event {

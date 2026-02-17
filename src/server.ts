@@ -23,6 +23,7 @@ import { chapterRoutes } from "./routes/chapter.routes";
 import { quizzRoutes } from "./routes/quizz.routes";
 import { quizzItemRoutes } from "./routes/quizz-item.routes";
 import { moduleRoutes } from "./routes/module.routes";
+import { teacherRoutes } from "./routes/teacher.routes";
 
 const app =
   fastify(/**{
@@ -85,6 +86,7 @@ app.register(authRoutes, { prefix: "/auth" });
 app.register(userRoutes, { prefix: "/users" });
 app.register(qualificationRoutes, { prefix: "/qualifications" });
 app.register(studentRoutes, { prefix: "/students" });
+app.register(teacherRoutes, { prefix: "/teachers" });
 app.register(eventRoutes, { prefix: "/events" });
 app.register(articleRoutes, { prefix: "/articles" });
 app.register(jobVacanciesRoutes, { prefix: "/job-vacancies" });
