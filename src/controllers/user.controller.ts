@@ -19,6 +19,10 @@ export async function loginHandler(
 
     const user = await prisma.user.findUnique({
       where: { email: email.toLowerCase().trim() },
+      include: {
+        student: true,
+        teacher: true,
+      },
     });
 
     if (!user) {
@@ -50,7 +54,12 @@ export async function listUsersHandler(
   reply: FastifyReply,
 ) {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        student: true,
+        teacher: true,
+      },
+    });
 
     const safeUsers = users.map(({ password, ...rest }) => rest);
 
@@ -74,6 +83,10 @@ export async function fetchUserHandler(
 
     const user = await prisma.user.findUnique({
       where: { id },
+      include: {
+        student: true,
+        teacher: true,
+      },
     });
 
     if (!user) {
@@ -171,6 +184,10 @@ export async function fetchAuthenticatedUserHandler(
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        student: true,
+        teacher: true,
+      },
     });
 
     if (!user) {
@@ -179,15 +196,7 @@ export async function fetchAuthenticatedUserHandler(
 
     return reply.status(200).send({
       message: "ok",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        createdAt: user.createdAt.toISOString(),
-        updatedAt: user.updatedAt.toISOString(),
-      },
+      user,
     });
   } catch (error) {
     console.error("Error fetching users:", error);
