@@ -1,14 +1,19 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import * as z from "zod";
 import ExcelJS from "exceljs";
+import { hash } from "bcrypt";
 
 import { prisma } from "../lib/db";
 import {
   createStudentSchema,
   updateStudentSchema,
 } from "../schemas/student.schema";
-import { hash } from "bcrypt";
-//import { passwordGenerator } from "../lib/password-generator";
+
+import { passwordGenerator } from "../lib/password-generator";
+import { Resend } from "resend";
+import { UserRegistrationTemplate } from "../email/user-registration";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**export async function createManyStudentsHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createStudentSchema>[] }>,
@@ -38,24 +43,40 @@ export async function createStudentHandler(
   reply: FastifyReply,
 ) {
   try {
-    const { qualificationId, email, name, code, ...rest } = request.body;
+    const {
+      qualificationId,
+      email,
+      name,
+      code,
+      status,
+      approvalStatus,
+      ...rest
+    } = request.body;
 
-    const existingStudent = await prisma.student.findFirst({
+    const existingStudentCode = await prisma.student.findFirst({
       where: {
-        OR: [{ code }, { email }],
+        code,
       },
     });
 
-    if (existingStudent) {
-      return reply
-        .status(400)
-        .send({ message: "Student code already registered" });
+    if (existingStudentCode) {
+      return reply.status(409).send({
+        errorCode: "STUDENT_CODE_ALREADY_REGISTERED",
+        message: "Student with same code already registered",
+      });
     }
 
-    if (!email) {
-      return reply
-        .status(400)
-        .send({ message: "Email is required to create login user" });
+    const existingStudentEmail = await prisma.student.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (existingStudentEmail) {
+      return reply.status(409).send({
+        errorCode: "STUDENT_EMAIL_ALREADY_REGISTERED",
+        message: "Student with same email already registered",
+      });
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -63,20 +84,21 @@ export async function createStudentHandler(
     });
 
     if (existingUser) {
-      return reply
-        .status(400)
-        .send({ message: "Email already registered as user" });
+      return reply.status(409).send({
+        errorCode: "USER_EMAIL_REGISTERED",
+        message: "Email already registered as user",
+      });
     }
 
-    /**const password = passwordGenerator({
+    const password = passwordGenerator({
       passwordLength: 8,
       useLowerCase: true,
       useNumbers: true,
       useSymbols: false,
       useUpperCase: true,
-    }); */
+    });
 
-    const hashedPassword = await hash("IABIL2025", 10);
+    const hashedPassword = await hash(password, 10);
 
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
@@ -97,19 +119,45 @@ export async function createStudentHandler(
           email: email.toLowerCase().trim(),
           qualificationId,
           userId: user.id,
+          approvalStatus,
+          status,
         },
       });
 
-      return { user, student };
+      const { data: emailData, error } = await resend.emails.send({
+        from: "IAbil <gestao.academica@iabil.co.mz>",
+        to: [email],
+        subject: "Registration Confirmation on the IABIl Platform",
+        react: UserRegistrationTemplate({
+          name: name,
+          email: email.toLowerCase().trim(),
+          password: password,
+          platformName: "IABil",
+          loginUrl: "https://iabil.co.mz/login",
+          role: "STUDENT",
+        }) as React.ReactElement,
+      });
+
+      if (error) {
+        return reply.status(500).send({
+          errorCode: "EMAIL_SENDING_ERROR",
+          message: "An error ocurred sending email",
+        });
+      }
+
+      return { user, student, emailId: emailData?.id };
     });
 
     return reply.status(201).send({
-      message: "Student and User created",
+      message: "Student created successfully",
       student: result.student,
+      emailId: result.emailId,
     });
   } catch (error) {
     console.error("Error creating student:", error);
-    return reply.status(500).send({ message: "Internal server error" });
+    return reply
+      .status(500)
+      .send({ errorCode: "SERVER_ERROR", message: "Internal server error" });
   }
 }
 

@@ -65,18 +65,20 @@ export const userWithRelationsSchema = z.lazy(() =>
 );
 
 export const createStudentSchema = z.object({
-  code: z.string().min(1, "Code is required"),
   name: z.string().min(1, "Name is required"),
-  gender: z.enum(["MALE", "FEMALE"]),
+  gender: z.enum(["MALE", "FEMALE"]).optional(),
   scholarship: z.string().optional(),
   financier: z.string().optional().nullable(),
   qualificationId: z.string().min(1, "QualificationID is required"),
   specialty: z.string().optional().nullable(),
+  email: z.email("Invalid email"),
+  status: z.enum(["ACTIVE", "INACTIVE", "GRADUETED"]),
+  approvalStatus: z.enum(["PENDING", "APPROVED", "NOT_APPROVED"]),
 
+  code: z.string().min(1, "Code is required"),
   birthProvince: z.string().optional().nullable(),
   birthDate: z.union([z.coerce.date(), z.date()]).optional().nullable(),
   idNumber: z.coerce.string().optional().nullable(),
-  email: z.email("Invalid email"),
   phone1: z.coerce.string().optional().nullable(),
   phone2: z.coerce.string().optional().nullable(),
   fatherAffiliation: z.string().optional().nullable(),
@@ -84,7 +86,6 @@ export const createStudentSchema = z.object({
   guardianName: z.string().optional().nullable(),
   guardianAddress: z.string().optional().nullable(),
   guardianPhone: z.coerce.string().optional().nullable(),
-  status: z.string().optional().nullable(),
   actualProvince: z.string().optional().nullable(),
   actualDistrict: z.string().optional().nullable(),
   currentOccupation: z.string().optional().nullable(),

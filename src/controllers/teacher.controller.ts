@@ -1,12 +1,17 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { prisma } from "../lib/db";
-import { hash } from "bcrypt";
-import { passwordGenerator } from "../lib/password-generator"; // ajuste para seu caminho
 import z from "zod";
+import { Resend } from "resend";
+import { hash } from "bcrypt";
+
+import { prisma } from "../lib/db";
+import { passwordGenerator } from "../lib/password-generator";
 import {
   createTeacherSchema,
   updateTeacherSchema,
 } from "../schemas/teacher.schema";
+import { UserRegistrationTemplate } from "../email/user-registration";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function createTeacherHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createTeacherSchema> }>,
@@ -22,34 +27,27 @@ export async function createTeacherHandler(
     ]);
 
     if (existingTeacherByEmail) {
-      return reply.status(400).send({
+      return reply.status(409).send({
+        errorCode: "TEACHER_REGISTERED",
         message: "There is already a teacher with this email address..",
       });
     }
     if (existingUserByEmail) {
-      return reply
-        .status(400)
-        .send({ message: "A user with this email address already exists." });
-    }
-
-    if (email) {
-      const existingByCode = await prisma.teacher.findUnique({
-        where: { email },
+      return reply.status(409).send({
+        errorCode: "USER_REGISTERED",
+        message: "A user with this email address already exists.",
       });
-      if (existingByCode) {
-        return reply.status(400).send({ message: "Teacher alreade existis." });
-      }
     }
 
-    /**const plainPassword = passwordGenerator({
+    const password = passwordGenerator({
       passwordLength: 8,
       useLowerCase: true,
       useNumbers: true,
       useSymbols: false,
       useUpperCase: true,
-    }); */
+    });
 
-    const hashedPassword = await hash("IABIL2025", 10);
+    const hashedPassword = await hash(password, 10);
 
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
@@ -72,19 +70,42 @@ export async function createTeacherHandler(
           department: department ?? null,
           userId: user.id,
         },
-        include: { user: true },
       });
 
-      return { teacher, user };
+      const { data: emailData, error } = await resend.emails.send({
+        from: "IAbil <gestao.academica@iabil.co.mz>",
+        to: [email],
+        subject: "Registration Confirmation on the IABIl Platform",
+        react: UserRegistrationTemplate({
+          name: name,
+          email: email.toLowerCase().trim(),
+          password: password,
+          platformName: "IABil",
+          loginUrl: "https://iabil.co.mz/login",
+          role: "TEACHER",
+        }) as React.ReactElement,
+      });
+
+      if (error) {
+        return reply.status(500).send({
+          errorCode: "EMAIL_SENDING_ERROR",
+          message: "An error ocurred sending email",
+        });
+      }
+
+      return { teacher, user, emailId: emailData.id };
     });
 
     return reply.status(201).send({
-      message: "Teacher and user successfully created.",
+      message: "Teacher created successfully.",
       teacher: result.teacher,
+      emailId: result.emailId,
     });
   } catch (error: any) {
     console.error(error);
-    return reply.status(500).send({ message: "Internal server error" });
+    return reply
+      .status(500)
+      .send({ errorCode: "SERVER_ERROR", message: "Internal server error" });
   }
 }
 

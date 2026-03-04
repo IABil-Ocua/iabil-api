@@ -10,30 +10,79 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+/**
+ * ======== ENUMS =======
+ */
+
+enum UserRole {
+  SUPER_ADMIN //Cria admins e tem todas as permissões do Admin
+  ADMIN //Cria student e teacher, cria qualificações e níveis, cria eventos e artigos, cria bolsas de estudo e vagas, cria qualificaçnao faz a gestão de conselho de gestão e direção, faz a gestão de parceiros
+  STUDENT //Cria artigo e eventos (mas ficam como "Unpublished" o Admin é que deve verificar e publicar)
+  TEACHER //Cria artigos e eventos
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  GRADUETED
+}
+
+enum StudentApprovalStatus {
+  PENDING
+  APPROVED
+  NOT_APPROVED
+}
+
+enum EventType {
+  TRAINING
+  SEMINAR
+  CONFERENCE
+}
+
+enum ArticleType {
+  INNOVATION
+  PUBLICATION
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ScholarshipStatus {
+  ACTIVE
+  INACTIVE
+  CLOSED
+}
+
+/**
+ * ======= MODELS ====
+ */
+
 model User {
-  id        String    @id @default(cuid())
-  name      String
-  username  String    @unique
-  email     String    @unique
-  role      UserRole  @default(STUDENT)
-  password  String
-  avatar    String?
-  cover     String?
-  birthDate DateTime? @map("birth_date")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id       String   @id @default(cuid())
+  name     String
+  username String   @unique
+  email    String   @unique
+  role     UserRole @default(STUDENT)
+  password String
+  avatar   String?
 
   student  Student?
   teacher  Teacher?
   articles Article[]
   events   Event[]
 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   @@map("users")
 }
 
 model Student {
   id                String                @id @default(cuid())
-  code              String                @unique
+  code              String?               @unique
   name              String
   gender            String?
   scholarship       String?
@@ -50,7 +99,7 @@ model Student {
   guardianName      String?               @map("guardian_name")
   guardianAddress   String?               @map("guardian_address")
   guardianPhone     String?               @map("guardian_phone")
-  status            String?
+  status            StudentStatus         @default(ACTIVE)
   actualProvince    String?               @map("actual_province")
   actualDistrict    String?               @map("actual_district")
   currentOccupation String?               @map("current_occupation")
@@ -73,9 +122,7 @@ model Student {
   level3            String?               @map("level_3")
   completionYear3   String?               @map("completion_year_3")
   observation3      String?               @map("observation_3")
-  createdAt         DateTime              @default(now()) @map("created_at")
-  updatedAt         DateTime              @updatedAt @map("updated_at")
-  approvalStatus    StudentApprovalStatus @default(NOT_APPROVED) @map("approval_status")
+  approvalStatus    StudentApprovalStatus @default(PENDING) @map("approval_status")
   qualificationId   String                @map("qualification_id")
   qualification     Qualification         @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
 
@@ -85,17 +132,21 @@ model Student {
   chapterProgresses ChapterProgress[]
   moduleProgresses  ModuleProgress[]
 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   @@map("students")
 }
 
 model Teacher {
-  id            String  @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String
-  email         String  @unique
-  phoneNumber   String? @map("phone_number")
-  academicTitle String? @map("academic_title")
+  email         String    @unique
+  phoneNumber   String?   @map("phone_number")
+  academicTitle String?   @map("academic_title")
   specialty     String?
   department    String?
+  birthDate     DateTime? @map("birth_date")
 
   userId String @unique @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -318,45 +369,4 @@ model Scholarship {
   updatedAt   DateTime          @updatedAt @map("updated_at")
 
   @@map("scholarships")
-}
-
-enum UserRole {
-  ADMIN
-  STUDENT
-  GRADUETE
-  TEACHER
-}
-
-enum StudentStatus {
-  ACTIVE
-  INACTIVE
-  GRADUETED
-}
-
-enum StudentApprovalStatus {
-  APPROVED
-  NOT_APPROVED
-}
-
-enum EventType {
-  TRAINING
-  SEMINAR
-  CONFERENCE
-}
-
-enum ArticleType {
-  INNOVATION
-  PUBLICATION
-}
-
-enum ArticleStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-enum ScholarshipStatus {
-  ACTIVE
-  INACTIVE
-  CLOSED
 }

@@ -107,7 +107,7 @@ export async function registerUserHandler(
   reply: FastifyReply,
 ) {
   try {
-    const { email, name, role, birthDate, avatar } = request.body;
+    const { email, name, role, avatar } = request.body;
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -127,7 +127,7 @@ export async function registerUserHandler(
       useUpperCase: true,
     });
 
-    const hashedPassword = await hash("IABIL2025", 10);
+    const hashedPassword = await hash(generatedPassword, 10);
 
     const user = await prisma.user.create({
       data: {
@@ -137,12 +137,11 @@ export async function registerUserHandler(
         role: role,
         username: email.toLowerCase().trim(),
         avatar,
-        birthDate,
       },
     });
 
     const { data: emailData, error } = await resend.emails.send({
-      from: "IAbil <plataforna@iabil.co.mz>",
+      from: "IAbil <gestao.academica@iabil.co.mz>",
       to: [email],
       subject: "Registration Confirmation on the IABIl Platform",
       react: UserRegistrationTemplate({

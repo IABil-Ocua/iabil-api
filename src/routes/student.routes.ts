@@ -1,4 +1,4 @@
-import z, { coerce } from "zod";
+import { z } from "zod";
 import { FastifyTypedInstance } from "../types/zod";
 
 import {
@@ -135,13 +135,14 @@ export async function studentRoutes(app: FastifyTypedInstance) {
               }),
             })
             .describe("Student created successfully"), */
-          400: z.object({ message: z.string() }).describe("Bad request"),
+          400: z
+            .object({ errorCode: z.string(), message: z.string() })
+            .describe("Bad request"),
           409: z
-            .object({ message: z.string() })
-            .describe("Student code or email exists"),
-
+            .object({ errorCode: z.string(), message: z.string() })
+            .describe("Conflict"),
           500: z
-            .object({ message: z.string() })
+            .object({ errorCode: z.string(), message: z.string() })
             .describe("Internal server error"),
         },
       },
