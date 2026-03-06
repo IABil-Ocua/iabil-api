@@ -1,15 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../lib/db";
 import z from "zod";
-import {
-  createQuizzSchema,
-  quizzSchema,
-  updateQuizzSchema,
-} from "../schemas/quizz.schema";
+import { createQuizzSchema, updateQuizzSchema } from "../schemas/quizz.schema";
 
 export async function fetchQuizzesHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const quizzes = await prisma.quizz.findMany({
@@ -29,7 +25,7 @@ export async function fetchQuizzesHandler(
 
 export async function fetchQuizzHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -62,7 +58,7 @@ export async function fetchQuizzHandler(
 
 export async function fetchQuizzByChapterHandler(
   request: FastifyRequest<{ Params: { chapterId: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { chapterId } = request.params;
@@ -95,7 +91,7 @@ export async function fetchQuizzByChapterHandler(
 
 export async function createQuizzHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createQuizzSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { name, chapterId } = request.body;
@@ -121,7 +117,7 @@ export async function updateQuizzHandler(
     Params: { id: string };
     Body: z.infer<typeof updateQuizzSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -163,7 +159,7 @@ export async function updateQuizzHandler(
 
 export async function deleteQuizzHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params as { id: string };

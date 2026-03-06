@@ -1,6 +1,5 @@
-// plugins/jwt.ts
 import fp from "fastify-plugin";
-import jwt, { FastifyJWT } from "@fastify/jwt";
+import jwt from "@fastify/jwt";
 import { FastifyReply, FastifyRequest } from "fastify";
 import "@fastify/jwt";
 
@@ -20,7 +19,7 @@ export default fp(async (fastify) => {
     secret: process.env.JWT_SECRET || "super-secret",
   });
 
-  // Decorador de autenticação com Authorization: Bearer
+  // Authentication decorator with Authorization: Bearer
   fastify.decorate(
     "authenticate",
     async function (request: FastifyRequest, reply: FastifyReply) {
@@ -29,11 +28,11 @@ export default fp(async (fastify) => {
       } catch (err) {
         reply.code(401).send({ message: "Unauthorized" });
       }
-    }
+    },
   );
 });
 
-// Extensões de tipos do Fastify
+// Fastify type extensions
 declare module "fastify" {
   interface FastifyInstance {
     authenticate: any;

@@ -8,7 +8,7 @@ import {
 
 export async function fetchQualificationsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const qualifications = await prisma.qualification.findMany({
@@ -27,7 +27,7 @@ export async function fetchQualificationsHandler(
 
 export async function fetchQualificationHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params as { id: string };
@@ -61,7 +61,7 @@ export async function fetchQualificationHandler(
 
 export async function createQualificationHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createQualificationSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { credits, workload, knowledgeAreas, name, bannerUrl, description } =
@@ -89,7 +89,7 @@ export async function createQualificationHandler(
 
 export async function updateQualificationHandler(
   request: FastifyRequest<{ Body: z.infer<typeof updateQualificationSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params as { id: string };
@@ -138,7 +138,7 @@ export async function updateQualificationHandler(
 
 export async function deleteQualificationHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params as { id: string };

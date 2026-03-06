@@ -1,64 +1,92 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import z from "zod";
+import * as z from "zod";
 import ExcelJS from "exceljs";
+import { hash } from "bcrypt";
 
 import { prisma } from "../lib/db";
-import { createStudentSchema, studentSchema } from "../schemas/student.schema";
-import { hash } from "bcrypt";
-import { passwordGenerator } from "../lib/password-generator";
+import {
+  createStudentSchema,
+  updateStudentSchema,
+} from "../schemas/student.schema";
 
-export async function createManyStudentsHandler(
+import { passwordGenerator } from "../lib/password-generator";
+import { Resend } from "resend";
+import { UserRegistrationTemplate } from "../email/user-registration";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+/**export async function createManyStudentsHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createStudentSchema>[] }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const studentsData = request.body;
+
+
 
     const createdStudents = await prisma.student.createMany({
       data: studentsData,
     });
 
     return reply.status(201).send({
-      message: "Estudantes cadastrados com sucesso!",
+      message: "Students registered successfully!",
       students: createdStudents,
     });
   } catch (error) {
     console.error("Error creating students:", error);
     return reply.status(500).send({ message: "Internal server error", error });
   }
-}
+} */
 
 export async function createStudentHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createStudentSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
-    const { name, qualificationId, completionYear3, email, phone1, code } =
-      request.body;
+    const {
+      qualificationId,
+      email,
+      name,
+      code,
+      status,
+      approvalStatus,
+      ...rest
+    } = request.body;
 
-    const existingStudent = await prisma.student.findUnique({
+    const existingStudentCode = await prisma.student.findFirst({
       where: {
         code,
       },
     });
 
-    const qualification = await prisma.qualification.findUnique({
+    if (existingStudentCode) {
+      return reply.status(409).send({
+        errorCode: "STUDENT_CODE_ALREADY_REGISTERED",
+        message: "Student with same code already registered",
+      });
+    }
+
+    const existingStudentEmail = await prisma.student.findFirst({
       where: {
-        id: qualificationId,
+        email,
       },
     });
 
-    if (!existingStudent) {
-      await prisma.student.create({
-        data: {
-          name,
-          qualificationId,
-          qualificationName: qualification ? qualification?.name : "",
-          completionYear3,
-          email,
-          phone1,
-          code,
-        },
+    if (existingStudentEmail) {
+      return reply.status(409).send({
+        errorCode: "STUDENT_EMAIL_ALREADY_REGISTERED",
+        message: "Student with same email already registered",
+      });
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+    });
+
+    if (existingUser) {
+      return reply.status(409).send({
+        errorCode: "USER_EMAIL_REGISTERED",
+        message: "Email already registered as user",
       });
     }
 
@@ -72,26 +100,70 @@ export async function createStudentHandler(
 
     const hashedPassword = await hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        email: email!,
-        name,
-        password: hashedPassword,
-        username: email!,
-        role: "STUDENT",
-      },
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: email.toLowerCase().trim(),
+          name,
+          password: hashedPassword,
+          username: email.toLowerCase().trim(),
+          role: "STUDENT",
+        },
+      });
+
+      const student = await tx.student.create({
+        data: {
+          ...rest,
+          name,
+          code,
+          email: email.toLowerCase().trim(),
+          qualificationId,
+          userId: user.id,
+          approvalStatus,
+          status,
+        },
+      });
+
+      const { data: emailData, error } = await resend.emails.send({
+        from: "IAbil <gestao.academica@iabil.co.mz>",
+        to: [email],
+        subject: "Registration Confirmation on the IABIl Platform",
+        react: UserRegistrationTemplate({
+          name: name,
+          email: email.toLowerCase().trim(),
+          password: password,
+          platformName: "IABil",
+          loginUrl: "https://iabil.co.mz/login",
+          role: "STUDENT",
+        }) as React.ReactElement,
+      });
+
+      if (error) {
+        return reply.status(500).send({
+          errorCode: "EMAIL_SENDING_ERROR",
+          message: "An error ocurred sending email",
+        });
+      }
+
+      return { user, student, emailId: emailData?.id };
     });
 
-    return reply.status(201).send({ message: "ok", user });
+    return reply.status(201).send({
+      message: "Student created successfully",
+      student: result.student,
+      emailId: result.emailId,
+    });
   } catch (error) {
     console.error("Error creating student:", error);
-    return reply.status(500).send({ message: "Internal server error", error });
+    return reply
+      .status(500)
+      .send({ errorCode: "SERVER_ERROR", message: "Internal server error" });
   }
 }
 
 export async function fetchStudentsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const students = await prisma.student.findMany({
@@ -112,7 +184,7 @@ export async function fetchStudentByIdHandler(
   request: FastifyRequest<{
     Params: { id: string };
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -141,25 +213,25 @@ export async function fetchStudentByIdHandler(
 
 export async function exportExcelHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const students = await prisma.student.findMany();
 
-    //Criar um workbook e uma sheet
+    //Create a workbook and a sheet
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Estudantes");
+    const worksheet = workbook.addWorksheet("Students");
 
-    //Cabeçalhos das colunas
+    //Column headers
     worksheet.columns = [
       { header: "ID", key: "id", width: 35 },
-      { header: "Nome", key: "name", width: 25 },
-      { header: "Código", key: "code", width: 15 },
-      { header: "Gênero", key: "gender", width: 10 },
+      { header: "Name", key: "name", width: 25 },
+      { header: "Code", key: "code", width: 15 },
+      { header: "Gender", key: "gender", width: 10 },
       { header: "Email", key: "email", width: 25 },
     ];
 
-    //Adicionar as linhas
+    //Add the rows
     students.forEach((student) => worksheet.addRow(student));
 
     // Preparar resposta
@@ -168,7 +240,7 @@ export async function exportExcelHandler(
     reply
       .header(
         "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       )
       .header("Content-Disposition", "attachment; filename=students.xlsx")
       .status(200)
@@ -177,16 +249,16 @@ export async function exportExcelHandler(
     console.log(error);
     return reply
       .status(500)
-      .send({ message: "Ocorreu um erro interno no servidor", error });
+      .send({ message: "An internal server error occurred", error });
   }
 }
 
 export async function updateStudentHandler(
   request: FastifyRequest<{
-    Body: z.infer<typeof studentSchema>;
+    Body: z.infer<typeof updateStudentSchema>;
     Params: { id: string };
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -223,7 +295,7 @@ export async function updateStudentHandler(
 
         return student;
       },
-      { timeout: 20000 }
+      { timeout: 20000 },
     );
 
     return reply
@@ -239,7 +311,7 @@ export async function deleteStudentHandler(
   request: FastifyRequest<{
     Params: { id: string };
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -266,7 +338,7 @@ export async function deleteStudentHandler(
           },
         });
       },
-      { timeout: 20000 }
+      { timeout: 20000 },
     );
 
     return reply.status(200).send({ message: "Student deleted successfully" });

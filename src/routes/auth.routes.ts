@@ -1,6 +1,33 @@
+import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
+
 import { loginHandler } from "../controllers/user.controller";
+import { loginSchema } from "../schemas/user.schema";
 
 export async function authRoutes(app: FastifyTypedInstance) {
-  app.post("/login", loginHandler);
+  app.post(
+    "/login",
+    {
+      schema: {
+        tags: ["auth"],
+        description: "Authenticate user and return JWT token",
+        body: loginSchema,
+        response: {
+          /**200: z
+            .object({
+              message: z.string(),
+              token: z.string(),
+            })
+            .describe("Login successful"), */
+          401: z
+            .object({ message: z.string() })
+            .describe("Invalid credentials"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    loginHandler,
+  );
 }

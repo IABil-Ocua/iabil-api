@@ -1,63 +1,60 @@
 import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
-
 import {
-  createQualificationHandler,
-  deleteQualificationHandler,
-  fetchQualificationHandler,
-  fetchQualificationsHandler,
-  updateQualificationHandler,
-} from "../controllers/qualification.controller";
-
+  createModuleHandler,
+  deleteModuleHandler,
+  fetchModuleHandler,
+  fetchModulesHandler,
+  updateModuleHandler,
+} from "../controllers/module.controller";
 import {
-  createQualificationSchema,
-  qualificationSchema,
-  qualificationWithRelationsSchema,
-  updateQualificationSchema,
-} from "../schemas/qualification.schema";
+  createModuleSchema,
+  moduleSchema,
+  moduleWithRelationsSchema,
+  updateModuleSchema,
+} from "../schemas/module.schema";
 
-export async function qualificationRoutes(app: FastifyTypedInstance) {
+export async function moduleRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Fetch all Qualifications",
+        tags: ["modules"],
+        description: "Fetch all modules",
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
-              qualifications: z.array(qualificationWithRelationsSchema),
+              modules: z.array(moduleWithRelationsSchema),
             })
-            .describe("Qualifications fetched successfully"),
+            .describe("Modules fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    fetchQualificationsHandler,
+    fetchModulesHandler,
   );
 
   app.get(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Fetch Qualification by ID",
+        tags: ["modules"],
+        description: "Fetch module by ID",
         params: z.object({
-          id: z.cuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Module unique identifier"),
         }),
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
-              qualification: qualificationWithRelationsSchema,
+              module: moduleWithRelationsSchema,
             })
-            .describe("Qualification fetched successfully"),
-          400: z.object({ message: z.string() }).describe("Bad request"),
+            .describe("Module fetched successfully"), */
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
             .object({ message: z.string() })
@@ -65,7 +62,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchQualificationHandler,
+    fetchModuleHandler,
   );
 
   app.post(
@@ -73,24 +70,25 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Create Qualification",
-        body: createQualificationSchema,
+        tags: ["modules"],
+        description: "Create module",
+        body: createModuleSchema,
         response: {
           201: z
             .object({
               message: z.string(),
-              qualification: qualificationSchema,
+              module: moduleSchema,
             })
-            .describe("Qualification created successfully"),
+            .describe("Module created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
+          404: z.object({ message: z.string() }).describe("Not found"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    createQualificationHandler,
+    createModuleHandler,
   );
 
   app.put(
@@ -98,19 +96,19 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Update Qualification",
+        tags: ["modules"],
+        description: "Update module",
         params: z.object({
-          id: z.cuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Module unique identifier"),
         }),
-        body: updateQualificationSchema,
+        body: updateModuleSchema,
         response: {
           200: z
             .object({
               message: z.string(),
-              qualification: qualificationSchema,
+              module: moduleSchema,
             })
-            .describe("Qualification updated successfully"),
+            .describe("Module updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -119,7 +117,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    updateQualificationHandler,
+    updateModuleHandler,
   );
 
   app.delete(
@@ -127,15 +125,17 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Delete qualification by ID",
+        tags: ["modules"],
+        description: "Delete module",
         params: z.object({
-          id: z.cuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Module unique identifier"),
         }),
         response: {
           200: z
-            .object({ message: z.string() })
-            .describe("Qualification deleted successfully"),
+            .object({
+              message: z.string(),
+            })
+            .describe("Module deleted successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -144,6 +144,6 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    deleteQualificationHandler,
+    deleteModuleHandler,
   );
 }

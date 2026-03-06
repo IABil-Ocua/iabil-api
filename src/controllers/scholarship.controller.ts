@@ -3,12 +3,12 @@ import z from "zod";
 import {
   createScholarshipSchema,
   updateScholarshipSchema,
-} from "../schemas/shcolarship.schema";
+} from "../schemas/scholarship.schema";
 import { prisma } from "../lib/db";
 
 export async function createScholarshipHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createScholarshipSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const {
@@ -36,18 +36,18 @@ export async function createScholarshipHandler(
     });
 
     return reply.code(201).send({
-      message: "Bolsa criada com sucesso!",
+      message: "Scholarship created successfully!",
       scholarship,
     });
   } catch (error) {
     console.error(error);
-    return reply.code(500).send({ message: "Erro ao criar bolsa" });
+    return reply.code(500).send({ message: "Error creating scholarship" });
   }
 }
 
 export async function getScholarshipsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const scholarships = await prisma.scholarship.findMany({
@@ -59,13 +59,13 @@ export async function getScholarshipsHandler(
     return reply.status(200).send({ message: "ok", scholarships });
   } catch (error) {
     console.error(error);
-    return reply.code(500).send({ message: "Erro ao buscar bolsas" });
+    return reply.code(500).send({ message: "Error fetching scholarships" });
   }
 }
 
 export async function getScholarshipByIdHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const { id } = request.params;
   try {
@@ -74,13 +74,13 @@ export async function getScholarshipByIdHandler(
     });
 
     if (!scholarships) {
-      return reply.status(404).send({ message: "Bolsa não encontrada" });
+      return reply.status(404).send({ message: "Scholarship not found" });
     }
 
-    return reply.status(200).send({ message: "ok", scholarships });
+    return reply.status(200).send({ message: "ok", scholarship: scholarships });
   } catch (error) {
     console.error(error);
-    return reply.code(500).send({ message: "Erro ao buscar bolsa" });
+    return reply.code(500).send({ message: "Error fetching scholarship" });
   }
 }
 
@@ -89,7 +89,7 @@ export async function updateScholarshipHandler(
     Params: { id: string };
     Body: z.infer<typeof updateScholarshipSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const { id } = request.params;
   const {
@@ -109,7 +109,7 @@ export async function updateScholarshipHandler(
     });
 
     if (!existingScholarship) {
-      return reply.status(404).send({ message: "Bolsa não encontrada" });
+      return reply.status(404).send({ message: "Scholarship not found" });
     }
 
     const scholarship = await prisma.scholarship.update({
@@ -130,16 +130,16 @@ export async function updateScholarshipHandler(
 
     return reply
       .status(200)
-      .send({ message: "Bolsa actualizada com sucesso", scholarship });
+      .send({ message: "Scholarship updated successfully", scholarship });
   } catch (error) {
     console.log(error);
-    return reply.code(500).send({ message: "Erro ao atualizar bolsa" });
+    return reply.code(500).send({ message: "Error updating scholarship" });
   }
 }
 
 export async function deleteScholarshipHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -149,7 +149,7 @@ export async function deleteScholarshipHandler(
     });
 
     if (!existingScholarship) {
-      return reply.status(404).send({ message: "Bolsa não encontrada" });
+      return reply.status(404).send({ message: "Scholarship not found" });
     }
 
     await prisma.scholarship.delete({
@@ -158,8 +158,10 @@ export async function deleteScholarshipHandler(
       },
     });
 
-    return reply.status(200).send({ message: "Bolsa eliminada com sucesso" });
+    return reply
+      .status(200)
+      .send({ message: "Scholarship deleted successfully" });
   } catch (error) {
-    return reply.code(500).send({ message: "Erro ao remover bolsa" });
+    return reply.code(500).send({ message: "Error deleting scholarship" });
   }
 }

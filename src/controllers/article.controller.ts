@@ -8,7 +8,7 @@ import z from "zod";
 
 export const createArticleHandler = async (
   request: FastifyRequest<{ Body: z.infer<typeof createArticleSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const {
@@ -41,34 +41,42 @@ export const createArticleHandler = async (
 
     return reply
       .status(201)
-      .send({ message: "Artigo criado com sucesso.", article });
+      .send({ message: "Article created successfully.", article });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao criar o artigo." });
+    return reply.status(500).send({ message: "Error creating the article." });
   }
 };
 
 export const getArticlesHandler = async (
   rquest: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const articles = await prisma.article.findMany({
       relationLoadStrategy: "query",
       orderBy: { createdAt: "desc" },
-      include: { author: { select: { id: true, name: true, email: true } } },
+      include: { author: true },
     });
 
-    return reply.status(200).send({ message: "ok", articles });
+    const safeArticles = articles.map((article) => {
+      const { password, ...userWithoutPassword } = article.author;
+      return {
+        ...article,
+        author: userWithoutPassword,
+      };
+    });
+
+    return reply.status(200).send({ message: "ok", articles: safeArticles });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao buscar artigos." });
+    return reply.status(500).send({ message: "Error fetching articles." });
   }
 };
 
 export const getRecentArticlesHandler = async (
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const articles = await prisma.article.findMany({
@@ -81,13 +89,13 @@ export const getRecentArticlesHandler = async (
     console.error(error);
     return reply
       .status(500)
-      .send({ message: "Erro ao buscar artigos recentes." });
+      .send({ message: "Error fetching recent articles." });
   }
 };
 
 export const getArticleByIdHandler = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const { id } = request.params;
@@ -99,12 +107,18 @@ export const getArticleByIdHandler = async (
     });
 
     if (!article)
-      return reply.status(404).send({ message: "Artigo não encontrado." });
+      return reply.status(404).send({ message: "Article not found." });
 
-    return reply.status(200).send({ message: "ok", article });
+    const { password, ...userWithoutPassword } = article.author;
+    const safeArticle = {
+      ...article,
+      author: userWithoutPassword,
+    };
+
+    return reply.status(200).send({ message: "ok", article: safeArticle });
   } catch (error) {
     console.error(error);
-    return reply.status(500).send({ message: "Erro ao buscar o artigo." });
+    return reply.status(500).send({ message: "Error fetching the article." });
   }
 };
 
@@ -114,7 +128,7 @@ export const updateArticleHandler = async (
     Params: { id: string };
     Body: z.infer<typeof updateArticleSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const { id } = request.params;
@@ -148,9 +162,10 @@ export const updateArticleHandler = async (
       },
     });
 
-    return reply
-      .status(200)
-      .send({ message: "Article updated successfully.", updatedArticle });
+    return reply.status(200).send({
+      message: "Article updated successfully.",
+      article: updatedArticle,
+    });
   } catch (error) {
     console.error(error);
     return reply.status(500).send({ message: "Error updating article." });
@@ -159,7 +174,7 @@ export const updateArticleHandler = async (
 
 export const deleteArticleHandler = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   try {
     const { id } = request.params;

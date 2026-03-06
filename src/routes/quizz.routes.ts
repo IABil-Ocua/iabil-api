@@ -2,61 +2,60 @@ import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
 
 import {
-  createQualificationHandler,
-  deleteQualificationHandler,
-  fetchQualificationHandler,
-  fetchQualificationsHandler,
-  updateQualificationHandler,
-} from "../controllers/qualification.controller";
-
+  createQuizzHandler,
+  deleteQuizzHandler,
+  fetchQuizzHandler,
+  fetchQuizzesHandler,
+  updateQuizzHandler,
+} from "../controllers/quizz.controller";
 import {
-  createQualificationSchema,
-  qualificationSchema,
-  qualificationWithRelationsSchema,
-  updateQualificationSchema,
-} from "../schemas/qualification.schema";
+  quizzSchema,
+  createQuizzSchema,
+  updateQuizzSchema,
+  quizzWithRelationsSchema,
+} from "../schemas/quizz.schema";
 
-export async function qualificationRoutes(app: FastifyTypedInstance) {
+export async function quizzRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Fetch all Qualifications",
+        tags: ["quizzes"],
+        description: "Fetch all quizzes",
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
-              qualifications: z.array(qualificationWithRelationsSchema),
+              quizzes: z.array(quizzWithRelationsSchema),
             })
-            .describe("Qualifications fetched successfully"),
+            .describe("Quizzes fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    fetchQualificationsHandler,
+    fetchQuizzesHandler,
   );
 
   app.get(
     "/:id",
     {
-      //preHandler: app.authenticate,
+      preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Fetch Qualification by ID",
+        tags: ["quizzes"],
+        description: "Fetch quiz by ID",
         params: z.object({
-          id: z.cuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Quiz unique identifier"),
         }),
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
-              qualification: qualificationWithRelationsSchema,
+              quizz: quizzSchema,
             })
-            .describe("Qualification fetched successfully"),
+            .describe("Quizz fetched successfully"), */
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -65,7 +64,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchQualificationHandler,
+    fetchQuizzHandler,
   );
 
   app.post(
@@ -73,16 +72,16 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Create Qualification",
-        body: createQualificationSchema,
+        tags: ["quizzes"],
+        description: "Create quiz",
+        body: createQuizzSchema,
         response: {
           201: z
             .object({
               message: z.string(),
-              qualification: qualificationSchema,
+              quizz: quizzSchema,
             })
-            .describe("Qualification created successfully"),
+            .describe("Quizz created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           500: z
             .object({ message: z.string() })
@@ -90,7 +89,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createQualificationHandler,
+    createQuizzHandler,
   );
 
   app.put(
@@ -98,19 +97,19 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Update Qualification",
+        tags: ["quizzes"],
+        description: "Update quiz by ID",
         params: z.object({
-          id: z.cuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Quiz unique identifier"),
         }),
-        body: updateQualificationSchema,
+        body: updateQuizzSchema,
         response: {
           200: z
             .object({
               message: z.string(),
-              qualification: qualificationSchema,
+              quizz: quizzSchema,
             })
-            .describe("Qualification updated successfully"),
+            .describe("Quizz updated successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -119,7 +118,7 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    updateQualificationHandler,
+    updateQuizzHandler,
   );
 
   app.delete(
@@ -127,15 +126,15 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
     {
       preHandler: app.authenticate,
       schema: {
-        tags: ["qualifications"],
-        description: "Delete qualification by ID",
+        tags: ["quizzes"],
+        description: "Delete quiz by ID",
         params: z.object({
-          id: z.cuid().describe("Qualification unique identifier"),
+          id: z.cuid().describe("Quiz unique identifier"),
         }),
         response: {
           200: z
             .object({ message: z.string() })
-            .describe("Qualification deleted successfully"),
+            .describe("Quiz deleted successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
@@ -144,6 +143,6 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    deleteQualificationHandler,
+    deleteQuizzHandler,
   );
 }

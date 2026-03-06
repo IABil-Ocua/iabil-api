@@ -5,7 +5,7 @@ import z from "zod";
 
 export async function createEventHandler(
   req: FastifyRequest<{ Body: z.infer<typeof createEventSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const {
@@ -44,42 +44,57 @@ export async function createEventHandler(
   }
 }
 
-export async function getEventsHandler(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-  try {
-    const events = await prisma.event.findMany({
-      relationLoadStrategy: "query",
-      orderBy: { startDate: "desc" },
-      include: { createdBy: { select: { id: true, name: true, email: true } } },
-    });
-
-    return reply.status(200).send({ message: "ok", events });
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return reply.status(500).send({ message: "Internal server error", error });
-  }
-}
-
 export async function getEventByIdHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
 
     const event = await prisma.event.findUnique({
       where: { id },
-      include: { createdBy: { select: { id: true, name: true, email: true } } },
+      include: { createdBy: true },
     });
 
     if (!event) return reply.status(404).send({ message: "Event not found" });
 
-    return reply.status(200).send({ message: "ok", event });
+    const { password, ...userWithoutPassword } = event.createdBy;
+
+    const safeEvent = {
+      ...event,
+      createdBy: userWithoutPassword,
+    };
+
+    return reply.status(200).send({ message: "ok", event: safeEvent });
   } catch (error) {
     console.error("Error fetching event:", error);
-    return reply.status(500).send({ message: "Internal server error", error });
+    return reply.status(500).send({ message: "Internal server error" });
+  }
+}
+
+export async function getEventsHandler(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  try {
+    const events = await prisma.event.findMany({
+      relationLoadStrategy: "query",
+      orderBy: { startDate: "desc" },
+      include: { createdBy: true },
+    });
+
+    const safeEvents = events.map((event) => {
+      const { password, ...userWithoutPassword } = event.createdBy;
+      return {
+        ...event,
+        createdBy: userWithoutPassword,
+      };
+    });
+
+    return reply.status(200).send({ message: "ok", events: safeEvents });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return reply.status(500).send({ message: "Internal server error" });
   }
 }
 
@@ -88,7 +103,7 @@ export async function updateEventHandler(
     Params: { id: string };
     Body: z.infer<typeof updateEventSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
@@ -123,10 +138,18 @@ export async function updateEventHandler(
         location,
         organizer,
       },
+      include: { createdBy: true },
     });
+
+    const { password, ...userWithoutPassword } = event.createdBy;
+    const safeEvent = {
+      ...event,
+      createdBy: userWithoutPassword,
+    };
+
     return reply
       .status(200)
-      .send({ message: "Event updated successfully", event });
+      .send({ message: "Event updated successfully", event: safeEvent });
   } catch (error) {
     console.error("Error updating event:", error);
     return reply.status(400).send({ message: "Internal server error", error });
@@ -135,18 +158,17 @@ export async function updateEventHandler(
 
 export async function deleteEventHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
     const existing = await prisma.event.findUnique({ where: { id } });
-    if (!existing)
-      return reply.status(404).send({ error: "Evento não encontrado" });
+    if (!existing) return reply.status(404).send({ error: "Event not found" });
 
     await prisma.event.delete({ where: { id } });
-    return reply.send({ message: "Evento eliminado com sucesso" });
+    return reply.send({ message: "Event deleted successfully" });
   } catch (error) {
-    console.error("Erro ao eliminar evento:", error);
-    return reply.status(500).send({ error: "Falha ao eliminar evento" });
+    console.error("Error deleting event:", error);
+    return reply.status(500).send({ error: "Failed to delete event" });
   }
 }

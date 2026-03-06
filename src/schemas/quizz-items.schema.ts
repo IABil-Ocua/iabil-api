@@ -1,8 +1,8 @@
 import z from "zod";
 import { quizzSchema } from "./quizz.schema";
 
-export const quizzItemSchemaa = z.object({
-  id: z.string(),
+export const quizzItemSchema = z.object({
+  id: z.cuid(),
   question: z.string(),
   option1: z.string(),
   option2: z.string(),
@@ -10,22 +10,22 @@ export const quizzItemSchemaa = z.object({
   option4: z.string().nullable(),
   answer: z.string(),
   quizzId: z.string(),
-  creaedAt: z.coerce.date(),
+  createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
 
 export const quizzItemsWithRelationsSchema = z.lazy(() =>
-  quizzItemSchemaa.extend({
+  quizzItemSchema.extend({
     quizz: quizzSchema,
-  })
+  }),
 );
 
 export const createQuizzItemSchema = z.object({
   question: z.string().min(1, "Question is required"),
   option1: z.string().min(1, "Option 1 is required"),
   option2: z.string().min(1, "Option 1 is required"),
-  option3: z.string().nullable(),
-  option4: z.string().nullable(),
+  option3: z.string().optional(),
+  option4: z.string().optional(),
   answer: z.string().min(1, "Answer is required"),
   quizzId: z.string().min(1, "Quizz ID 1 is required"),
 });

@@ -8,13 +8,45 @@ import {
 
 export async function fetchLevelsHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const levels = await prisma.level.findMany({
       relationLoadStrategy: "query",
       include: {
         qualification: true,
+        modules: true,
+      },
+    });
+
+    return reply.status(200).send({ message: "ok", levels });
+  } catch (error) {
+    console.log("Error fetching levels", error);
+    return reply.status(500).send({ message: "Internal server error", error });
+  }
+}
+
+export async function fetchLevelsByQualificationsHandler(
+  request: FastifyRequest<{ Params: { qualificationId: string } }>,
+  reply: FastifyReply,
+) {
+  try {
+    const { qualificationId } = request.params;
+
+    if (!qualificationId) {
+      return reply
+        .status(400)
+        .send({ message: "Qualification ID not provided" });
+    }
+
+    const levels = await prisma.level.findMany({
+      relationLoadStrategy: "query",
+      include: {
+        qualification: true,
+        modules: true,
+      },
+      where: {
+        qualificationId,
       },
     });
 
@@ -27,7 +59,7 @@ export async function fetchLevelsHandler(
 
 export async function fetchLevelHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -40,6 +72,7 @@ export async function fetchLevelHandler(
       relationLoadStrategy: "query",
       include: {
         qualification: true,
+        modules: true,
       },
       where: {
         id: id,
@@ -59,7 +92,7 @@ export async function fetchLevelHandler(
 
 export async function createLevelHandler(
   request: FastifyRequest<{ Body: z.infer<typeof createLevelSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { noticeUrl, qualificationId, title, description } = request.body;
@@ -87,7 +120,7 @@ export async function updateLevelHandler(
     Params: { id: string };
     Body: z.infer<typeof updateLevelSchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;
@@ -131,7 +164,7 @@ export async function updateLevelHandler(
 
 export async function deleteLevelHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = request.params;

@@ -1,15 +1,20 @@
+import { z } from "zod";
 import { FastifyTypedInstance } from "../types/zod";
-import { studentSchema } from "../schemas/student.schema";
+
+import {
+  studentSchema,
+  createStudentSchema,
+  updateStudentSchema,
+} from "../schemas/student.schema";
 import {
   deleteStudentHandler,
   fetchStudentsHandler,
   fetchStudentByIdHandler,
-  createManyStudentsHandler,
+  //createManyStudentsHandler,
   updateStudentHandler,
   exportExcelHandler,
   createStudentHandler,
 } from "../controllers/student.controller";
-import z from "zod";
 
 export async function studentRoutes(app: FastifyTypedInstance) {
   app.get(
@@ -20,13 +25,20 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         tags: ["students"],
         description: "Fetch all students",
         response: {
+          /**200: z
+            .object({
+              message: z.string(),
+              students: z.array(studentSchema),
+            })
+            .describe("students fetched successfully"), */
+
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    fetchStudentsHandler
+    fetchStudentsHandler,
   );
 
   app.get(
@@ -35,15 +47,17 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Export all students as Excel file",
+        description: "Export all students data as Excel file",
         response: {
+          200: z.unknown().describe("Excel file exported successfully"),
+
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    exportExcelHandler
+    exportExcelHandler,
   );
 
   app.get(
@@ -52,18 +66,30 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Fetch student by ID",
+        description: "Fetch student information by ID",
+        params: z.object({
+          id: z.cuid().describe("Student unique identifier"),
+        }),
         response: {
+          200: z
+            .object({
+              message: z.string(),
+              student: studentSchema,
+            })
+            .describe("Student fetched successfully"),
+
+          404: z.object({ message: z.string() }).describe("Student not found"),
+
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    fetchStudentByIdHandler
+    fetchStudentByIdHandler,
   );
 
-  app.post(
+  /**app.post(
     "/create-many",
     {
       //preHandler: app.authenticate,
@@ -72,6 +98,13 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         description: "Create many students",
         body: z.array(studentSchema),
         response: {
+          201: z
+            .object({
+              message: z.string(),
+              students: z.array(studentSchema),
+            })
+            .describe("students created successfully"),
+
           400: z.object({ message: z.string() }).describe("Bad request"),
           500: z
             .object({ message: z.string() })
@@ -79,8 +112,8 @@ export async function studentRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    createManyStudentsHandler
-  );
+    createManyStudentsHandler,
+  ); */
 
   app.post(
     "/",
@@ -88,37 +121,33 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Creat student",
+        description: "Create new student and associated user account",
+        body: createStudentSchema,
         response: {
-          400: z.object({ message: z.string() }).describe("Bad request"),
+          /**201: z
+            .object({
+              message: z.string(),
+              user: z.object({
+                id: z.cuid(),
+                email: z.string().email(),
+                name: z.string(),
+                role: z.string(),
+              }),
+            })
+            .describe("Student created successfully"), */
+          400: z
+            .object({ errorCode: z.string(), message: z.string() })
+            .describe("Bad request"),
+          409: z
+            .object({ errorCode: z.string(), message: z.string() })
+            .describe("Conflict"),
           500: z
-            .object({ message: z.string() })
+            .object({ errorCode: z.string(), message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    createStudentHandler
-  );
-
-  app.delete(
-    "/:id",
-    {
-      //preHandler: app.authenticate,
-      schema: {
-        tags: ["students"],
-        description: "Delete a student",
-        response: {
-          200: z
-            .object({ message: z.string() })
-            .describe("Student deleted successfully"),
-          404: z.object({ message: z.string() }).describe("students not found"),
-          500: z
-            .object({ message: z.string() })
-            .describe("Internal server error"),
-        },
-      },
-    },
-    deleteStudentHandler
+    createStudentHandler,
   );
 
   app.put(
@@ -127,17 +156,51 @@ export async function studentRoutes(app: FastifyTypedInstance) {
       //preHandler: app.authenticate,
       schema: {
         tags: ["students"],
-        description: "Update a students by ID",
-        body: studentSchema.partial(),
+        description: "Update student information by ID",
+        params: z.object({
+          id: z.cuid().describe("Student unique identifier"),
+        }),
+        body: updateStudentSchema,
         response: {
+          200: z
+            .object({
+              message: z.string(),
+              student: studentSchema,
+            })
+            .describe("Student updated successfully"),
+
           400: z.object({ message: z.string() }).describe("Bad request"),
-          404: z.object({ message: z.string() }).describe("students not found"),
+          404: z.object({ message: z.string() }).describe("Student not found"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    updateStudentHandler
+    updateStudentHandler,
+  );
+
+  app.delete(
+    "/:id",
+    {
+      //preHandler: app.authenticate,
+      schema: {
+        tags: ["students"],
+        description: "Delete a student by ID",
+        params: z.object({
+          id: z.cuid().describe("Student unique identifier"),
+        }),
+        response: {
+          200: z
+            .object({ message: z.string() })
+            .describe("Student deleted successfully"),
+          404: z.object({ message: z.string() }).describe("Student not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    deleteStudentHandler,
   );
 }

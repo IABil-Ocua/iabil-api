@@ -8,12 +8,12 @@ import z from "zod";
 
 export async function createJobVacancyHandler(
   req: FastifyRequest<{ Body: z.infer<typeof createJobVacancySchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { companyName, location, title, url } = req.body;
 
-    const JobVacancy = await prisma.jobVacancy.create({
+    const jobVacancy = await prisma.jobVacancy.create({
       data: {
         url,
         companyName,
@@ -23,32 +23,34 @@ export async function createJobVacancyHandler(
     });
     return reply
       .status(201)
-      .send({ message: "Vaga de emprego criado com sucesso", JobVacancy });
+      .send({ message: "Job vacancy created successfully", jobVacancy });
   } catch (error) {
-    console.error("Erro ao criar vaga de emprego:", error);
+    console.error("Error creating job vacancy:", error);
     return reply
       .status(400)
-      .send({ error: "Ocorreu um erro interno no servidor" });
+      .send({ message: "Internal server error occurred" });
   }
 }
 
 export async function getJobVacanciesHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const jobVacancies = await prisma.jobVacancy.findMany();
 
     return reply.status(200).send({ message: "ok", jobVacancies });
   } catch (error) {
-    console.error("Erro ao listar vagas de emprego:", error);
-    return reply.status(500).send({ error: "Falha ao obter vagas de emprego" });
+    console.error("Error listing job vacancies:", error);
+    return reply
+      .status(500)
+      .send({ message: "Failed to retrieve job vacancies" });
   }
 }
 
 export async function getJobVacancyByIdHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
@@ -58,14 +60,12 @@ export async function getJobVacancyByIdHandler(
     });
 
     if (!jobVacancy)
-      return reply
-        .status(404)
-        .send({ message: "Vaga de emprego não encontrada" });
+      return reply.status(404).send({ message: "Job vacancy not found" });
 
     return reply.status(200).send({ message: "ok", jobVacancy });
   } catch (error) {
-    console.error("Erro ao buscar vaga de emprego:", error);
-    return reply.status(500).send({ error: "Falha ao buscar vaga de emprego" });
+    console.error("Error fetching job vacancy:", error);
+    return reply.status(500).send({ message: "Failed to fetch job vacancy" });
   }
 }
 
@@ -74,7 +74,7 @@ export async function updateJobVacancyHandler(
     Params: { id: string };
     Body: z.infer<typeof updateJobVacancySchema>;
   }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
@@ -83,11 +83,9 @@ export async function updateJobVacancyHandler(
     const existing = await prisma.jobVacancy.findUnique({ where: { id } });
 
     if (!existing)
-      return reply
-        .status(404)
-        .send({ error: "Vaga de emprego não encontrado" });
+      return reply.status(404).send({ message: "Job vacancy not found" });
 
-    const JobVacancy = await prisma.jobVacancy.update({
+    const jobVacancy = await prisma.jobVacancy.update({
       where: { id },
       data: {
         url,
@@ -98,35 +96,33 @@ export async function updateJobVacancyHandler(
     });
     return reply
       .status(200)
-      .send({ message: "Vaga de emprego atualizado com sucesso", JobVacancy });
+      .send({ message: "Job vacancy updated successfully", jobVacancy });
   } catch (error) {
-    console.error("Erro ao actualizar vaga de emprego:", error);
+    console.error("Error updating job vacancy:", error);
     return reply
       .status(400)
-      .send({ error: "Falha ao actualizar vaga de emprego" });
+      .send({ message: "Falha ao actualizar vaga de emprego" });
   }
 }
 
 export async function deleteJobVacancyHandler(
   req: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { id } = req.params;
     const existing = await prisma.jobVacancy.findUnique({ where: { id } });
 
     if (!existing)
-      return reply
-        .status(404)
-        .send({ error: "Vaga de emprego não encontrado" });
+      return reply.status(404).send({ error: "Job vacancy not found" });
 
     await prisma.jobVacancy.delete({ where: { id } });
 
-    return reply.send({ message: "Vaga de emprego eliminado com sucesso" });
+    return reply.send({ message: "Job vacancy deleted successfully" });
   } catch (error) {
-    console.error("Erro ao eliminar vaga de emprego:", error);
+    console.error("Error deleting job vacancy:", error);
     return reply
       .status(500)
-      .send({ error: "Falha ao eliminar vaga de emprego" });
+      .send({ message: "Falha ao eliminar vaga de emprego" });
   }
 }

@@ -1,10 +1,13 @@
+import z from "zod";
 import { FastifyTypedInstance } from "../types/zod";
+
 import {
   fetchAuthenticatedUserHandler,
+  fetchUserHandler,
   listUsersHandler,
   registerUserHandler,
 } from "../controllers/user.controller";
-import z from "zod";
+import { userSchema, createUserSchema } from "./../schemas/user.schema";
 
 export async function userRoutes(app: FastifyTypedInstance) {
   app.get(
@@ -15,40 +18,40 @@ export async function userRoutes(app: FastifyTypedInstance) {
         tags: ["users"],
         description: "Fetch all users",
         response: {
-          200: z
-            .object({
-              message: z.string(),
-              users: z.array(
-                z.object({
-                  id: z.string(),
-                  name: z.string(),
-                  role: z.string(),
-                  avatar: z.string().nullable(),
-                  createdAt: z.coerce.date(),
-                  updatedAt: z.coerce.date(),
-                })
-              ),
-            })
-            .describe("Users fetched successfully"),
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
         },
       },
     },
-    listUsersHandler
+    listUsersHandler,
   );
 
-  app.post(
-    "/",
+  app.get(
+    "/:id",
     {
       //preHandler: app.authenticate,
       schema: {
         tags: ["users"],
-        description: "Create a new user",
+        description: "Fetch user by ID",
+        params: z.object({
+          id: z.cuid().describe("User unique identifier"),
+        }),
+        response: {
+          200: z
+            .object({
+              message: z.string(),
+              user: userSchema,
+            })
+            .describe("User fetched successfully"),
+          404: z.object({ message: z.string() }).describe("User not found"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
       },
     },
-    registerUserHandler
+    fetchUserHandler,
   );
 
   app.get(
@@ -59,6 +62,12 @@ export async function userRoutes(app: FastifyTypedInstance) {
         tags: ["users"],
         description: "Fetch authenticated user",
         response: {
+          /** 200: z
+            .object({
+              message: z.string(),
+              user: userSchema,
+            })
+            .describe("User fetched successfully"), */
           404: z.object({ message: z.string() }).describe("User not found"),
           500: z
             .object({ message: z.string() })
@@ -66,6 +75,33 @@ export async function userRoutes(app: FastifyTypedInstance) {
         },
       },
     },
-    fetchAuthenticatedUserHandler
+    fetchAuthenticatedUserHandler,
+  );
+
+  app.post(
+    "/",
+    {
+      //preHandler: app.authenticate,
+      schema: {
+        tags: ["users"],
+        description: "Create a new user",
+        body: createUserSchema,
+        response: {
+          201: z
+            .object({
+              message: z.string(),
+              user: userSchema,
+            })
+            .describe("User created successfully"),
+          400: z
+            .object({ message: z.string() })
+            .describe("User already exists"),
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    registerUserHandler,
   );
 }

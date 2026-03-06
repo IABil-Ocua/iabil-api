@@ -12,13 +12,17 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function loginHandler(
   request: FastifyRequest<{ Body: z.infer<typeof loginSchema> }>,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const { email, password } = request.body;
 
     const user = await prisma.user.findUnique({
       where: { email: email.toLowerCase().trim() },
+      include: {
+        student: true,
+        teacher: true,
+      },
     });
 
     if (!user) {
@@ -35,7 +39,7 @@ export async function loginHandler(
 
     const token = await reply.jwtSign(
       { id: user.id, email: user.email, role: user.role },
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     return reply.status(200).send({ message: "ok", token, user });
@@ -47,20 +51,17 @@ export async function loginHandler(
 
 export async function listUsersHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        student: true,
+        teacher: true,
+      },
+    });
 
-    const safeUsers = users.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    }));
+    const safeUsers = users.map(({ password, ...rest }) => rest);
 
     return reply.status(200).send({ message: "ok", users: safeUsers });
   } catch (error) {
@@ -69,12 +70,44 @@ export async function listUsersHandler(
   }
 }
 
-export async function registerUserHandler(
-  request: FastifyRequest<{ Body: z.infer<typeof createUserSchema> }>,
-  reply: FastifyReply
+export async function fetchUserHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
 ) {
   try {
-    const { email, name, role, birthDate, avatar, cover } = request.body;
+    const { id } = request.params;
+
+    if (!id) {
+      return reply.status(400).send({ message: "User ID is required" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        student: true,
+        teacher: true,
+      },
+    });
+
+    if (!user) {
+      return reply.status(404).send({ message: "User not found" });
+    }
+
+    const { password, ...rest } = user;
+
+    return reply.status(200).send({ message: "ok", user: rest });
+  } catch (error) {
+    console.error("Error fetching user  :", error);
+    return reply.status(500).send({ message: "Internal Server Error", error });
+  }
+}
+
+export async function registerUserHandler(
+  request: FastifyRequest<{ Body: z.infer<typeof createUserSchema> }>,
+  reply: FastifyReply,
+) {
+  try {
+    const { email, name, role, avatar } = request.body;
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -83,7 +116,7 @@ export async function registerUserHandler(
     if (existingUser) {
       return reply
         .status(400)
-        .send({ message: "Já existe um usuário cadastrado com o mesmo email" });
+        .send({ message: "A user with the same email is already registered" });
     }
 
     const generatedPassword = passwordGenerator({
@@ -104,15 +137,13 @@ export async function registerUserHandler(
         role: role,
         username: email.toLowerCase().trim(),
         avatar,
-        birthDate,
-        cover,
       },
     });
 
     const { data: emailData, error } = await resend.emails.send({
-      from: "IAbil <plataforna@iabil.co.mz>",
+      from: "IAbil <gestao.academica@iabil.co.mz>",
       to: [email],
-      subject: "Cofirmação de Registro na Plataforma | IABIl",
+      subject: "Registration Confirmation on the IABIl Platform",
       react: UserRegistrationTemplate({
         name: name,
         email: email.toLowerCase().trim(),
@@ -145,13 +176,17 @@ export async function registerUserHandler(
 
 export async function fetchAuthenticatedUserHandler(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   try {
     const userId = request.user.id;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        student: true,
+        teacher: true,
+      },
     });
 
     if (!user) {
@@ -160,15 +195,7 @@ export async function fetchAuthenticatedUserHandler(
 
     return reply.status(200).send({
       message: "ok",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        createdAt: user.createdAt.toISOString(),
-        updatedAt: user.updatedAt.toISOString(),
-      },
+      user,
     });
   } catch (error) {
     console.error("Error fetching users:", error);

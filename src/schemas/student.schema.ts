@@ -3,18 +3,18 @@ import { userSchema } from "./user.schema";
 import { qualificationSchema } from "./qualification.schema";
 
 export const studentSchema = z.object({
-  id: z.string().nullable(),
+  id: z.cuid().nullable(),
   code: z.string(),
   name: z.string(),
-  gender: z.string(),
-  scholarship: z.string(),
+  gender: z.string().nullable(),
+  scholarship: z.string().nullable(),
   financier: z.string().nullable(),
-  qualificationName: z.string(),
-  qualificationId: z.string(),
+  qualificationName: z.string().nullable(),
+  qualificationId: z.string().nullable(),
   specialty: z.string().nullable(),
 
   birthProvince: z.string().nullable(),
-  birthDate: z.coerce.date().nullable(),
+  birthDate: z.coerce.date().nullable().optional(),
   idNumber: z.coerce.string().nullable(),
   email: z.string().nullable(),
   phone1: z.coerce.string().nullable(),
@@ -33,21 +33,21 @@ export const studentSchema = z.object({
   position: z.string().nullable(),
   startYear: z.coerce.string().nullable(),
 
-  // Formação 1
+  // Formation 1
   residencyRegime1: z.string().optional().nullable(),
   year1: z.coerce.string().optional().nullable(),
   level1: z.string().optional().nullable(),
   completionYear1: z.coerce.string().optional().nullable(),
   observation1: z.string().optional().nullable(),
 
-  // Formação 2
+  // Formation 2
   residencyRegime2: z.string().optional().nullable(),
   year2: z.coerce.string().optional().nullable(),
   level2: z.string().optional().nullable(),
   completionYear2: z.coerce.string().optional().nullable(),
   observation2: z.string().optional().nullable(),
 
-  // Formação 3
+  // Formation 3
   residencyRegime3: z.string().optional().nullable(),
   year3: z.coerce.string().optional().nullable(),
   level3: z.string().optional().nullable(),
@@ -61,23 +61,24 @@ export const studentSchema = z.object({
 export const userWithRelationsSchema = z.lazy(() =>
   userSchema.extend({
     qualification: qualificationSchema,
-  })
+  }),
 );
 
 export const createStudentSchema = z.object({
-  code: z.string().min(1, "Code is required"),
   name: z.string().min(1, "Name is required"),
-  gender: z.string().min(1, "Gender is required"),
-  scholarship: z.string().min(1, "Scholarship is required"),
+  gender: z.enum(["MALE", "FEMALE"]).optional(),
+  scholarship: z.string().optional(),
   financier: z.string().optional().nullable(),
-  qualificationName: z.string(),
   qualificationId: z.string().min(1, "QualificationID is required"),
   specialty: z.string().optional().nullable(),
+  email: z.email("Invalid email"),
+  status: z.enum(["ACTIVE", "INACTIVE", "GRADUETED"]),
+  approvalStatus: z.enum(["PENDING", "APPROVED", "NOT_APPROVED"]),
 
+  code: z.string().min(1, "Code is required"),
   birthProvince: z.string().optional().nullable(),
-  birthDate: z.coerce.date().optional().nullable(),
+  birthDate: z.union([z.coerce.date(), z.date()]).optional().nullable(),
   idNumber: z.coerce.string().optional().nullable(),
-  email: z.string().optional(),
   phone1: z.coerce.string().optional().nullable(),
   phone2: z.coerce.string().optional().nullable(),
   fatherAffiliation: z.string().optional().nullable(),
@@ -85,7 +86,6 @@ export const createStudentSchema = z.object({
   guardianName: z.string().optional().nullable(),
   guardianAddress: z.string().optional().nullable(),
   guardianPhone: z.coerce.string().optional().nullable(),
-  status: z.string().optional().nullable(),
   actualProvince: z.string().optional().nullable(),
   actualDistrict: z.string().optional().nullable(),
   currentOccupation: z.string().optional().nullable(),
@@ -94,21 +94,21 @@ export const createStudentSchema = z.object({
   position: z.string().optional().nullable(),
   startYear: z.coerce.string().optional().nullable(),
 
-  // Formação 1
+  // Formation 1
   residencyRegime1: z.string().optional().nullable(),
   year1: z.coerce.string().optional().nullable(),
   level1: z.string().optional().nullable(),
   completionYear1: z.coerce.string().optional().nullable(),
   observation1: z.string().optional().nullable(),
 
-  // Formação 2
+  // Formation 2
   residencyRegime2: z.string().optional().nullable(),
   year2: z.coerce.string().optional().nullable(),
   level2: z.string().optional().nullable(),
   completionYear2: z.coerce.string().optional().nullable(),
   observation2: z.string().optional().nullable(),
 
-  // Formação 3
+  // Formation 3
   residencyRegime3: z.string().optional().nullable(),
   year3: z.coerce.string().optional().nullable(),
   level3: z.string().optional().nullable(),

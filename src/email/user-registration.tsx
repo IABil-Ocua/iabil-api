@@ -25,6 +25,21 @@ export const UserRegistrationTemplate = ({
   platformName: string;
   loginUrl: string;
 }) => {
+  const roleName = () => {
+    switch (role) {
+      case "ADMIN":
+        return "Administrador";
+      case "TEACHER":
+        return "Professor";
+      case "STUDENT":
+        return "Aluno";
+      case "SUPER_ADMIN":
+        return "Super Administrador";
+      default:
+        return "";
+    }
+  };
+
   return (
     <Html>
       <Head />
@@ -33,16 +48,15 @@ export const UserRegistrationTemplate = ({
       </Preview>
       <Body style={main}>
         <Container style={container}>
-          <Heading style={heading}>🎓 Cadastro concluído!</Heading>
+          <Heading style={heading}>Cadastro na plataforma do IABil!</Heading>
 
           <Text style={text}>
-            Olá, <strong>{name}</strong> 👋
+            Olá, <strong>{name}</strong>!
           </Text>
 
           <Text style={text}>
-            O seu cadastro na plataforma <strong>{platformName}</strong> como
-            {role}
-            {role} foi realizado com sucesso.
+            O seu cadastro na plataforma {platformName}como{" "}
+            <strong>{roleName()}</strong> foi realizado com sucesso.
           </Text>
 
           <Text style={text}>Aqui estão as suas credenciais de acesso:</Text>

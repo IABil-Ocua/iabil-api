@@ -12,7 +12,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyJwtPlugin from "./plugins/jwt";
 import { authRoutes } from "./routes/auth.routes";
 import { userRoutes } from "./routes/user.routes";
-import { QualificationRoutes } from "./routes/qualification.routes";
+import { qualificationRoutes } from "./routes/qualification.routes";
 import { studentRoutes } from "./routes/student.routes";
 import { eventRoutes } from "./routes/events.route";
 import { articleRoutes } from "./routes/articles.routes";
@@ -20,6 +20,10 @@ import { jobVacanciesRoutes } from "./routes/job-vacancies.routes";
 import { scholarshipRoutes } from "./routes/scholarship.routes";
 import { levelRoutes } from "./routes/qualification-level.route";
 import { chapterRoutes } from "./routes/chapter.routes";
+import { quizzRoutes } from "./routes/quizz.routes";
+import { quizzItemRoutes } from "./routes/quizz-item.routes";
+import { moduleRoutes } from "./routes/module.routes";
+import { teacherRoutes } from "./routes/teacher.routes";
 
 const app =
   fastify(/**{
@@ -40,8 +44,8 @@ app.register(cors, {
 
 app.register(fastifyJwtPlugin);
 
-app.setValidatorCompiler(validatorCompiler); // Diz ao fastify que será usado zod para fazer as validações de entrada
-app.setSerializerCompiler(serializerCompiler); //Diz ao fastify que será usado o zod para fazer a serialização dos dados de saida
+app.setValidatorCompiler(validatorCompiler); // Tells Fastify that Zod will be used for input validations
+app.setSerializerCompiler(serializerCompiler); // Tells Fastify that Zod will be used for output data serialization
 
 app.register(fastifySwagger, {
   openapi: {
@@ -59,16 +63,16 @@ app.register(fastifySwagger, {
         },
       },
     },
-    security: [
+    /**security: [
       {
         bearerAuth: [],
       },
-    ],
+    ], */
   },
   transform: jsonSchemaTransform,
 });
 
-//Configuração do Swagger UI
+// Swagger UI configuration
 app.register(fastifySwaggerUi, {
   routePrefix: "/docs",
   uiConfig: {
@@ -80,14 +84,18 @@ app.register(fastifySwaggerUi, {
 //ROTAS DOS ENDPOITS
 app.register(authRoutes, { prefix: "/auth" });
 app.register(userRoutes, { prefix: "/users" });
-app.register(QualificationRoutes, { prefix: "/qualifications" });
+app.register(qualificationRoutes, { prefix: "/qualifications" });
 app.register(studentRoutes, { prefix: "/students" });
+app.register(teacherRoutes, { prefix: "/teachers" });
 app.register(eventRoutes, { prefix: "/events" });
 app.register(articleRoutes, { prefix: "/articles" });
 app.register(jobVacanciesRoutes, { prefix: "/job-vacancies" });
 app.register(scholarshipRoutes, { prefix: "/scholarships" });
 app.register(levelRoutes, { prefix: "/levels" });
 app.register(chapterRoutes, { prefix: "/chapters" });
+app.register(quizzRoutes, { prefix: "/quizzes" });
+app.register(quizzItemRoutes, { prefix: "/quizz-items" });
+app.register(moduleRoutes, { prefix: "/modules" });
 
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
   console.log(`Server running at port ${3333}`);
