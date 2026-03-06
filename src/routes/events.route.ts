@@ -27,7 +27,7 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           201: z
             .object({
               message: z.string(),
-              event: eventWithRelationsSchema,
+              event: eventSchema,
             })
             .describe("Event created successfully"),
           400: z.object({ message: z.string() }).describe("Bad request"),
