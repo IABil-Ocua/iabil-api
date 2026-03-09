@@ -4,13 +4,13 @@ import {
   createModuleHandler,
   deleteModuleHandler,
   fetchModuleHandler,
+  fetchModulesByLevelHandler,
   fetchModulesHandler,
   updateModuleHandler,
 } from "../controllers/module.controller";
 import {
   createModuleSchema,
   moduleSchema,
-  moduleWithRelationsSchema,
   updateModuleSchema,
 } from "../schemas/module.schema";
 
@@ -36,6 +36,29 @@ export async function moduleRoutes(app: FastifyTypedInstance) {
       },
     },
     fetchModulesHandler,
+  );
+
+  app.get(
+    "/level/:levelId",
+    {
+      preHandler: app.authenticate,
+      schema: {
+        tags: ["modules"],
+        description: "Fetch modules by level",
+        response: {
+          /** 200: z
+            .object({
+              message: z.string(),
+              modules: z.array(moduleWithRelationsSchema),
+            })
+            .describe("Modules fetched successfully"), */
+          500: z
+            .object({ message: z.string() })
+            .describe("Internal server error"),
+        },
+      },
+    },
+    fetchModulesByLevelHandler,
   );
 
   app.get(

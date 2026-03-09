@@ -26,6 +26,31 @@ export async function fetchModulesHandler(
   }
 }
 
+export async function fetchModulesByLevelHandler(
+  request: FastifyRequest<{ Params: { levelId: string } }>,
+  reply: FastifyReply,
+) {
+  try {
+    const { levelId } = request.params;
+
+    const modules = await prisma.module.findMany({
+      relationLoadStrategy: "query",
+      include: {
+        chapters: { include: { module: true } },
+        level: true,
+      },
+      where: {
+        levelId,
+      },
+    });
+
+    return reply.status(200).send({ message: "ok", modules });
+  } catch (error) {
+    console.log("Error fetching modules", error);
+    return reply.status(500).send({ message: "Internal server error", error });
+  }
+}
+
 export async function fetchModuleHandler(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
@@ -66,7 +91,7 @@ export async function createModuleHandler(
   reply: FastifyReply,
 ) {
   try {
-    const { title, description, levelId, workload } = request.body;
+    const { title, description, levelId, workload, documentUrl } = request.body;
 
     const module = await prisma.module.create({
       data: {
@@ -74,6 +99,7 @@ export async function createModuleHandler(
         description,
         levelId,
         workload,
+        documentUrl,
       },
     });
 
