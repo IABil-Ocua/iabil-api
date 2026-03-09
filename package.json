@@ -2,7 +2,7 @@
   "name": "api-iabil",
   "version": "1.0.0",
   "description": "The API for the entire IABil Platforms",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "start": "node dist/src/server.js",
     "build": "npm install && npx prisma generate && tsc && tsc-alias",
@@ -12,7 +12,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "@fastify/cors": "^11.1.0",
     "@fastify/jwt": "^10.0.0",

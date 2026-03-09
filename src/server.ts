@@ -9,10 +9,10 @@ import {
 import { fastifySwagger } from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 
-import fastifyJwtPlugin from "./plugins/jwt";
-import { authRoutes } from "./routes/auth.routes";
-import { userRoutes } from "./routes/user.routes";
-import { qualificationRoutes } from "./routes/qualification.routes";
+import fastifyJwtPlugin from "@/plugins/jwt";
+import { authRoutes } from "@/routes/auth.routes";
+import { userRoutes } from "@/routes/user.routes";
+import { qualificationRoutes } from "@/routes/qualification.routes";
 import { studentRoutes } from "./routes/student.routes";
 import { eventRoutes } from "./routes/events.route";
 import { articleRoutes } from "./routes/articles.routes";
