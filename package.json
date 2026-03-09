@@ -2,9 +2,9 @@
   "name": "api-iabil",
   "version": "1.0.0",
   "description": "The API for the entire IABil Platforms",
-  "main": "dist/src/server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/src/server.js",
+    "start": "node dist/server.js",
     "build": "npm install && npx prisma generate && tsc && tsc-alias",
     "dev": "tsx watch --env-file=.env src/server.ts",
     "postinstall": "npx prisma generate"
