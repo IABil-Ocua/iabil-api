@@ -11,7 +11,6 @@ import {
 } from "../controllers/article.controller";
 import {
   createArticleSchema,
-  ArticleStatusEnum,
   articleSchema,
   updateArticleSchema,
   articleWithRelationsSchema,

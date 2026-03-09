@@ -74,6 +74,7 @@ export const createStudentSchema = z.object({
   email: z.email("Invalid email"),
   status: z.enum(["ACTIVE", "INACTIVE", "GRADUETED"]),
   approvalStatus: z.enum(["PENDING", "APPROVED", "NOT_APPROVED"]),
+  currentLevelId: z.string().min(1, "Current Level ID is required"),
 
   code: z.string().min(1, "Code is required"),
   birthProvince: z.string().optional().nullable(),
