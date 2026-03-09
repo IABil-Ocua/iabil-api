@@ -97,6 +97,13 @@ app.register(quizzRoutes, { prefix: "/quizzes" });
 app.register(quizzItemRoutes, { prefix: "/quizz-items" });
 app.register(moduleRoutes, { prefix: "/modules" });
 
+app.get("/health", async () => {
+  return {
+    status: "ok",
+    time: new Date().toISOString(),
+  };
+});
+
 app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
   console.log(`Server running at port ${3333}`);
 });
