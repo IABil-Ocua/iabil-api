@@ -24,6 +24,7 @@ export const createModuleSchema = z.object({
   description: z.string().nullable(),
   workload: z.number().int().positive(),
   levelId: z.string(),
+  documentUrl: z.string(),
 });
 
 export const updateModuleSchema = createModuleSchema.partial();

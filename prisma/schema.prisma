@@ -123,17 +123,22 @@ model Student {
   completionYear3   String?               @map("completion_year_3")
   observation3      String?               @map("observation_3")
   approvalStatus    StudentApprovalStatus @default(PENDING) @map("approval_status")
-  qualificationId   String                @map("qualification_id")
-  qualification     Qualification         @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
 
   userId String @unique @map("user_id")
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  qualificationId String        @map("qualification_id")
+  qualification   Qualification @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
+
+  currentLevelId String @map("current_level_id")
+  currentLevel   Level  @relation(fields: [levelId], references: [id], onDelete: Restrict)
 
   chapterProgresses ChapterProgress[]
   moduleProgresses  ModuleProgress[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  levelId   String
 
   @@map("students")
 }
@@ -210,6 +215,7 @@ model Level {
   updatedAt       DateTime      @updatedAt @map("updated_at")
   qualification   Qualification @relation(fields: [qualificationId], references: [id], onDelete: Cascade)
   modules         Module[]
+  students        Student[]
 
   @@map("levels")
 }
@@ -221,6 +227,7 @@ model Module {
   workload         Int
   level            Level            @relation(fields: [levelId], references: [id], onDelete: Cascade)
   levelId          String
+  documentUrl      String
   chapters         Chapter[]
   createdAt        DateTime         @default(now()) @map("created_at")
   updatedAt        DateTime         @updatedAt @map("updated_at")

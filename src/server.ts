@@ -18,7 +18,7 @@ import { eventRoutes } from "./routes/events.route";
 import { articleRoutes } from "./routes/articles.routes";
 import { jobVacanciesRoutes } from "./routes/job-vacancies.routes";
 import { scholarshipRoutes } from "./routes/scholarship.routes";
-import { levelRoutes } from "./routes/qualification-level.route";
+import { levelRoutes } from "./routes/level.route";
 import { chapterRoutes } from "./routes/chapter.routes";
 import { quizzRoutes } from "./routes/quizz.routes";
 import { quizzItemRoutes } from "./routes/quizz-item.routes";

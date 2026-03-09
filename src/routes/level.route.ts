@@ -8,7 +8,7 @@ import {
   fetchLevelsByQualificationsHandler,
   fetchLevelsHandler,
   updateLevelHandler,
-} from "../controllers/qualification-level.controller";
+} from "../controllers/level.controller";
 import {
   levelSchema,
   createLevelSchema,
