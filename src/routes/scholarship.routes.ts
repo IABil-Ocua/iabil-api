@@ -15,8 +15,6 @@ import {
   updateScholarshipSchema,
 } from "../schemas/scholarship.schema";
 
-const scholarshipStatusEnum = z.enum(["ACTIVE", "INACTIVE", "CLOSED"]);
-
 export async function scholarshipRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",

@@ -50,6 +50,7 @@ export async function createStudentHandler(
       code,
       status,
       approvalStatus,
+      currentLevelId,
       ...rest
     } = request.body;
 
@@ -121,6 +122,7 @@ export async function createStudentHandler(
           userId: user.id,
           approvalStatus,
           status,
+          currentLevelId,
         },
       });
 

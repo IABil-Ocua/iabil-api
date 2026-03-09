@@ -12,7 +12,6 @@ import {
   quizzSchema,
   createQuizzSchema,
   updateQuizzSchema,
-  quizzWithRelationsSchema,
 } from "../schemas/quizz.schema";
 
 export async function quizzRoutes(app: FastifyTypedInstance) {
