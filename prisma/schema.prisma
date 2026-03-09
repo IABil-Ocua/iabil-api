@@ -5,9 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 /**
@@ -89,7 +87,7 @@ model Student {
   financier         String?
   specialty         String?
   birthProvince     String?               @map("birth_province")
-  birthDate         DateTime?             @map("birth_date") @db.Date
+  birthDate         DateTime?             @map("birth_date")
   idNumber          String?               @map("id_number")
   email             String                @unique
   phone1            String?               @map("phone_1")
