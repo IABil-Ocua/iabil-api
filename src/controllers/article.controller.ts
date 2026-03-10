@@ -16,7 +16,7 @@ export const createArticleHandler = async (
       content,
       isFeatured,
       slug,
-      status,
+      isPublished,
       title,
       category,
       imageUrl,
@@ -30,7 +30,7 @@ export const createArticleHandler = async (
         content,
         isFeatured,
         slug,
-        status,
+        isPublished,
         title,
         category,
         imageUrl,
@@ -80,7 +80,7 @@ export const getRecentArticlesHandler = async (
 ) => {
   try {
     const articles = await prisma.article.findMany({
-      where: { status: "PUBLISHED" },
+      where: { isPublished: true },
       orderBy: { publishedAt: "desc" },
       take: 3,
     });
@@ -122,7 +122,6 @@ export const getArticleByIdHandler = async (
   }
 };
 
-// ✅ Atualizar artigo
 export const updateArticleHandler = async (
   request: FastifyRequest<{
     Params: { id: string };
@@ -137,7 +136,7 @@ export const updateArticleHandler = async (
       content,
       isFeatured,
       slug,
-      status,
+      isPublished,
       title,
       category,
       imageUrl,
@@ -152,10 +151,9 @@ export const updateArticleHandler = async (
         content,
         isFeatured,
         slug,
-        status,
+        isPublished,
         title,
         category,
-
         imageUrl,
         publishedAt,
         tags,

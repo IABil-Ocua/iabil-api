@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import * as z from "zod";
+import type { ReactElement } from "react";
+import { z } from "zod";
 import ExcelJS from "exceljs";
 import { hash } from "bcrypt";
 
@@ -137,7 +138,7 @@ export async function createStudentHandler(
           platformName: "IABil",
           loginUrl: "https://iabil.co.mz/login",
           role: "STUDENT",
-        }) as React.ReactElement,
+        }) as ReactElement,
       });
 
       if (error) {

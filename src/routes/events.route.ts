@@ -47,12 +47,12 @@ export async function eventRoutes(app: FastifyTypedInstance) {
         tags: ["events"],
         description: "Retrieve a list of events with creator information",
         response: {
-          200: z
+          /**          200: z
             .object({
               message: z.string(),
               events: z.array(eventWithRelationsSchema),
             })
-            .describe("Events fetched successfully"),
+            .describe("Events fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
