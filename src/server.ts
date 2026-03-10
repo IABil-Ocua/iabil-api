@@ -25,27 +25,24 @@ import { quizzItemRoutes } from "./routes/quizz-item.routes";
 import { moduleRoutes } from "./routes/module.routes";
 import { teacherRoutes } from "./routes/teacher.routes";
 
-const app =
-  fastify(/**{
-  logger: {
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-      },
-    },
-  },
-} */).withTypeProvider<ZodTypeProvider>();
+const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.register(cors, {
-  origin: true,
-  methods: ["GET", "PUT", "POST", "DELETE"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://www.iabil.co.mz",
+    "https://iabil.co.mz",
+  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 });
 
 app.register(fastifyJwtPlugin);
 
-app.setValidatorCompiler(validatorCompiler); // Tells Fastify that Zod will be used for input validations
-app.setSerializerCompiler(serializerCompiler); // Tells Fastify that Zod will be used for output data serialization
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
 
 app.register(fastifySwagger, {
   openapi: {
@@ -63,16 +60,10 @@ app.register(fastifySwagger, {
         },
       },
     },
-    /**security: [
-      {
-        bearerAuth: [],
-      },
-    ], */
   },
   transform: jsonSchemaTransform,
 });
 
-// Swagger UI configuration
 app.register(fastifySwaggerUi, {
   routePrefix: "/docs",
   uiConfig: {
@@ -81,7 +72,6 @@ app.register(fastifySwaggerUi, {
   },
 });
 
-//ROTAS DOS ENDPOITS
 app.register(authRoutes, { prefix: "/auth" });
 app.register(userRoutes, { prefix: "/users" });
 app.register(qualificationRoutes, { prefix: "/qualifications" });
