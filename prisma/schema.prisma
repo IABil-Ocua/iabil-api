@@ -42,12 +42,6 @@ enum ArticleType {
   PUBLICATION
 }
 
-enum ArticleStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
 enum ScholarshipStatus {
   ACTIVE
   INACTIVE
@@ -329,20 +323,21 @@ model Event {
 }
 
 model Article {
-  id          String        @id @default(cuid())
+  id          String      @id @default(cuid())
   title       String
-  slug        String        @unique
+  slug        String      @unique
   content     String
   category    ArticleType
   tags        String?
-  status      ArticleStatus @default(DRAFT)
-  authorId    String        @map("author_id")
-  createdAt   DateTime      @default(now()) @map("created_at")
-  imageUrl    String?       @map("image_url")
-  isFeatured  Boolean       @default(false) @map("is_featured")
-  publishedAt DateTime?     @map("published_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  other       String?
+  isPublished Boolean     @default(false) @map("is_published")
+  authorId    String      @map("author_id")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  imageUrl    String?     @map("image_url")
+  isFeatured  Boolean     @default(false) @map("is_featured")
+  publishedAt DateTime?   @map("published_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  author      User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@map("articles")
 }

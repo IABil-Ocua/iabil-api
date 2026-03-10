@@ -20,7 +20,12 @@ export async function loginHandler(
     const user = await prisma.user.findUnique({
       where: { email: email.toLowerCase().trim() },
       include: {
-        student: true,
+        student: {
+          include: {
+            qualification: true,
+            currentLevel: true,
+          },
+        },
         teacher: true,
       },
     });
@@ -56,7 +61,12 @@ export async function listUsersHandler(
   try {
     const users = await prisma.user.findMany({
       include: {
-        student: true,
+        student: {
+          include: {
+            qualification: true,
+            currentLevel: true,
+          },
+        },
         teacher: true,
       },
     });
@@ -84,7 +94,12 @@ export async function fetchUserHandler(
     const user = await prisma.user.findUnique({
       where: { id },
       include: {
-        student: true,
+        student: {
+          include: {
+            qualification: true,
+            currentLevel: true,
+          },
+        },
         teacher: true,
       },
     });

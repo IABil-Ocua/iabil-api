@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Html,
   Head,
@@ -24,7 +25,7 @@ export const UserRegistrationTemplate = ({
   password: string;
   platformName: string;
   loginUrl: string;
-}) => {
+}): React.ReactNode => {
   const roleName = () => {
     switch (role) {
       case "ADMIN":
@@ -55,7 +56,7 @@ export const UserRegistrationTemplate = ({
           </Text>
 
           <Text style={text}>
-            O seu cadastro na plataforma {platformName}como{" "}
+            O seu cadastro na plataforma {platformName} como{" "}
             <strong>{roleName()}</strong> foi realizado com sucesso.
           </Text>
 
@@ -97,7 +98,6 @@ export const UserRegistrationTemplate = ({
   );
 };
 
-// 🎨 Estilos inline
 const main = {
   backgroundColor: "#f5f7fa",
   fontFamily: "Helvetica, Arial, sans-serif",

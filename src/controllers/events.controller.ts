@@ -78,7 +78,6 @@ export async function getEventsHandler(
 ) {
   try {
     const events = await prisma.event.findMany({
-      relationLoadStrategy: "query",
       orderBy: { startDate: "desc" },
       include: { createdBy: true },
     });
@@ -169,6 +168,8 @@ export async function deleteEventHandler(
     return reply.send({ message: "Event deleted successfully" });
   } catch (error) {
     console.error("Error deleting event:", error);
-    return reply.status(500).send({ error: "Failed to delete event" });
+    return reply
+      .status(500)
+      .send({ errorCode: "SERVER_ERROR", message: "Failed to delete event" });
   }
 }

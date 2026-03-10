@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { userSchema } from "./user.schema";
 
-export const ArticleStatusEnum = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]);
 export const ArticleCategoryEnum = z.enum(["INNOVATION", "PUBLICATION"]);
 
 export const articleSchema = z.object({
@@ -12,7 +11,7 @@ export const articleSchema = z.object({
   imageUrl: z.string().nullable(),
   category: ArticleCategoryEnum,
   tags: z.string().nullable(),
-  status: ArticleStatusEnum.default("DRAFT"),
+  isPublished: z.boolean(),
   isFeatured: z.boolean().default(false),
   authorId: z.string(),
   publishedAt: z.coerce.date().nullable(),
@@ -33,7 +32,7 @@ export const createArticleSchema = z.object({
   imageUrl: z.string().url().optional().nullable(),
   category: ArticleCategoryEnum,
   tags: z.string().optional().nullable(),
-  status: ArticleStatusEnum.default("DRAFT"),
+  isPublished: z.boolean(),
   isFeatured: z.boolean().default(false),
   authorId: z.string(),
   publishedAt: z.coerce.date().optional().nullable(),
