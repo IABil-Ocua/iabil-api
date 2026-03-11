@@ -33,6 +33,7 @@ app.register(cors, {
     "http://localhost:5173",
     "https://www.iabil.co.mz",
     "https://iabil.co.mz",
+    "https://moodle.iabil.co.mz",
   ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],

@@ -10,7 +10,6 @@ import {
 } from "../controllers/events.controller";
 import {
   eventSchema,
-  eventWithRelationsSchema,
   createEventSchema,
   updateEventSchema,
 } from "../schemas/event.schema";
@@ -72,12 +71,12 @@ export async function eventRoutes(app: FastifyTypedInstance) {
           id: z.cuid().describe("Event unique identifier"),
         }),
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               event: eventWithRelationsSchema,
             })
-            .describe("Event fetched successfully"),
+            .describe("Event fetched successfully"), */
           404: z.object({ message: z.string() }).describe("Event not found"),
           500: z
             .object({ message: z.string() })
