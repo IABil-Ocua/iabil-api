@@ -13,7 +13,6 @@ import {
   levelSchema,
   createLevelSchema,
   updateLevelSchema,
-  levelWithRelationsSchema,
 } from "../schemas/qualification-level.schema";
 
 export async function levelRoutes(app: FastifyTypedInstance) {
@@ -25,12 +24,12 @@ export async function levelRoutes(app: FastifyTypedInstance) {
         tags: ["levels"],
         description: "Fetch all Levels",
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               levels: z.array(levelWithRelationsSchema),
             })
-            .describe("Qualification levels fetched successfully"),
+            .describe("Qualification levels fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -51,12 +50,12 @@ export async function levelRoutes(app: FastifyTypedInstance) {
           qualificationId: z.cuid().describe("Qualification unique identifier"),
         }),
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               levels: z.array(levelWithRelationsSchema),
             })
-            .describe("Qualification levels fetched successfully"),
+            .describe("Qualification levels fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -77,12 +76,12 @@ export async function levelRoutes(app: FastifyTypedInstance) {
           id: z.cuid().describe("Qualification level unique identifier"),
         }),
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               level: levelWithRelationsSchema,
             })
-            .describe("Qualification level fetched successfully"),
+            .describe("Qualification level fetched successfully"), */
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Level not found"),
           500: z
