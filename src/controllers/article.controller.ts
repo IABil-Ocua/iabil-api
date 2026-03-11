@@ -131,6 +131,7 @@ export const updateArticleHandler = async (
 ) => {
   try {
     const { id } = request.params;
+
     const {
       authorId,
       content,
