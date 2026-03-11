@@ -12,7 +12,6 @@ import {
 import {
   createQualificationSchema,
   qualificationSchema,
-  qualificationWithRelationsSchema,
   updateQualificationSchema,
 } from "../schemas/qualification.schema";
 
