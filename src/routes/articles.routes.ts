@@ -13,7 +13,6 @@ import {
   createArticleSchema,
   articleSchema,
   updateArticleSchema,
-  articleWithRelationsSchema,
 } from "../schemas/article.schema";
 
 export async function articleRoutes(app: FastifyTypedInstance) {
@@ -24,12 +23,12 @@ export async function articleRoutes(app: FastifyTypedInstance) {
         tags: ["articles"],
         description: "List all articles",
         response: {
-          200: z
-            .object({
-              message: z.string(),
-              articles: z.array(articleWithRelationsSchema),
-            })
-            .describe("Articles fetched successfully"),
+          /**{
+          title: title.trim(),
+          description: editor.getHTML(),
+          noticeUrl,
+          qualificationId: level.qualificationId,
+        } */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -46,12 +45,12 @@ export async function articleRoutes(app: FastifyTypedInstance) {
         tags: ["articles"],
         description: "Get recent published articles",
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               articles: z.array(articleSchema),
             })
-            .describe("Recent articles fetched successfully"),
+            .describe("Recent articles fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -71,12 +70,12 @@ export async function articleRoutes(app: FastifyTypedInstance) {
           id: z.cuid().describe("Article unique identifier"),
         }),
         response: {
-          200: z
+          /*200: z
             .object({
               message: z.string(),
               article: articleWithRelationsSchema,
             })
-            .describe("Article fetched successfully"),
+            .describe("Article fetched successfully"),*/
           404: z.object({ message: z.string() }).describe("Article not found"),
           500: z
             .object({ message: z.string() })

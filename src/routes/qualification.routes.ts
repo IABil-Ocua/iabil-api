@@ -25,12 +25,12 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
         tags: ["qualifications"],
         description: "Fetch all Qualifications",
         response: {
-          200: z
+          /** 200: z
             .object({
               message: z.string(),
               qualifications: z.array(qualificationWithRelationsSchema),
             })
-            .describe("Qualifications fetched successfully"),
+            .describe("Qualifications fetched successfully"), */
           500: z
             .object({ message: z.string() })
             .describe("Internal server error"),
@@ -51,12 +51,12 @@ export async function qualificationRoutes(app: FastifyTypedInstance) {
           id: z.cuid().describe("Qualification unique identifier"),
         }),
         response: {
-          200: z
+          /**200: z
             .object({
               message: z.string(),
               qualification: qualificationWithRelationsSchema,
             })
-            .describe("Qualification fetched successfully"),
+            .describe("Qualification fetched successfully"), */
           400: z.object({ message: z.string() }).describe("Bad request"),
           404: z.object({ message: z.string() }).describe("Not found"),
           500: z
